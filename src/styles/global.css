@@ -2,38 +2,70 @@
 
 /* Theme variables */
 :root {
-  --bg-primary: 23 23 23; /* neutral-900 */
-  --bg-secondary: 38 38 38; /* neutral-800 */
-  --text-primary: 245 245 245; /* neutral-100 */
-  --text-secondary: 212 212 212; /* neutral-300 */
-  --text-muted: 163 163 163; /* neutral-400 */
-  --border-color: 64 64 64; /* neutral-700 */
-  --selection-bg: 115 115 115; /* neutral-500 */
-  --selection-text: 250 250 250; /* neutral-50 */
+  --bg-primary: oklch(0.0719 0.0498 264.05); /* #00000d - dark navy */
+  --bg-secondary: oklch(0.1 0.04 264.05); /* slightly lighter navy */
+  --text-primary: oklch(0.9335 0.018 196.85); /* #dceded - light blue-gray */
+  --text-secondary: oklch(
+    0.85 0.015 196.85
+  ); /* slightly darker light blue-gray */
+  --text-muted: oklch(0.7 0.012 196.85); /* muted light blue-gray */
+  --border-color: oklch(0.2 0.035 264.05); /* dark navy border */
+  --selection-bg: oklch(0.8252 0.1557 92.68); /* #e9c232 - golden yellow */
+  --selection-text: oklch(0.0719 0.0498 264.05); /* dark navy text on yellow */
+  --accent-color: oklch(
+    0.8252 0.1557 92.68
+  ); /* #e9c232 - golden yellow accent */
 }
 
 [data-theme="light"] {
-  --bg-primary: 255 255 255; /* white */
-  --bg-secondary: 249 250 251; /* gray-50 */
-  --text-primary: 17 24 39; /* gray-900 */
-  --text-secondary: 75 85 99; /* gray-600 */
-  --text-muted: 107 114 128; /* gray-500 */
-  --border-color: 209 213 219; /* gray-300 */
-  --selection-bg: 156 163 175; /* gray-400 */
-  --selection-text: 17 24 39; /* gray-900 */
+  --bg-primary: oklch(0.9335 0.018 196.85); /* #dceded - light blue-gray */
+  --bg-secondary: oklch(0.95 0.012 196.85); /* slightly lighter blue-gray */
+  --text-primary: oklch(0.0719 0.0498 264.05); /* #00000d - dark navy */
+  --text-secondary: oklch(0.15 0.04 264.05); /* slightly lighter navy */
+  --text-muted: oklch(0.3 0.035 264.05); /* muted navy */
+  --border-color: oklch(0.8 0.015 196.85); /* light border */
+  --selection-bg: oklch(0.8252 0.1557 92.68); /* #e9c232 - golden yellow */
+  --selection-text: oklch(0.0719 0.0498 264.05); /* dark navy text on yellow */
+  --accent-color: oklch(
+    0.8252 0.1557 92.68
+  ); /* #e9c232 - golden yellow accent */
+}
+
+/* Base styles - Apply theme colors to page elements */
+html {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+/* Selection styles */
+::selection {
+  background-color: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+::-moz-selection {
+  background-color: var(--selection-bg);
+  color: var(--selection-text);
 }
 
 /* Theme toggle button */
 .theme-toggle {
   @apply fixed top-6 right-6 p-3 rounded-full transition-all duration-200;
-  background: rgb(var(--bg-secondary));
-  border: 1px solid rgb(var(--border-color));
-  color: rgb(var(--text-primary));
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
 }
 
 .theme-toggle:hover {
   @apply scale-110;
-  background: rgb(var(--border-color));
+  background: var(--accent-color);
+  color: var(--selection-text);
 }
 
 .theme-toggle svg {
@@ -44,5 +76,5 @@
 * {
   transition-property: background-color, border-color, color;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
+  transition-duration: 100ms;
 }
