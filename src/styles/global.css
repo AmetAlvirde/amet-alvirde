@@ -55,8 +55,32 @@ body {
 }
 
 /* Theme toggle button */
+.theme-button {
+  @apply p-3 rounded-full transition-all duration-200;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.theme-button:hover {
+  @apply scale-110;
+  background: var(--accent-color);
+  color: var(--selection-text);
+}
+
+.theme-button.active {
+  background: var(--accent-color);
+  color: var(--selection-text);
+  border-color: var(--accent-color);
+}
+
+.theme-button svg {
+  @apply w-5 h-5;
+}
+
+/* Legacy support for theme-toggle class */
 .theme-toggle {
-  @apply fixed top-6 right-6 p-3 rounded-full transition-all duration-200;
+  @apply p-3 rounded-full transition-all duration-200;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
