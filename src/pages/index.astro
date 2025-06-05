@@ -96,11 +96,11 @@ import "../styles/global.css";
 
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
-				const themeToggle = document.getElementById('theme-toggle');
-				const systemThemeToggle = document.getElementById('system-theme-toggle');
-				const sunIcon = document.getElementById('sun-icon');
-				const moonIcon = document.getElementById('moon-icon');
-				const monogram = document.getElementById('monogram');
+				const themeToggle = document.querySelector('#theme-toggle');
+				const systemThemeToggle = document.querySelector('#system-theme-toggle');
+				const sunIcon = document.querySelector('#sun-icon');
+				const moonIcon = document.querySelector('#moon-icon');
+				const monogram = document.querySelector('#monogram');
 				
 				if (!themeToggle || !systemThemeToggle || !sunIcon || !moonIcon || !monogram) {
 					console.error('Theme elements not found');
