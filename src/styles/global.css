@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/* Theme variables */
+:root {
+  --bg-primary: oklch(0.0719 0.0498 264.05); /* #00000d - dark navy */
+  --bg-secondary: oklch(0.1 0.04 264.05); /* slightly lighter navy */
+  --text-primary: oklch(0.9335 0.018 196.85); /* #dceded - light blue-gray */
+  --text-secondary: oklch(
+    0.85 0.015 196.85
+  ); /* slightly darker light blue-gray */
+  --text-muted: oklch(0.7 0.012 196.85); /* muted light blue-gray */
+  --border-color: oklch(0.2 0.035 264.05); /* dark navy border */
+  --selection-bg: oklch(0.8252 0.1557 92.68); /* #e9c232 - golden yellow */
+  --selection-text: oklch(0.0719 0.0498 264.05); /* dark navy text on yellow */
+  --accent-color: oklch(
+    0.8252 0.1557 92.68
+  ); /* #e9c232 - golden yellow accent */
+}
+
+[data-theme="light"] {
+  --bg-primary: oklch(0.9335 0.018 196.85); /* #dceded - light blue-gray */
+  --bg-secondary: oklch(0.95 0.012 196.85); /* slightly lighter blue-gray */
+  --text-primary: oklch(0.0719 0.0498 264.05); /* #00000d - dark navy */
+  --text-secondary: oklch(0.15 0.04 264.05); /* slightly lighter navy */
+  --text-muted: oklch(0.3 0.035 264.05); /* muted navy */
+  --border-color: oklch(0.8 0.015 196.85); /* light border */
+  --selection-bg: oklch(0.8252 0.1557 92.68); /* #e9c232 - golden yellow */
+  --selection-text: oklch(0.0719 0.0498 264.05); /* dark navy text on yellow */
+  --accent-color: oklch(
+    0.8252 0.1557 92.68
+  ); /* #e9c232 - golden yellow accent */
+}
+
+/* Base styles - Apply theme colors to page elements */
+html {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+/* Selection styles */
+::selection {
+  background-color: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+::-moz-selection {
+  background-color: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+/* Theme toggle button */
+.theme-button {
+  @apply p-3 rounded-full transition-all duration-200;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.theme-button:hover {
+  @apply scale-110;
+  background: var(--accent-color);
+  color: var(--selection-text);
+}
+
+.theme-button.active {
+  background: var(--accent-color);
+  color: var(--selection-text);
+  border-color: var(--accent-color);
+}
+
+.theme-button svg {
+  @apply w-5 h-5;
+}
+
+/* Legacy support for theme-toggle class */
+.theme-toggle {
+  @apply p-3 rounded-full transition-all duration-200;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.theme-toggle:hover {
+  @apply scale-110;
+  background: var(--accent-color);
+  color: var(--selection-text);
+}
+
+.theme-toggle svg {
+  @apply w-5 h-5;
+}
+
+/* Ensure smooth transitions */
+* {
+  transition-property: background-color, border-color, color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
+}
