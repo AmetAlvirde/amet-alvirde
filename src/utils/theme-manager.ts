@@ -21,17 +21,39 @@ const SELECTORS = {
   favicon: 'link[rel="icon"]:not([media])',
 } as const;
 
-// Pure functions for theme logic
+// Safe localStorage operations
+const safeLocalStorageGet = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const safeLocalStorageSet = (key: string, value: string): void => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Silent fail - theme will still work, just won't persist
+  }
+};
+
+// Core theme functions (coordinated with inline script)
 const getSystemTheme = (): ActualTheme =>
-  window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  window.matchMedia?.("(prefers-color-scheme: light)").matches
+    ? "light"
+    : "dark";
 
 const getActualTheme = (preference: ThemePreference): ActualTheme =>
   preference === "system" ? getSystemTheme() : (preference as ActualTheme);
 
+// Read current state (set by inline script or previous interactions)
 const getCurrentPreference = (): ThemePreference =>
   (document.documentElement.getAttribute(
     "data-theme-preference"
-  ) as ThemePreference | null) || "system";
+  ) as ThemePreference) ||
+  (safeLocalStorageGet("theme") as ThemePreference) ||
+  "system";
 
 const getCurrentTheme = (): ActualTheme | null =>
   document.documentElement.getAttribute("data-theme") as ActualTheme | null;
@@ -60,11 +82,10 @@ const getRequiredElements = (): ThemeElements => {
     throw new Error(`Theme elements not found: ${missingElements.join(", ")}`);
   }
 
-  // TypeScript now knows all elements are non-null
   return elements as ThemeElements;
 };
 
-// Theme update functions
+// UI update functions
 const updateFavicon = (theme: ActualTheme): void => {
   const favicon = document.querySelector(
     SELECTORS.favicon
@@ -116,6 +137,7 @@ const updateDocumentAttributes = (
   document.documentElement.setAttribute("data-theme-preference", preference);
 };
 
+// Complete UI update (coordinates all visual changes)
 const updateThemeUI = (
   preference: ThemePreference,
   elements: ThemeElements
@@ -128,95 +150,92 @@ const updateThemeUI = (
   updateButtonStates(preference, elements);
 };
 
-// Theme action functions
+// User action handlers
 const toggleManualTheme = (elements: ThemeElements): void => {
   const currentTheme = getCurrentTheme();
   const newTheme: ActualTheme = currentTheme === "light" ? "dark" : "light";
 
-  localStorage.setItem("theme", newTheme);
+  safeLocalStorageSet("theme", newTheme);
   updateThemeUI(newTheme, elements);
 };
 
 const setSystemTheme = (elements: ThemeElements): void => {
-  localStorage.setItem("theme", "system");
+  safeLocalStorageSet("theme", "system");
   updateThemeUI("system", elements);
 };
 
-// Event handler factory
-const createThemeToggleHandler = (elements: ThemeElements) => () =>
+// Event handlers
+const createToggleHandler = (elements: ThemeElements) => () =>
   toggleManualTheme(elements);
-
-const createSystemThemeHandler = (elements: ThemeElements) => () =>
+const createSystemHandler = (elements: ThemeElements) => () =>
   setSystemTheme(elements);
 
-const createSystemThemeChangeHandler =
-  (elements: ThemeElements) => (): void => {
-    const currentPreference = getCurrentPreference();
-    if (currentPreference === "system") {
-      updateThemeUI("system", elements);
-    }
-  };
+const createSystemChangeHandler = (elements: ThemeElements) => (): void => {
+  const currentPreference = getCurrentPreference();
+  if (currentPreference === "system") {
+    updateThemeUI("system", elements);
+  }
+};
 
 // Event listener setup
 const setupEventListeners = (elements: ThemeElements): void => {
   const { themeToggle, systemThemeToggle } = elements;
 
-  const themeToggleHandler = createThemeToggleHandler(elements);
-  const systemThemeHandler = createSystemThemeHandler(elements);
+  const toggleHandler = createToggleHandler(elements);
+  const systemHandler = createSystemHandler(elements);
 
-  // Ensure buttons are properly focusable
+  // Make buttons focusable
   themeToggle.setAttribute("tabindex", "0");
   systemThemeToggle.setAttribute("tabindex", "0");
 
-  // Click events remain specific to each button
-  themeToggle.addEventListener("click", themeToggleHandler);
-  systemThemeToggle.addEventListener("click", systemThemeHandler);
+  // Click events
+  themeToggle.addEventListener("click", toggleHandler);
+  systemThemeToggle.addEventListener("click", systemHandler);
 
-  // Shared keyboard handlers where the KEY determines the action
+  // Keyboard events
   const handleKeyDown = (event: KeyboardEvent) => {
-    // 'Enter' key always sets the theme to system
     if (event.key === "Enter") {
       event.preventDefault();
-      systemThemeHandler();
+      systemHandler(); // Enter = system theme
     }
   };
 
   const handleKeyUp = (event: KeyboardEvent) => {
-    // 'Space' key always toggles between light/dark
     if (event.key === " ") {
       event.preventDefault();
-      themeToggleHandler();
+      toggleHandler(); // Space = toggle theme
     }
   };
 
-  // Attach the shared handlers to BOTH buttons
-  themeToggle.addEventListener("keydown", handleKeyDown);
-  systemThemeToggle.addEventListener("keydown", handleKeyDown);
-  themeToggle.addEventListener("keyup", handleKeyUp);
-  systemThemeToggle.addEventListener("keyup", handleKeyUp);
+  // Attach keyboard handlers to both buttons
+  [themeToggle, systemThemeToggle].forEach(button => {
+    button.addEventListener("keydown", handleKeyDown);
+    button.addEventListener("keyup", handleKeyUp);
+  });
 
+  // Listen for system theme changes
   window
     .matchMedia("(prefers-color-scheme: light)")
-    .addEventListener("change", createSystemThemeChangeHandler(elements));
+    .addEventListener("change", createSystemChangeHandler(elements));
 };
 
-// Main initialization function
+// Main initialization
 export const initializeThemeManager = (): void => {
   try {
     const elements = getRequiredElements();
     const currentPreference = getCurrentPreference();
 
-    // Set initial UI state
+    // Sync UI with current state (inline script already set the theme)
     updateThemeUI(currentPreference, elements);
 
-    // Setup event listeners
+    // Setup interactive functionality
     setupEventListeners(elements);
   } catch (error) {
     console.error("Failed to initialize theme manager:", error);
   }
 };
 
-// Export individual functions for testing or granular usage
+// Export functions for external use
 export {
   getSystemTheme,
   getActualTheme,
