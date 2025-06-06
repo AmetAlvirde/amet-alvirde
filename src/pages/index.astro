@@ -16,44 +16,35 @@ import MonogramLight from '../assets/monogram-light-mode.svg?raw';
 		<title>Amet Alvirde</title>
 		<script>
 			// Theme management - runs before page load to prevent flash
-			(function(): void {
-				type ThemePreference = 'light' | 'dark' | 'system';
-				type ActualTheme = 'light' | 'dark';
-				
-				const getThemePreference = (): ThemePreference => {
-					const stored = localStorage.getItem('theme') as ThemePreference | null;
-					if (stored) return stored;
-					return 'system'; 
+			(function() {
+				// Safe localStorage access (prevents errors in private browsing)
+				const getStoredTheme = () => {
+					try { return localStorage.getItem('theme'); } catch { return null; }
 				};
 				
-				const getSystemTheme = (): ActualTheme => {
-					return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-				};
+				// Get user's theme preference
+				const preference = getStoredTheme() || 'system';
 				
-				const getActualTheme = (preference: ThemePreference): ActualTheme => {
-					if (preference === 'system') {
-						return getSystemTheme();
-					}
-					return preference as ActualTheme;
-				};
+				// Determine actual theme to apply
+				const actualTheme = preference === 'system' 
+					? (window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+					: preference;
 				
-				const preference: ThemePreference = getThemePreference();
-				const actualTheme: ActualTheme = getActualTheme(preference);
+				// Apply theme immediately (prevents FOUC)
 				document.documentElement.setAttribute('data-theme', actualTheme);
 				document.documentElement.setAttribute('data-theme-preference', preference);
 				
-				const setInitialFavicon = (): void => {
-					const favicon = document.querySelector('link[rel="icon"]:not([media])') as HTMLLinkElement | null;
+				// Set favicon when DOM is ready
+				const setFavicon = () => {
+					const favicon = document.querySelector('link[rel="icon"]:not([media])');
 					if (favicon) {
-						favicon.href = actualTheme === 'light' ? '/favicon-light-mode.svg' : '/favicon-dark-mode.svg';
+						(favicon as HTMLLinkElement).href = actualTheme === 'light' ? '/favicon-light-mode.svg' : '/favicon-dark-mode.svg';
 					}
 				};
 				
-				if (document.readyState === 'loading') {
-					document.addEventListener('DOMContentLoaded', setInitialFavicon);
-				} else {
-					setInitialFavicon();
-				}
+				document.readyState === 'loading' 
+					? document.addEventListener('DOMContentLoaded', setFavicon)
+					: setFavicon();
 			})();
 		</script>
 		<!-- Open Graph / Facebook -->
@@ -140,8 +131,8 @@ import MonogramLight from '../assets/monogram-light-mode.svg?raw';
 			</button>
 		</header>
 
-		<main class="flex flex-col md:flex-row items-center justify-center text-center md:text-left max-w-md md:max-w-4xl w-full md:gap-8">
-			<div id="monogram" class="w-xs md:w-sm h-auto mb-4 md:mb-0 md:flex-shrink-0">
+		<main class="flex flex-col lg:flex-row items-center justify-center text-center lg:text-left max-w-md lg:max-w-6xl w-full md:gap-10">
+			<div id="monogram" class="w-sm md:w-md h-auto mb-4 md:mb-0 md:flex-shrink-0">
 				<div class="monogram-light">
 					<Fragment set:html={MonogramLight} />
 				</div>
@@ -149,9 +140,9 @@ import MonogramLight from '../assets/monogram-light-mode.svg?raw';
 					<Fragment set:html={MonogramDark} />
 				</div>
 			</div>
-			<div id="about" class="flex flex-col items-center md:items-start justify-center text-center md:text-left max-w-md md:max-w-none w-full">
-				<h1 class="text-3xl font-bold mb-6 md:text-4xl" style="color: rgb(var(--text-primary));">Amet Alvirde</h1>
-				<p class="text-base mx-10 md:mx-0 text-balance leading-relaxed md:text-lg" style="color: rgb(var(--text-secondary));">
+			<div id="about" class="flex flex-col items-center lg:items-start justify-center text-center lg:text-left max-w-md lg:max-w-none w-full">
+				<h1 class="text-4xl font-bold mb-6 lg:text-6xl" style="color: rgb(var(--text-primary));">Amet Alvirde</h1>
+				<p id="bio" class="mx-10 md:mx-0 lg:max-w-2xl text-balance text-lg md:text-xl lg:text-2xl leading-relaxed " style="color: rgb(var(--text-secondary));">
 				Experiencia humana polímata viviendo un sistema de múltiples consciencias a través del ininterrumpido, inevitable e irreversible viaje hacia mi destino.
 				</p>
 			</div>
