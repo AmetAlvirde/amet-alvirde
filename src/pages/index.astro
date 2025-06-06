@@ -56,7 +56,7 @@ import "../styles/global.css";
 			})();
 		</script>
 	</head>
-	<body style="background-color: rgb(var(--bg-primary)); color: rgb(var(--text-primary));" class="min-h-screen flex flex-col items-center justify-center p-6">
+	<body style="background-color: rgb(var(--bg-primary)); color: rgb(var(--text-primary));" class="h-[100dvh] flex flex-col items-center mt-[10dvh]">
 		<style>
 			body {
 				selection-background-color: rgb(var(--selection-bg));
@@ -89,12 +89,21 @@ import "../styles/global.css";
 			</button>
 		</div>
 
-		<div class="flex flex-col items-center justify-center text-center max-w-md w-full">
-			<img src="monogram-dark-mode.svg" alt="Amet Alvirde Monogram" class="w-32 h-auto mb-8 md:w-40" id="monogram" />
+		<div class="flex flex-col md:flex-row items-center justify-center text-center md:text-left max-w-md md:max-w-4xl w-full md:gap-8">
+			<img src="monogram-dark-mode.svg" alt="Amet Alvirde Monogram" class="w-xs h-auto mb-4 md:mb-0 md:flex-shrink-0" id="monogram" />
+			<section id="about" class="flex flex-col items-center md:items-start justify-center text-center md:text-left max-w-md md:max-w-none w-full">
 			<h1 class="text-3xl font-bold mb-6 md:text-4xl" style="color: rgb(var(--text-primary));">Amet Alvirde</h1>
-			<p class="text-base leading-relaxed md:text-lg" style="color: rgb(var(--text-secondary));">
-				Experiencia humana polímata viviendo un sistema de múltiples conciencias a través del ininterrumpido, inevitable e irreversible viaje hacia mi destino.
+			<p class="text-base mx-10 md:mx-0 text-balance leading-relaxed md:text-lg" style="color: rgb(var(--text-secondary));">
+				Experiencia humana polímata viviendo un sistema de múltiples consciencias a través del ininterrumpido, inevitable e irreversible viaje hacia mi destino.
 			</p>
+
+			</section>
+		</div>
+
+		<!-- Bottom Stripes -->
+		<div class="fixed bottom-0 left-0 right-0 flex flex-col z-10">
+			<div class="h-1 md:h-2 bg-accent"></div>
+			<div class="h-1 md:h-2 bg-text-primary"></div>
 		</div>
 
 		<script>
