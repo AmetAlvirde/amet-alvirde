@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@theme {
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border-color);
+  --color-selection-bg: var(--selection-bg);
+  --color-selection-text: var(--selection-text);
+  --color-accent: var(--accent-color);
+}
+
 /* Theme variables */
 :root {
   --bg-primary: oklch(0.0719 0.0498 264.05); /* #00000d - dark navy */
