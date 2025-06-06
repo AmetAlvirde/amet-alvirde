@@ -13,32 +13,35 @@ import "../styles/global.css";
 		<title>Amet Alvirde</title>
 		<script>
 			// Theme management - runs before page load to prevent flash
-			(function() {
-				const getThemePreference = () => {
-					const stored = localStorage.getItem('theme');
+			(function(): void {
+				type ThemePreference = 'light' | 'dark' | 'system';
+				type ActualTheme = 'light' | 'dark';
+				
+				const getThemePreference = (): ThemePreference => {
+					const stored = localStorage.getItem('theme') as ThemePreference | null;
 					if (stored) return stored;
 					return 'system'; // Default to system preference
 				};
 				
-				const getSystemTheme = () => {
+				const getSystemTheme = (): ActualTheme => {
 					return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 				};
 				
-				const getActualTheme = (preference: string) => {
+				const getActualTheme = (preference: ThemePreference): ActualTheme => {
 					if (preference === 'system') {
 						return getSystemTheme();
 					}
-					return preference;
+					return preference as ActualTheme;
 				};
 				
-				const preference = getThemePreference();
-				const actualTheme = getActualTheme(preference);
+				const preference: ThemePreference = getThemePreference();
+				const actualTheme: ActualTheme = getActualTheme(preference);
 				document.documentElement.setAttribute('data-theme', actualTheme);
 				document.documentElement.setAttribute('data-theme-preference', preference);
 				
 				// Set initial favicon
-				const setInitialFavicon = () => {
-					const favicon = document.querySelector('link[rel="icon"]:not([media])') as HTMLLinkElement;
+				const setInitialFavicon = (): void => {
+					const favicon = document.querySelector('link[rel="icon"]:not([media])') as HTMLLinkElement | null;
 					if (favicon) {
 						favicon.href = actualTheme === 'light' ? '/favicon-light-mode.svg' : '/favicon-dark-mode.svg';
 					}
@@ -95,102 +98,10 @@ import "../styles/global.css";
 		</div>
 
 		<script>
-			document.addEventListener('DOMContentLoaded', function() {
-				const themeToggle = document.querySelector('#theme-toggle');
-				const systemThemeToggle = document.querySelector('#system-theme-toggle');
-				const sunIcon = document.querySelector('#sun-icon');
-				const moonIcon = document.querySelector('#moon-icon');
-				const monogram = document.querySelector('#monogram');
-				
-				if (!themeToggle || !systemThemeToggle || !sunIcon || !moonIcon || !monogram) {
-					console.error('Theme elements not found');
-					return;
-				}
-				
-				const getSystemTheme = () => {
-					return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-				};
-				
-				const getActualTheme = (preference: string) => {
-					if (preference === 'system') {
-						return getSystemTheme();
-					}
-					return preference;
-				};
-				
-				const updateFavicon = (theme: string) => {
-					const favicon = document.querySelector('link[rel="icon"]:not([media])') as HTMLLinkElement;
-					if (favicon) {
-						favicon.href = theme === 'light' ? '/favicon-light-mode.svg' : '/favicon-dark-mode.svg';
-					}
-				};
-				
-				const updateThemeUI = (preference: string) => {
-					const actualTheme = getActualTheme(preference);
-					
-					document.documentElement.setAttribute('data-theme', actualTheme);
-					document.documentElement.setAttribute('data-theme-preference', preference);
-					
-					// Update theme toggle icons
-					if (actualTheme === 'light') {
-						sunIcon.classList.remove('hidden');
-						moonIcon.classList.add('hidden');
-						monogram.setAttribute('src', 'monogram-light-mode.svg');
-					} else {
-						sunIcon.classList.add('hidden');
-						moonIcon.classList.remove('hidden');
-						monogram.setAttribute('src', 'monogram-dark-mode.svg');
-					}
-					
-					// Update favicon
-					updateFavicon(actualTheme);
-					
-					// Update button states
-					updateButtonStates(preference);
-				};
-				
-				const updateButtonStates = (preference: string) => {
-					// Remove active state from all buttons
-					themeToggle.classList.remove('active');
-					systemThemeToggle.classList.remove('active');
-					
-					// Add active state to current preference
-					if (preference === 'system') {
-						systemThemeToggle.classList.add('active');
-					} else {
-						themeToggle.classList.add('active');
-					}
-				};
-				
-				const toggleManualTheme = () => {
-					const currentTheme = document.documentElement.getAttribute('data-theme');
-					const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-					
-					localStorage.setItem('theme', newTheme);
-					updateThemeUI(newTheme);
-				};
-				
-				const setSystemTheme = () => {
-					localStorage.setItem('theme', 'system');
-					updateThemeUI('system');
-				};
-				
-				// Set initial UI state
-				const currentPreference = document.documentElement.getAttribute('data-theme-preference') || 'system';
-				updateThemeUI(currentPreference);
-				
-				// Listen for theme toggle clicks
-				themeToggle.addEventListener('click', toggleManualTheme);
-				systemThemeToggle.addEventListener('click', setSystemTheme);
-				
-				// Listen for system theme changes
-				window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
-					const currentPreference = document.documentElement.getAttribute('data-theme-preference');
-					// Only update if user is using system preference
-					if (currentPreference === 'system') {
-						updateThemeUI('system');
-					}
-				});
+			import { initializeThemeManager } from '../utils/theme-manager.ts';
+			
+			document.addEventListener('DOMContentLoaded', () => {
+				initializeThemeManager();
 			});
 		</script>
 	</body>
