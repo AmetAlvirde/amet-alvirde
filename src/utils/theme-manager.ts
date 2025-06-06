@@ -161,11 +161,39 @@ const createSystemThemeChangeHandler =
 const setupEventListeners = (elements: ThemeElements): void => {
   const { themeToggle, systemThemeToggle } = elements;
 
-  themeToggle.addEventListener("click", createThemeToggleHandler(elements));
-  systemThemeToggle.addEventListener(
-    "click",
-    createSystemThemeHandler(elements)
-  );
+  const themeToggleHandler = createThemeToggleHandler(elements);
+  const systemThemeHandler = createSystemThemeHandler(elements);
+
+  // Ensure buttons are properly focusable
+  themeToggle.setAttribute("tabindex", "0");
+  systemThemeToggle.setAttribute("tabindex", "0");
+
+  // Click events remain specific to each button
+  themeToggle.addEventListener("click", themeToggleHandler);
+  systemThemeToggle.addEventListener("click", systemThemeHandler);
+
+  // Shared keyboard handlers where the KEY determines the action
+  const handleKeyDown = (event: KeyboardEvent) => {
+    // 'Enter' key always sets the theme to system
+    if (event.key === "Enter") {
+      event.preventDefault();
+      systemThemeHandler();
+    }
+  };
+
+  const handleKeyUp = (event: KeyboardEvent) => {
+    // 'Space' key always toggles between light/dark
+    if (event.key === " ") {
+      event.preventDefault();
+      themeToggleHandler();
+    }
+  };
+
+  // Attach the shared handlers to BOTH buttons
+  themeToggle.addEventListener("keydown", handleKeyDown);
+  systemThemeToggle.addEventListener("keydown", handleKeyDown);
+  themeToggle.addEventListener("keyup", handleKeyUp);
+  systemThemeToggle.addEventListener("keyup", handleKeyUp);
 
   window
     .matchMedia("(prefers-color-scheme: light)")
