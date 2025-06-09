@@ -73,51 +73,14 @@ body {
   color: var(--selection-text);
 }
 
-/* Theme toggle button */
-.theme-button {
-  @apply p-3 rounded-full transition-all duration-200;
-  background: #1a1a1a var(--bg-secondary); /* fallback + CSS var */
-  border: 1px solid var(--border-color);
-  color: #dceded var(--text-primary);
-}
-
-.theme-button:hover {
-  @apply scale-110;
-  background: var(--accent-color);
-  color: var(--selection-text);
+/* Theme button states */
+.theme-button:not(.active):hover {
+  background: var(--accent-color) !important;
+  color: var(--selection-text) !important;
 }
 
 .theme-button.active {
-  background: var(--accent-color);
-  color: var(--selection-text);
-  border-color: var(--accent-color);
-}
-
-.theme-button svg {
-  @apply w-5 h-5;
-}
-
-/* Legacy support for theme-toggle class */
-.theme-toggle {
-  @apply p-3 rounded-full transition-all duration-200;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-}
-
-.theme-toggle:hover {
-  @apply scale-110;
-  background: var(--accent-color);
-  color: var(--selection-text);
-}
-
-.theme-toggle svg {
-  @apply w-5 h-5;
-}
-
-/* Ensure smooth transitions */
-* {
-  transition-property: background-color, border-color, color;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 100ms;
+  background: var(--accent-color) !important;
+  color: var(--selection-text) !important;
+  border-color: var(--accent-color) !important;
 }
