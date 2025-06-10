@@ -1,0 +1,139 @@
+---
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { 
+	title = "Amet Alvirde", 
+	description = "Experiencia humana polímata viviendo un sistema de múltiples consciencias a través del ininterrumpido, inevitable e irreversible viaje hacia mi destino." 
+} = Astro.props;
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon-light-mode.svg" media="(prefers-color-scheme: light)" />
+		<link rel="icon" type="image/svg+xml" href="/favicon-dark-mode.svg" media="(prefers-color-scheme: dark)" />
+		<link rel="icon" type="image/svg+xml" href="/favicon-dark-mode.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description}>
+		<title>{title}</title>
+		<script>
+			// Theme management - runs before page load to prevent flash
+			(function() {
+				// Safe localStorage access (prevents errors in private browsing)
+				const getStoredTheme = () => {
+					try { return localStorage.getItem('theme'); } catch { return null; }
+				};
+				
+				// Get user's theme preference
+				const preference = getStoredTheme() || 'system';
+				
+				// Determine actual theme to apply
+				const actualTheme = preference === 'system' 
+					? (window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+					: preference;
+				
+				// Apply theme immediately (prevents FOUC)
+				document.documentElement.setAttribute('data-theme', actualTheme);
+				document.documentElement.setAttribute('data-theme-preference', preference);
+				
+				// Set favicon when DOM is ready
+				const setFavicon = () => {
+					const favicon = document.querySelector('link[rel="icon"]:not([media])');
+					if (favicon) {
+						(favicon as HTMLLinkElement).href = actualTheme === 'light' ? '/favicon-light-mode.svg' : '/favicon-dark-mode.svg';
+					}
+				};
+				
+				document.readyState === 'loading' 
+					? document.addEventListener('DOMContentLoaded', setFavicon)
+					: setFavicon();
+			})();
+		</script>
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://www.ametalvirde.com/" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content="https://www.ametalvirde.com/monogram-dark-mode.svg" />
+		<meta property="og:locale" content="es_MX" />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://www.ametalvirde.com/" />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content="https://www.ametalvirde.com/monogram-dark-mode.svg" />
+
+		<!-- Structured Data -->
+		<script type="application/ld+json">
+		{
+		  "@context": "https://schema.org",
+		  "@type": "Person",
+		  "name": "Amet Alvirde",
+		  "description": "Experiencia humana polímata viviendo un sistema de múltiples consciencias",
+		  "url": "https://www.ametalvirde.com",
+		  "image": "https://www.ametalvirde.com/monogram-dark-mode.svg",
+		  "sameAs": [
+			"https://twitter.com/ametalvirde",
+			"https://www.instagram.com/ametalvirde/",
+			"https://www.tiktok.com/@ametalvirde"
+		  ]
+		}
+		</script>
+
+		<!-- Additional meta tags -->
+		<meta name="author" content="Amet Alvirde" />
+		<meta name="robots" content="index, follow" />
+		<meta name="theme-color" content="#e9c232" />
+
+		<!-- FOUC-prevention for monogram -->
+		<style is:inline>
+			.monogram-light { display: none; }
+			.monogram-dark { display: block; } /* Default to dark */
+
+			[data-theme="light"] .monogram-light { display: block; }
+			[data-theme="light"] .monogram-dark { display: none; }
+		</style>
+
+		<!-- Canonical URL -->
+		<link rel="canonical" href="https://www.ametalvirde.com/" />
+	</head>
+	<body style="background-color: rgb(var(--bg-primary)); color: rgb(var(--text-primary));" class="h-[100dvh] flex flex-col items-center">
+		<style>
+			body {
+				selection-background-color: rgb(var(--selection-bg));
+				selection-color: rgb(var(--selection-text));
+			}
+			
+			::selection {
+				background-color: rgb(var(--selection-bg));
+				color: rgb(var(--selection-text));
+			}
+			
+			/* Social button hover effect - matches theme buttons */
+			.social-button:hover {
+				background: var(--accent-color) !important;
+				color: var(--selection-text) !important;
+			}
+		</style>
+		
+		<slot />
+
+		<section id="bottom-stripes" class="fixed bottom-0 left-0 right-0 flex flex-col z-10">
+			<div class="h-1 md:h-2 bg-accent"></div>
+			<div class="h-1 md:h-2 bg-text-primary"></div>
+		</section>
+
+		<script>
+			import { initializeThemeManager } from '../utils/theme-manager.ts';
+			
+			document.addEventListener('DOMContentLoaded', () => {
+				initializeThemeManager();
+			});
+		</script>
+	</body>
+</html> 
