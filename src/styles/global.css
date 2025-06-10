@@ -84,3 +84,10 @@ body {
   color: var(--selection-text) !important;
   border-color: var(--accent-color) !important;
 }
+
+/* Social button hover effect - matches theme buttons */
+.social-button:hover {
+  background: var(--accent-color) !important;
+  color: var(--selection-text) !important;
+  border-color: var(--accent-color) !important;
+}
