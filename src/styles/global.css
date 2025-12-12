@@ -10,6 +10,9 @@
   --color-selection-bg: var(--selection-bg);
   --color-selection-text: var(--selection-text);
   --color-accent: var(--accent-color);
+
+  /* Custom breakpoints */
+  --breakpoint-xs: 320px;
 }
 
 /* Theme variables */
@@ -54,12 +57,15 @@
 html {
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  min-width: 320px;
+  overflow-x: auto;
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  min-height: 100vh;
+  min-width: 320px;
+  overflow: auto;
 }
 
 /* Selection styles */
@@ -140,19 +146,24 @@ h6 {
   border-color: var(--text-primary);
 }
 
-.utilitarian-button-accent {
+.cta-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.cta-button-accent {
   background: var(--accent-color);
   color: var(--selection-text);
   border-color: var(--accent-color);
 }
 
-.utilitarian-button-accent:hover {
+.cta-button-accent:hover {
   background: var(--text-primary);
   color: var(--bg-primary);
   border-color: var(--text-primary);
 }
 
-/* Theme button states - Utilitarian */
+/* Theme button states */
 .theme-button {
   display: inline-flex;
   align-items: center;
@@ -177,6 +188,11 @@ h6 {
   border-color: var(--accent-color);
 }
 
+.theme-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
 .social-button {
   display: inline-flex;
   align-items: center;
@@ -193,6 +209,11 @@ h6 {
   background: var(--accent-color);
   color: var(--selection-text);
   border-color: var(--accent-color);
+}
+
+.social-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 .data-label {
@@ -215,7 +236,7 @@ a,
 input,
 select,
 textarea,
-.utilitarian-button,
+.cta-button,
 .theme-button,
 .social-button {
   border-radius: 0 !important;
@@ -238,41 +259,8 @@ textarea {
   border-top: none;
 }
 
-.text-utilitarian-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  text-transform: uppercase;
-}
-
-.text-utilitarian-subtitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.utilitarian-spacing {
-  margin-bottom: 1.5rem;
-}
-
-.utilitarian-spacing-lg {
-  margin-bottom: 3rem;
-}
-
-.utilitarian-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
 @media (max-width: 768px) {
-  .text-utilitarian-title {
-    font-size: 2rem;
-  }
-
-  .utilitarian-button {
+  .cta-button {
     padding: 0.625rem 1.25rem;
     font-size: 0.8125rem;
   }
