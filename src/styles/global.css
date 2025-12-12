@@ -97,6 +97,10 @@ h6 {
   line-height: 1.2;
 }
 
+p {
+  max-width: 80ch;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
