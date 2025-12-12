@@ -112,7 +112,7 @@ p {
 }
 
 .divider {
-  border-top: 1px solid var(--border-color);
+  border-top: 2px solid var(--border-color);
   width: 100%;
 }
 
