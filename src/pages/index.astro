@@ -10,31 +10,43 @@ import meditationIcon from '../assets/meditation-icon.svg?raw';
 <BaseLayout>
 	<Navigation />
 
-	<main class="flex flex-col lg:flex-row items-center lg:justify-start justify-center text-center lg:text-left max-w-md lg:max-w-6xl w-full mt-[10dvh]">
-		<MonogramDisplay />
-		<div id="about" class="flex flex-col items-center lg:items-start justify-center text-center lg:text-left max-w-md lg:max-w-none w-full">
-			<h1 class="text-4xl font-bold mb-2 lg:text-6xl lg:-mt-12">Amet Alvirde</h1>
-			<p id="bio" class=" md:mx-0 lg:max-w-2xl text-balance text-xl md:text-xl lg:text-2xl leading-relaxed mb-2">
-				Experiencia humana polímata habitando el eterno presente del ininterrumpido, inevitable e irreversible viaje hacia mi destino.
-			</p>
-			
-			<!-- Featured CTA Section -->
-			<button class="mt-4 mb-2 flex justify-center w-xs lg:w-full lg:justify-start">
-				<a href="https://publish.obsidian.md/amet-alvirde/Mapa+público+de+mi+consciencia" 
-					target="_blank" 
-					rel="noopener noreferrer"
-					class="group inline-flex items-center gap-3 px-6 py-4 text-lg font-semibold rounded-lg border-2 transition-all duration-200 ease-in-out hover:translate-x-0.5 hover:translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none focus-visible:outline-2 focus-visible:outline-offset-2 min-h-[44px] cursor-pointer bg-text-primary text-bg-primary shadow-[3px_3px_0_0_var(--accent-color)]">
-					
-					<!-- Custom Meditation Icon -->
-					<div class="w-6 h-6 flex-shrink-0 transition-transform duration-200 ease-in-out group-hover:scale-110" set:html={meditationIcon.replace('fill="#000000"', 'fill="currentColor"')}></div>
-					
-					<span class="text-balance leading-tight">
-						Explora el mapa público de mi consciencia
-					</span>
-				</a>
-			</button>
-			
-			<SocialLinks />
+	<main class="w-full max-w-7xl mx-auto px-4 lg:px-8 pt-24 pb-8">
+		<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+			<div class="lg:col-span-4 flex items-start justify-center lg:justify-start">
+				<MonogramDisplay />
+			</div>
+			<div class="lg:col-span-8 section">
+				<div class="mb-8 pb-6 border-b-2" style="border-color: var(--border-color);">
+					<h1 class="text-4xl lg:text-5xl font-bold mb-2 uppercase tracking-tight">Amet Alvirde</h1>
+				</div>
+				<div class="mb-8">
+					<div class="space-y-4">
+						<p class="text-base lg:text-lg leading-relaxed" style="color: var(--text-primary);">
+							Elijo vivir en paz. Por eso doy lo mejor de mí, y asumo que las demás personas también.
+						</p>
+						<p class="text-base lg:text-lg leading-relaxed" style="color: var(--text-primary);">
+							Dejo ir el pasado, porque es inalterable. Dejo ir el futuro, porque es impredecible, vivo en el presente, en este momento, que es una valiosa oportunidad para alinear mis acciones con quien soy.
+						</p>
+					</div>
+				</div>
+				
+				<div class="mb-8">
+					<a href="https://publish.obsidian.md/amet-alvirde/Mapa+público+de+mi+consciencia" 
+						target="_blank" 
+						rel="noopener noreferrer"
+						class="utilitarian-button utilitarian-button-accent inline-flex items-center gap-3">
+						<div class="w-5 h-5 flex-shrink-0" set:html={meditationIcon.replace('fill="#000000"', 'fill="currentColor"')}></div>
+						<span>EXPLORA EL MAPA PÚBLICO DE MI CONSCIENCIA</span>
+					</a>
+				</div>
+				
+				<div class="divider my-8"></div>
+				
+				<div>
+					<div class="data-label mb-3">CONVERSEMOS:</div>
+					<SocialLinks />
+				</div>
+			</div>
 		</div>
 	</main>
 </BaseLayout>

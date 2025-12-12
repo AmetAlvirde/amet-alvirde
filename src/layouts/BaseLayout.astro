@@ -85,7 +85,6 @@ const {
 		}
 		</script>
 
-		<!-- Additional meta tags -->
 		<meta name="author" content="Amet Alvirde" />
 		<meta name="robots" content="index, follow" />
 		<meta name="theme-color" content="#e9c232" />
@@ -119,9 +118,8 @@ const {
 		
 		<slot />
 
-		<section id="bottom-stripes" class="fixed bottom-0 left-0 right-0 flex flex-col z-10">
-			<div class="h-1 md:h-2 bg-accent"></div>
-			<div class="h-1 md:h-2 bg-text-primary"></div>
+		<section id="bottom-divider" class="fixed bottom-0 left-0 right-0 z-10 border-t-2" style="border-color: var(--border-color); background: var(--bg-primary);">
+			<div class="h-1 bg-accent"></div>
 		</section>
 
 		<script>

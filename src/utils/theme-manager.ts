@@ -4,19 +4,17 @@ export type ActualTheme = "light" | "dark";
 
 // Verified theme elements type (all non-null after validation)
 type ThemeElements = {
-  themeToggle: HTMLButtonElement;
-  systemThemeToggle: HTMLButtonElement;
-  sunIcon: HTMLElement;
-  moonIcon: HTMLElement;
+  lightThemeButton: HTMLButtonElement;
+  systemThemeButton: HTMLButtonElement;
+  darkThemeButton: HTMLButtonElement;
   monogram: HTMLImageElement;
 };
 
 // DOM element selectors
 const SELECTORS = {
-  themeToggle: "#theme-toggle",
-  systemThemeToggle: "#system-theme-toggle",
-  sunIcon: "#sun-icon",
-  moonIcon: "#moon-icon",
+  lightThemeButton: "#light-theme-button",
+  systemThemeButton: "#system-theme-button",
+  darkThemeButton: "#dark-theme-button",
   monogram: "#monogram",
   favicon: 'link[rel="icon"]:not([media])',
 } as const;
@@ -61,14 +59,15 @@ const getCurrentTheme = (): ActualTheme | null =>
 // DOM utility functions
 const getRequiredElements = (): ThemeElements => {
   const elements = {
-    themeToggle: document.querySelector(
-      SELECTORS.themeToggle
+    lightThemeButton: document.querySelector(
+      SELECTORS.lightThemeButton
     ) as HTMLButtonElement | null,
-    systemThemeToggle: document.querySelector(
-      SELECTORS.systemThemeToggle
+    systemThemeButton: document.querySelector(
+      SELECTORS.systemThemeButton
     ) as HTMLButtonElement | null,
-    sunIcon: document.querySelector(SELECTORS.sunIcon) as HTMLElement | null,
-    moonIcon: document.querySelector(SELECTORS.moonIcon) as HTMLElement | null,
+    darkThemeButton: document.querySelector(
+      SELECTORS.darkThemeButton
+    ) as HTMLButtonElement | null,
     monogram: document.querySelector(
       SELECTORS.monogram
     ) as HTMLImageElement | null,
@@ -100,15 +99,11 @@ const updateThemeIcons = (
   actualTheme: ActualTheme,
   elements: ThemeElements
 ): void => {
-  const { sunIcon, moonIcon, monogram } = elements;
+  const { monogram } = elements;
 
   if (actualTheme === "light") {
-    sunIcon.classList.remove("hidden");
-    moonIcon.classList.add("hidden");
     monogram.setAttribute("src", "monogram-light-mode.svg");
   } else {
-    sunIcon.classList.add("hidden");
-    moonIcon.classList.remove("hidden");
     monogram.setAttribute("src", "monogram-dark-mode.svg");
   }
 };
@@ -117,15 +112,20 @@ const updateButtonStates = (
   preference: ThemePreference,
   elements: ThemeElements
 ): void => {
-  const { themeToggle, systemThemeToggle } = elements;
+  const { lightThemeButton, systemThemeButton, darkThemeButton } = elements;
 
   // Remove active state from all buttons
-  themeToggle.classList.remove("active");
-  systemThemeToggle.classList.remove("active");
+  lightThemeButton.classList.remove("active");
+  systemThemeButton.classList.remove("active");
+  darkThemeButton.classList.remove("active");
 
   // Add active state to current preference
   const activeButton =
-    preference === "system" ? systemThemeToggle : themeToggle;
+    preference === "light"
+      ? lightThemeButton
+      : preference === "dark"
+      ? darkThemeButton
+      : systemThemeButton;
   activeButton.classList.add("active");
 };
 
@@ -151,12 +151,9 @@ const updateThemeUI = (
 };
 
 // User action handlers
-const toggleManualTheme = (elements: ThemeElements): void => {
-  const currentTheme = getCurrentTheme();
-  const newTheme: ActualTheme = currentTheme === "light" ? "dark" : "light";
-
-  safeLocalStorageSet("theme", newTheme);
-  updateThemeUI(newTheme, elements);
+const setLightTheme = (elements: ThemeElements): void => {
+  safeLocalStorageSet("theme", "light");
+  updateThemeUI("light", elements);
 };
 
 const setSystemTheme = (elements: ThemeElements): void => {
@@ -164,11 +161,18 @@ const setSystemTheme = (elements: ThemeElements): void => {
   updateThemeUI("system", elements);
 };
 
+const setDarkTheme = (elements: ThemeElements): void => {
+  safeLocalStorageSet("theme", "dark");
+  updateThemeUI("dark", elements);
+};
+
 // Event handlers
-const createToggleHandler = (elements: ThemeElements) => () =>
-  toggleManualTheme(elements);
+const createLightHandler = (elements: ThemeElements) => () =>
+  setLightTheme(elements);
 const createSystemHandler = (elements: ThemeElements) => () =>
   setSystemTheme(elements);
+const createDarkHandler = (elements: ThemeElements) => () =>
+  setDarkTheme(elements);
 
 const createSystemChangeHandler = (elements: ThemeElements) => (): void => {
   const currentPreference = getCurrentPreference();
@@ -179,38 +183,33 @@ const createSystemChangeHandler = (elements: ThemeElements) => (): void => {
 
 // Event listener setup
 const setupEventListeners = (elements: ThemeElements): void => {
-  const { themeToggle, systemThemeToggle } = elements;
+  const { lightThemeButton, systemThemeButton, darkThemeButton } = elements;
 
-  const toggleHandler = createToggleHandler(elements);
+  const lightHandler = createLightHandler(elements);
   const systemHandler = createSystemHandler(elements);
+  const darkHandler = createDarkHandler(elements);
 
   // Make buttons focusable
-  themeToggle.setAttribute("tabindex", "0");
-  systemThemeToggle.setAttribute("tabindex", "0");
+  lightThemeButton.setAttribute("tabindex", "0");
+  systemThemeButton.setAttribute("tabindex", "0");
+  darkThemeButton.setAttribute("tabindex", "0");
 
   // Click events
-  themeToggle.addEventListener("click", toggleHandler);
-  systemThemeToggle.addEventListener("click", systemHandler);
+  lightThemeButton.addEventListener("click", lightHandler);
+  systemThemeButton.addEventListener("click", systemHandler);
+  darkThemeButton.addEventListener("click", darkHandler);
 
-  // Keyboard events
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Enter") {
+  // Keyboard events (Enter or Space to activate)
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      systemHandler(); // Enter = system theme
+      (event.target as HTMLButtonElement).click();
     }
   };
 
-  const handleKeyUp = (event: KeyboardEvent) => {
-    if (event.key === " ") {
-      event.preventDefault();
-      toggleHandler(); // Space = toggle theme
-    }
-  };
-
-  // Attach keyboard handlers to both buttons
-  [themeToggle, systemThemeToggle].forEach(button => {
-    button.addEventListener("keydown", handleKeyDown);
-    button.addEventListener("keyup", handleKeyUp);
+  // Attach keyboard handlers to all buttons
+  [lightThemeButton, systemThemeButton, darkThemeButton].forEach(button => {
+    button.addEventListener("keydown", handleKeyPress);
   });
 
   // Listen for system theme changes
@@ -242,6 +241,7 @@ export {
   getCurrentPreference,
   getCurrentTheme,
   updateThemeUI,
-  toggleManualTheme,
+  setLightTheme,
   setSystemTheme,
+  setDarkTheme,
 };
