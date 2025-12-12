@@ -10,6 +10,9 @@
   --color-selection-bg: var(--selection-bg);
   --color-selection-text: var(--selection-text);
   --color-accent: var(--accent-color);
+
+  /* Custom breakpoints */
+  --breakpoint-xs: 320px;
 }
 
 /* Theme variables */
@@ -54,12 +57,15 @@
 html {
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  min-width: 320px;
+  overflow-x: auto;
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  min-height: 100vh;
+  min-width: 320px;
+  overflow: auto;
 }
 
 /* Selection styles */
@@ -73,21 +79,193 @@ body {
   color: var(--selection-text);
 }
 
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  letter-spacing: 0.01em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+p {
+  max-width: 80ch;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.divider {
+  border-top: 1px solid var(--border-color);
+  width: 100%;
+}
+
+.divider-vertical {
+  border-left: 1px solid var(--border-color);
+  height: 100%;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.875rem;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.cta-button:hover {
+  background: var(--accent-color);
+  color: var(--selection-text);
+  border-color: var(--accent-color);
+}
+
+.cta-button:active {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-color: var(--text-primary);
+}
+
+.cta-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.cta-button-accent {
+  background: var(--accent-color);
+  color: var(--selection-text);
+  border-color: var(--accent-color);
+}
+
+.cta-button-accent:hover {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-color: var(--text-primary);
+}
+
 /* Theme button states */
+.theme-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
 .theme-button:not(.active):hover {
-  background: var(--accent-color) !important;
-  color: var(--selection-text) !important;
+  background: var(--accent-color);
+  color: var(--selection-text);
+  border-color: var(--accent-color);
 }
 
 .theme-button.active {
-  background: var(--accent-color) !important;
-  color: var(--selection-text) !important;
-  border-color: var(--accent-color) !important;
+  background: var(--accent-color);
+  color: var(--selection-text);
+  border-color: var(--accent-color);
 }
 
-/* Social button hover effect - matches theme buttons */
+.theme-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.social-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
 .social-button:hover {
-  background: var(--accent-color) !important;
-  color: var(--selection-text) !important;
-  border-color: var(--accent-color) !important;
+  background: var(--accent-color);
+  color: var(--selection-text);
+  border-color: var(--accent-color);
+}
+
+.social-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.data-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.data-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+button,
+a,
+input,
+select,
+textarea,
+.cta-button,
+.theme-button,
+.social-button {
+  border-radius: 0 !important;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  box-shadow: none !important;
+}
+
+.section {
+  border-top: 2px solid var(--border-color);
+  padding: 2rem 0;
+}
+
+.section:first-child {
+  border-top: none;
+}
+
+@media (max-width: 768px) {
+  .cta-button {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+  }
 }
