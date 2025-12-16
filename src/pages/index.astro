@@ -1,5 +1,5 @@
 ---
-import "../styles/index.css";
+import "../styles/home.css";
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import MonogramDisplay from '../components/MonogramDisplay.astro';
@@ -9,30 +9,28 @@ import MonogramDisplay from '../components/MonogramDisplay.astro';
 	<Navigation />
 
 	<main class="w-full max-w-md mx-auto px-4 pt-24 pb-20">
-		<!-- Monogram at the top - separate from totem -->
 		<div class="monogram-section">
 			<MonogramDisplay />
 		</div>
 
-		<!-- Totem with hierarchy levels -->
 		<div class="wayfinding-totem">
 			<nav class="totem-nav" aria-label="Navegación principal">
-				<!-- Level 1: Amet Alvirde - Where YOU ARE (most important) -->
-				<div class="wayfinding-link wayfinding-link-level-1">
-					<div class="wayfinding-content">
-						<span class="wayfinding-label">Amet Alvirde</span>
-						<span class="wayfinding-subtitle">Estás aquí</span>
-					</div>
-					<div class="wayfinding-icon">
-						<svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M10 0C4.477 0 0 4.477 0 10C0 17.5 10 24 10 24C10 24 20 17.5 20 10C20 4.477 15.523 0 10 0Z" fill="currentColor"/>
-							<circle cx="10" cy="10" r="4" fill="var(--bg-primary)"/>
-						</svg>
+				<div class="totem-header">
+					<div class="wayfinding-link wayfinding-link-priority-1 wayfinding-link-active">
+						<div class="wayfinding-content">
+							<span class="wayfinding-label">Amet Alvirde</span>
+							<span class="wayfinding-subtitle">Estás aquí</span>
+						</div>
+						<div class="wayfinding-icon">
+							<svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M10 0C4.477 0 0 4.477 0 10C0 17.5 10 24 10 24C10 24 20 17.5 20 10C20 4.477 15.523 0 10 0Z" fill="currentColor"/>
+								<circle cx="10" cy="10" r="4" fill="var(--accent-color)"/>
+							</svg>
+						</div>
 					</div>
 				</div>
 
-				<!-- Level 2: Mind - Accessible now (second most important) -->
-				<a href="/mind" class="wayfinding-link wayfinding-link-level-2 wayfinding-link-active">
+				<a href="/mind" class="wayfinding-link wayfinding-link-priority-2 wayfinding-link-open">
 					<div class="wayfinding-content">
 						<span class="wayfinding-label">MIND</span>
 						<span class="wayfinding-subtitle">Mapa público de mi consciencia</span>
@@ -42,8 +40,7 @@ import MonogramDisplay from '../components/MonogramDisplay.astro';
 					</span>
 				</a>
 				
-				<!-- Level 3: Other exhibitions - Not accessible (third level) -->
-				<a href="#" class="wayfinding-link wayfinding-link-level-3 wayfinding-link-disabled" aria-disabled="true">
+				<a href="#" class="wayfinding-link wayfinding-link-priority-3 wayfinding-link-disabled" aria-disabled="true">
 					<div class="wayfinding-content">
 						<span class="wayfinding-label">DEV</span>
 						<span class="wayfinding-subtitle">Proyectos y experimentos técnicos</span>
@@ -51,7 +48,7 @@ import MonogramDisplay from '../components/MonogramDisplay.astro';
 					<span class="wayfinding-status">PRÓXIMAMENTE</span>
 				</a>
 				
-				<a href="#" class="wayfinding-link wayfinding-link-level-3 wayfinding-link-disabled" aria-disabled="true">
+				<a href="#" class="wayfinding-link wayfinding-link-priority-3 wayfinding-link-disabled" aria-disabled="true">
 					<div class="wayfinding-content">
 						<span class="wayfinding-label">PHOTO</span>
 						<span class="wayfinding-subtitle">Imágenes que capturan momentos</span>
@@ -59,7 +56,7 @@ import MonogramDisplay from '../components/MonogramDisplay.astro';
 					<span class="wayfinding-status">PRÓXIMAMENTE</span>
 				</a>
 				
-				<a href="#" class="wayfinding-link wayfinding-link-level-3 wayfinding-link-disabled" aria-disabled="true">
+				<a href="#" class="wayfinding-link wayfinding-link-priority-3 wayfinding-link-disabled" aria-disabled="true">
 					<div class="wayfinding-content">
 						<span class="wayfinding-label">JOURNEY</span>
 						<span class="wayfinding-subtitle">El viaje hacia mi destino</span>
