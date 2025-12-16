@@ -1,54 +1,72 @@
 ---
-import "../styles/global.css";
+import "../styles/index.css";
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import MonogramDisplay from '../components/MonogramDisplay.astro';
-import SocialLinks from '../components/SocialLinks.astro';
-import meditationIcon from '../assets/meditation-icon.svg?raw';
 ---
 
 <BaseLayout>
 	<Navigation />
 
-	<main class="w-full max-w-7xl mx-auto px-4 lg:px-8 pt-24 pb-4">
-		<div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
-			<div class="md:col-span-4 flex items-start justify-center md:justify-start">
-				<MonogramDisplay />
-			</div>
-			<div class="md:col-span-8 section">
-				<div class="mb-4 pb-2" style="border-color: var(--border-color);">
-					<h1 class="text-4xl md:text-5xl font-bold mb-1 uppercase tracking-tight">Amet Alvirde</h1>
-					<div class="space-y-2">
-						<p class="text-base md:text-lg leading-relaxed" style="color: var(--text-primary);">
-							Elijo vivir en paz. Por eso doy lo mejor de mí, y asumo que las demás personas también.
-						</p>
-						<p class="text-base lg:text-lg leading-relaxed" style="color: var(--text-primary);">
-							Dejo ir el pasado, porque es inalterable. Dejo ir el futuro, porque es impredecible, vivo en el presente, en este momento, que es una valiosa oportunidad para alinear mis acciones con quien soy.
-						</p>
+	<main class="w-full max-w-md mx-auto px-4 pt-24 pb-20">
+		<!-- Monogram at the top - separate from totem -->
+		<div class="monogram-section">
+			<MonogramDisplay />
+		</div>
+
+		<!-- Totem with hierarchy levels -->
+		<div class="wayfinding-totem">
+			<nav class="totem-nav" aria-label="Navegación principal">
+				<!-- Level 1: Amet Alvirde - Where YOU ARE (most important) -->
+				<div class="wayfinding-link wayfinding-link-level-1">
+					<div class="wayfinding-content">
+						<span class="wayfinding-label">Amet Alvirde</span>
+						<span class="wayfinding-subtitle">Estás aquí</span>
+					</div>
+					<div class="wayfinding-icon">
+						<svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M10 0C4.477 0 0 4.477 0 10C0 17.5 10 24 10 24C10 24 20 17.5 20 10C20 4.477 15.523 0 10 0Z" fill="currentColor"/>
+							<circle cx="10" cy="10" r="4" fill="var(--bg-primary)"/>
+						</svg>
 					</div>
 				</div>
-				<div class="mb-3">
-				</div>
+
+				<!-- Level 2: Mind - Accessible now (second most important) -->
+				<a href="/mind" class="wayfinding-link wayfinding-link-level-2 wayfinding-link-active">
+					<div class="wayfinding-content">
+						<span class="wayfinding-label">MIND</span>
+						<span class="wayfinding-subtitle">Mapa público de mi consciencia</span>
+					</div>
+					<span class="wayfinding-indicator">
+						<span class="wayfinding-arrow">→</span>
+					</span>
+				</a>
 				
-				<div class="mb-4">
-					<a href="https://publish.obsidian.md/amet-alvirde/Mapa+público+de+mi+consciencia" 
-						target="_blank" 
-						rel="noopener noreferrer"
-						class="cta-button cta-button-accent inline-flex items-center gap-3">
-						<div class="w-5 h-5 flex-shrink-0" set:html={meditationIcon.replace('fill="#000000"', 'fill="currentColor"')}></div>
-						<span>EXPLORA EL MAPA PÚBLICO DE MI CONSCIENCIA</span>
-					</a>
-				</div>
+				<!-- Level 3: Other exhibitions - Not accessible (third level) -->
+				<a href="#" class="wayfinding-link wayfinding-link-level-3 wayfinding-link-disabled" aria-disabled="true">
+					<div class="wayfinding-content">
+						<span class="wayfinding-label">DEV</span>
+						<span class="wayfinding-subtitle">Proyectos y experimentos técnicos</span>
+					</div>
+					<span class="wayfinding-status">PRÓXIMAMENTE</span>
+				</a>
 				
-				<div class="divider my-8"></div>
+				<a href="#" class="wayfinding-link wayfinding-link-level-3 wayfinding-link-disabled" aria-disabled="true">
+					<div class="wayfinding-content">
+						<span class="wayfinding-label">PHOTO</span>
+						<span class="wayfinding-subtitle">Imágenes que capturan momentos</span>
+					</div>
+					<span class="wayfinding-status">PRÓXIMAMENTE</span>
+				</a>
 				
-				<div>
-					<div class="data-label mb-3">CONVERSEMOS:</div>
-					<SocialLinks />
-				</div>
-			</div>
+				<a href="#" class="wayfinding-link wayfinding-link-level-3 wayfinding-link-disabled" aria-disabled="true">
+					<div class="wayfinding-content">
+						<span class="wayfinding-label">JOURNEY</span>
+						<span class="wayfinding-subtitle">El viaje hacia mi destino</span>
+					</div>
+					<span class="wayfinding-status">PRÓXIMAMENTE</span>
+				</a>
+			</nav>
 		</div>
 	</main>
 </BaseLayout>
-
-

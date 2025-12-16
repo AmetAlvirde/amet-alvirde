@@ -1,0 +1,244 @@
+@import "./global.css";
+
+/* Monogram section - separate from totem */
+.monogram-section {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 3rem;
+}
+
+/* Wayfinding Totem Styles - Museum-inspired utilitarian design */
+.wayfinding-totem {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.totem-nav {
+	display: flex;
+	flex-direction: column;
+}
+
+.wayfinding-link {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1.5rem 1.25rem;
+	border: 2px solid var(--border-color);
+	border-top: none;
+	background: var(--bg-primary);
+	color: var(--text-primary);
+	text-decoration: none;
+	transition: all 0.15s ease;
+	width: 100%;
+	position: relative;
+	gap: 1rem;
+}
+
+/* Hierarchy Level 1: Amet Alvirde - Most important (where you are) */
+.wayfinding-link-level-1 {
+	padding: 2rem 1.5rem;
+	border-top: 2px solid var(--border-color);
+	background: var(--bg-primary);
+	cursor: default;
+}
+
+.wayfinding-link-level-1 .wayfinding-label {
+	font-size: 1.375rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+}
+
+.wayfinding-link-level-1 .wayfinding-subtitle {
+	font-size: 1rem;
+	font-weight: 500;
+	color: var(--text-primary);
+	opacity: 0.8;
+}
+
+/* Hierarchy Level 2: Accessible now (Mind) */
+.wayfinding-link-level-2 {
+	padding: 1.75rem 1.375rem;
+}
+
+.wayfinding-link-level-2 .wayfinding-label {
+	font-size: 1rem;
+}
+
+/* Hierarchy Level 3: Not accessible (other exhibitions) */
+.wayfinding-link-level-3 {
+	padding: 1.5rem 1.25rem;
+}
+
+.wayfinding-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	color: var(--text-primary);
+}
+
+.wayfinding-link-level-1 .wayfinding-icon {
+	width: 1.5rem;
+	height: 1.75rem;
+}
+
+.wayfinding-link-level-1 .wayfinding-icon svg {
+	width: 100%;
+	height: 100%;
+}
+
+.wayfinding-content {
+	display: flex;
+	flex-direction: column;
+	gap: 0.375rem;
+	flex: 1;
+}
+
+
+.wayfinding-link:not(.wayfinding-link-disabled):hover {
+	background: var(--bg-secondary);
+}
+
+.wayfinding-link:not(.wayfinding-link-disabled):active {
+	background: var(--text-primary);
+	color: var(--bg-primary);
+	border-color: var(--text-primary);
+}
+
+.wayfinding-link:not(.wayfinding-link-disabled):focus-visible {
+	outline: 2px solid var(--accent-color);
+	outline-offset: 2px;
+}
+
+.wayfinding-link-active {
+	background: var(--accent-color);
+	color: var(--selection-text);
+	border-color: var(--accent-color);
+}
+
+.wayfinding-link-active:hover {
+	background: var(--text-primary);
+	color: var(--bg-primary);
+	border-color: var(--text-primary);
+}
+
+.wayfinding-link-disabled {
+	cursor: not-allowed;
+	pointer-events: none;
+	background: var(--bg-primary);
+	border-color: var(--border-color) !important;
+}
+
+.wayfinding-label {
+	font-size: 0.9375rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	line-height: 1.2;
+}
+
+.wayfinding-link-active .wayfinding-label {
+	color: var(--selection-text);
+}
+
+.wayfinding-subtitle {
+	font-size: 0.75rem;
+	font-weight: 400;
+	text-transform: none;
+	letter-spacing: 0.01em;
+	line-height: 1.4;
+	color: var(--text-secondary);
+}
+
+.wayfinding-link-active .wayfinding-subtitle {
+	color: var(--selection-text);
+	opacity: 0.9;
+}
+
+.wayfinding-link-disabled .wayfinding-label {
+	color: var(--text-muted);
+}
+
+.wayfinding-link-disabled .wayfinding-subtitle {
+	color: var(--text-muted);
+}
+
+.wayfinding-link-disabled .wayfinding-status {
+	color: var(--text-muted);
+}
+
+.wayfinding-indicator {
+	display: flex;
+	align-items: center;
+	font-size: 1rem;
+	flex-shrink: 0;
+}
+
+.wayfinding-arrow {
+	font-size: 1.125rem;
+	font-weight: 400;
+	line-height: 1;
+}
+
+.wayfinding-status {
+	font-size: 0.625rem;
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	font-weight: 600;
+	color: var(--text-muted);
+}
+
+/* Desktop adaptations */
+@media (min-width: 768px) {
+	.monogram-section {
+		margin-bottom: 3.5rem;
+	}
+
+	.wayfinding-link-level-1 {
+		padding: 2.5rem 2rem;
+	}
+
+	.wayfinding-link-level-1 .wayfinding-icon {
+		width: 1.75rem;
+		height: 2rem;
+	}
+
+	.wayfinding-link-level-1 .wayfinding-label {
+		font-size: 1.625rem;
+	}
+
+	.wayfinding-link-level-1 .wayfinding-subtitle {
+		font-size: 1.125rem;
+	}
+
+	.wayfinding-link-level-2 {
+		padding: 2rem 1.5rem;
+	}
+
+	.wayfinding-link-level-2 .wayfinding-label {
+		font-size: 1.125rem;
+	}
+
+	.wayfinding-link-level-3 {
+		padding: 1.875rem 1.5rem;
+	}
+
+	.wayfinding-link-level-3 .wayfinding-label {
+		font-size: 1.0625rem;
+	}
+
+	.wayfinding-subtitle {
+		font-size: 0.8125rem;
+	}
+
+	.wayfinding-arrow {
+		font-size: 1.25rem;
+	}
+
+	.wayfinding-status {
+		font-size: 0.6875rem;
+	}
+}
+

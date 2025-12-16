@@ -1,0 +1,53 @@
+---
+import "../../styles/global.css";
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navigation from '../../components/Navigation.astro';
+import MonogramDisplay from '../../components/MonogramDisplay.astro';
+import SocialLinks from '../../components/SocialLinks.astro';
+import meditationIcon from '../../assets/meditation-icon.svg?raw';
+---
+
+<BaseLayout>
+	<Navigation />
+
+	<main class="w-full max-w-7xl mx-auto px-4 lg:px-8 pt-24 pb-4">
+		<div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
+			<div class="md:col-span-4 flex items-start justify-center md:justify-start">
+				<MonogramDisplay />
+			</div>
+			<div class="md:col-span-8 section">
+				<div class="mb-4 pb-2" style="border-color: var(--border-color);">
+					<h1 class="text-4xl md:text-5xl font-bold mb-1 uppercase tracking-tight">Amet Alvirde</h1>
+					<div class="space-y-2">
+						<p class="text-base md:text-lg leading-relaxed" style="color: var(--text-primary);">
+							Elijo vivir en paz. Por eso doy lo mejor de mí, y asumo que las demás personas también.
+						</p>
+						<p class="text-base lg:text-lg leading-relaxed" style="color: var(--text-primary);">
+							Dejo ir el pasado, porque es inalterable. Dejo ir el futuro, porque es impredecible, vivo en el presente, en este momento, que es una valiosa oportunidad para alinear mis acciones con quien soy.
+						</p>
+					</div>
+				</div>
+				<div class="mb-3">
+				</div>
+				
+				<div class="mb-4">
+					<a href="https://publish.obsidian.md/amet-alvirde/Mapa+público+de+mi+consciencia" 
+						target="_blank" 
+						rel="noopener noreferrer"
+						class="cta-button cta-button-accent inline-flex items-center gap-3">
+						<div class="w-5 h-5 flex-shrink-0" set:html={meditationIcon.replace('fill="#000000"', 'fill="currentColor"')}></div>
+						<span>EXPLORA EL MAPA PÚBLICO DE MI CONSCIENCIA</span>
+					</a>
+				</div>
+				
+				<div class="divider my-8"></div>
+				
+				<div>
+					<div class="data-label mb-3">CONVERSEMOS:</div>
+					<SocialLinks />
+				</div>
+			</div>
+		</div>
+	</main>
+</BaseLayout>
+
