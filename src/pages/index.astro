@@ -3,6 +3,7 @@ import "../styles/home.css";
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import MonogramDisplay from '../components/MonogramDisplay.astro';
+import meditationIcon from '../assets/meditation-icon.svg?raw';
 ---
 
 <BaseLayout>
@@ -19,21 +20,16 @@ import MonogramDisplay from '../components/MonogramDisplay.astro';
 					<div class="wayfinding-link wayfinding-link-priority-1 wayfinding-link-active">
 						<div class="wayfinding-content">
 							<span class="wayfinding-label">Amet Alvirde</span>
-							<span class="wayfinding-subtitle">Estás aquí</span>
+							<span class="wayfinding-subtitle">Soy como tú</span>
 						</div>
-						<div class="wayfinding-icon">
-							<svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M10 0C4.477 0 0 4.477 0 10C0 17.5 10 24 10 24C10 24 20 17.5 20 10C20 4.477 15.523 0 10 0Z" fill="currentColor"/>
-								<circle cx="10" cy="10" r="4" fill="var(--accent-color)"/>
-							</svg>
-						</div>
+						<div class="wayfinding-icon" set:html={meditationIcon.replace('fill="#000000"', 'fill="currentColor"')}></div>
 					</div>
 				</div>
 
 				<a href="/mind" class="wayfinding-link wayfinding-link-priority-2 wayfinding-link-open">
 					<div class="wayfinding-content">
-						<span class="wayfinding-label">MIND</span>
-						<span class="wayfinding-subtitle">Mapa público de mi consciencia</span>
+						<span class="wayfinding-label">TEXTOS</span>
+						<span class="wayfinding-subtitle">Escribo para explorar mi consciencia</span>
 					</div>
 					<span class="wayfinding-indicator">
 						<span class="wayfinding-arrow">→</span>
@@ -42,26 +38,26 @@ import MonogramDisplay from '../components/MonogramDisplay.astro';
 				
 				<a href="#" class="wayfinding-link wayfinding-link-priority-3 wayfinding-link-disabled" aria-disabled="true">
 					<div class="wayfinding-content">
-						<span class="wayfinding-label">DEV</span>
-						<span class="wayfinding-subtitle">Proyectos y experimentos técnicos</span>
+						<span class="wayfinding-label">SOFTWARE</span>
+						<span class="wayfinding-subtitle">Creo apps y herramientas</span>
 					</div>
-					<span class="wayfinding-status">PRÓXIMAMENTE</span>
+					<span class="wayfinding-status">PRONTO</span>
 				</a>
 				
 				<a href="#" class="wayfinding-link wayfinding-link-priority-3 wayfinding-link-disabled" aria-disabled="true">
 					<div class="wayfinding-content">
-						<span class="wayfinding-label">PHOTO</span>
-						<span class="wayfinding-subtitle">Imágenes que capturan momentos</span>
+						<span class="wayfinding-label">Fotos</span>
+						<span class="wayfinding-subtitle">Documento el mundo que me rodea</span>
 					</div>
-					<span class="wayfinding-status">PRÓXIMAMENTE</span>
+					<span class="wayfinding-status">PRONTO</span>
 				</a>
 				
 				<a href="#" class="wayfinding-link wayfinding-link-priority-3 wayfinding-link-disabled" aria-disabled="true">
 					<div class="wayfinding-content">
-						<span class="wayfinding-label">JOURNEY</span>
-						<span class="wayfinding-subtitle">El viaje hacia mi destino</span>
+						<span class="wayfinding-label">VIDEOS</span>
+						<span class="wayfinding-subtitle">Documento mi experiencia humana</span>
 					</div>
-					<span class="wayfinding-status">PRÓXIMAMENTE</span>
+					<span class="wayfinding-status">PRONTO</span>
 				</a>
 			</nav>
 		</div>
