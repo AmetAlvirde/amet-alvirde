@@ -37,6 +37,9 @@
   width: 100%;
   position: relative;
   gap: 1rem;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 .wayfinding-link-priority-1 {
@@ -104,31 +107,43 @@
   flex: 1;
 }
 
-.wayfinding-link:not(.wayfinding-link-disabled):hover {
-  background: var(--bg-secondary);
-}
-
 .wayfinding-link-open {
   background: var(--bg-secondary);
 }
 
-.wayfinding-link-open:hover {
-  background: var(--accent-color);
+/* Only apply hover effects on devices that can actually hover (desktop) */
+@media (hover: hover) {
+  .wayfinding-link:not(.wayfinding-link-disabled):hover {
+    background: var(--bg-secondary);
+  }
+
+  .wayfinding-link-open:hover {
+    border-color: var(--accent-color);
+  }
+
+  .wayfinding-link-active:hover {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border-color: var(--text-primary);
+  }
+
+  .wayfinding-link-active:hover .wayfinding-icon {
+    color: var(--text-secondary);
+  }
+
+  .wayfinding-link-active:hover .wayfinding-label {
+    color: var(--text-secondary);
+  }
+
+  .wayfinding-link-active:hover .wayfinding-subtitle {
+    color: var(--text-secondary);
+  }
+}
+
+.wayfinding-link:not(.wayfinding-link-disabled):not(
+    .wayfinding-link-active
+  ):active {
   border-color: var(--accent-color);
-}
-
-.wayfinding-link-open:hover .wayfinding-icon {
-  color: var(--text-secondary);
-}
-
-.wayfinding-link-open:hover .wayfinding-arrow {
-  color: var(--text-secondary);
-}
-
-.wayfinding-link:not(.wayfinding-link-disabled):active {
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  border-color: var(--text-primary);
 }
 
 .wayfinding-link:not(.wayfinding-link-disabled):focus-visible {
@@ -140,28 +155,13 @@
   background: var(--accent-color);
   color: var(--selection-text);
   border-color: var(--accent-color);
+  pointer-events: none;
+  touch-action: none;
+  user-select: none;
 }
 
 .wayfinding-link-active .wayfinding-icon {
   color: var(--selection-text);
-}
-
-.wayfinding-link-active:hover {
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  border-color: var(--text-primary);
-}
-
-.wayfinding-link-active:hover .wayfinding-icon {
-  color: var(--text-secondary);
-}
-
-.wayfinding-link-active:hover .wayfinding-label {
-  color: var(--text-secondary);
-}
-
-.wayfinding-link-active:hover .wayfinding-subtitle {
-  color: var(--text-secondary);
 }
 
 .wayfinding-link-disabled {
@@ -181,10 +181,6 @@
 
 .wayfinding-link-active .wayfinding-label {
   color: var(--selection-text);
-}
-
-.wayfinding-link-open:hover .wayfinding-label {
-  color: var(--text-secondary);
 }
 
 .wayfinding-subtitle {

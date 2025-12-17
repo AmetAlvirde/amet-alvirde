@@ -27,7 +27,7 @@
   --accent-color: #e9c232; /* fallback */
   --accent-color: oklch(0.8252 0.1557 92.68);
 
-  --bg-secondary: oklch(0.1 0.04 264.05); /* slightly lighter navy */
+  --bg-secondary: oklch(0.18 0.04 264.05); /* slightly lighter navy */
   --text-secondary: oklch(
     0.85 0.015 196.85
   ); /* slightly darker light blue-gray */
