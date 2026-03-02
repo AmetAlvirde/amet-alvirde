@@ -38,9 +38,7 @@ const safeLocalStorageSet = (key: string, value: string): void => {
 
 // Core theme functions (coordinated with inline script)
 const getSystemTheme = (): ActualTheme =>
-  window.matchMedia?.("(prefers-color-scheme: light)").matches
-    ? "light"
-    : "dark";
+  window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
 const getActualTheme = (preference: ThemePreference): ActualTheme =>
   preference === "system" ? getSystemTheme() : (preference as ActualTheme);
@@ -135,6 +133,11 @@ const updateDocumentAttributes = (
 ): void => {
   document.documentElement.setAttribute("data-theme", actualTheme);
   document.documentElement.setAttribute("data-theme-preference", preference);
+  if (actualTheme === "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
 };
 
 // Complete UI update (coordinates all visual changes)
@@ -214,7 +217,7 @@ const setupEventListeners = (elements: ThemeElements): void => {
 
   // Listen for system theme changes
   window
-    .matchMedia("(prefers-color-scheme: light)")
+    .matchMedia("(prefers-color-scheme: dark)")
     .addEventListener("change", createSystemChangeHandler(elements));
 };
 

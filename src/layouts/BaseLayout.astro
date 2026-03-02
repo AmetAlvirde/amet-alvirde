@@ -20,37 +20,37 @@ const {
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description}>
 		<title>{title}</title>
-		<script>
-			// Theme management - runs before page load to prevent flash
-			(function() {
-				// Safe localStorage access (prevents errors in private browsing)
-				const getStoredTheme = () => {
-					try { return localStorage.getItem('theme'); } catch { return null; }
-				};
-				
-				// Get user's theme preference
-				const preference = getStoredTheme() || 'system';
-				
-				// Determine actual theme to apply
-				const actualTheme = preference === 'system' 
-					? (window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
-					: preference;
-				
-				// Apply theme immediately (prevents FOUC)
-				document.documentElement.setAttribute('data-theme', actualTheme);
+		<script is:inline>
+			(function () {
+				const THEME_KEY = 'theme';
+				const stored = (function () { try { return localStorage.getItem(THEME_KEY); } catch { return null; } })();
+				const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
 				document.documentElement.setAttribute('data-theme-preference', preference);
-				
-				// Set favicon when DOM is ready
+
+				function applyTheme(dark) {
+					if (dark) document.documentElement.classList.add('dark');
+					else document.documentElement.classList.remove('dark');
+					document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+				}
+
+				if (preference === 'light') applyTheme(false);
+				else if (preference === 'dark') applyTheme(true);
+				else {
+					const mq = window.matchMedia('(prefers-color-scheme: dark)');
+					applyTheme(mq.matches);
+					mq.addEventListener('change', (e) => {
+						if (localStorage.getItem(THEME_KEY) === 'system') applyTheme(e.matches);
+					});
+				}
+
 				const setFavicon = () => {
 					const favicon = document.querySelector('link[rel="icon"]:not([media])');
 					if (favicon) {
-						(favicon as HTMLLinkElement).href = actualTheme === 'light' ? '/favicon-light-mode.svg' : '/favicon-dark-mode.svg';
+						const isDark = document.documentElement.classList.contains('dark');
+						(favicon as HTMLLinkElement).href = isDark ? '/favicon-dark-mode.svg' : '/favicon-light-mode.svg';
 					}
 				};
-				
-				document.readyState === 'loading' 
-					? document.addEventListener('DOMContentLoaded', setFavicon)
-					: setFavicon();
+				document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', setFavicon) : setFavicon();
 			})();
 		</script>
 		<!-- Open Graph / Facebook -->
@@ -92,29 +92,16 @@ const {
 		<!-- FOUC-prevention for monogram -->
 		<style is:inline>
 			.monogram-light { display: none; }
-			.monogram-dark { display: block; } /* Default to dark */
+			.monogram-dark { display: block; } /* Default: dark (.dark on html) */
 
-			[data-theme="light"] .monogram-light { display: block; }
-			[data-theme="light"] .monogram-dark { display: none; }
+			html:not(.dark) .monogram-light { display: block; }
+			html:not(.dark) .monogram-dark { display: none; }
 		</style>
 
 		<!-- Canonical URL -->
 		<link rel="canonical" href="https://www.ametalvirde.com/" />
 	</head>
-	<body style="background-color: rgb(var(--bg-primary)); color: rgb(var(--text-primary));" class="min-h-[100dvh] flex flex-col items-center">
-		<style>
-			body {
-				selection-background-color: rgb(var(--selection-bg));
-				selection-color: rgb(var(--selection-text));
-			}
-			
-			::selection {
-				background-color: rgb(var(--selection-bg));
-				color: rgb(var(--selection-text));
-			}
-			
-
-		</style>
+	<body class="min-h-[100dvh] flex flex-col items-center">
 		
 		<slot />
 

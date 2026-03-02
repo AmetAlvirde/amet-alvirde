@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1500" role="img" aria-label="Amet Alvirde monogram">
-  <title>Amet Alvirde monogram - stylized AA letters in geometric design</title>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 791.36 1111.57">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
   <defs>
     <style>
-      .cls-1 {
-        fill: #fff;
-        stroke: #fff;
+      .md-st0 {
+        fill: #c8d4cc;
+        stroke: #c8d4cc;
         stroke-miterlimit: 10;
         stroke-width: 2px;
       }
 
-      .cls-2 {
-        fill: #00000d;
-        stroke-width: 0px;
-      }
     </style>
   </defs>
-  <rect class="cls-2" width="1500" height="1500"/>
   <g>
-    <rect class="cls-1" x="460.93" y="834.44" width="578.14" height="45.5"/>
-    <rect class="cls-1" x="460.93" y="1181.34" width="578.14" height="45.5"/>
-    <rect class="cls-1" x="460.93" y="273.16" width="578.14" height="45.5"/>
-    <polygon class="cls-1" points="1039.07 754.77 749.99 471.7 460.93 754.77 460.93 691.09 749.99 408.03 1039.07 691.09 1039.07 754.77"/>
+    <rect class="md-st0" x="106.63" y="640.35" width="578.1" height="45.5"/>
+    <rect class="md-st0" x="106.63" y="987.25" width="578.1" height="45.5"/>
+    <rect class="md-st0" x="106.63" y="79.15" width="578.1" height="45.5"/>
+    <polygon class="md-st0" points="684.83 560.75 395.73 277.65 106.63 560.75 106.63 497.05 395.73 213.95 684.83 497.05 684.83 560.75"/>
   </g>
 </svg>

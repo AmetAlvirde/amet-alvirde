@@ -1,4 +1,5 @@
 @import "./global.css";
+@import "./site.css";
 
 .monogram-section {
   display: flex;
@@ -153,7 +154,7 @@
 
 .wayfinding-link-active {
   background: var(--accent-color);
-  color: var(--selection-text);
+  color: var(--accent-foreground);
   border-color: var(--accent-color);
   pointer-events: none;
   touch-action: none;
@@ -161,7 +162,7 @@
 }
 
 .wayfinding-link-active .wayfinding-icon {
-  color: var(--selection-text);
+  color: var(--accent-foreground);
 }
 
 .wayfinding-link-disabled {
@@ -180,7 +181,7 @@
 }
 
 .wayfinding-link-active .wayfinding-label {
-  color: var(--selection-text);
+  color: var(--accent-foreground);
 }
 
 .wayfinding-subtitle {
@@ -193,7 +194,7 @@
 }
 
 .wayfinding-link-active .wayfinding-subtitle {
-  color: var(--selection-text);
+  color: var(--accent-foreground);
   opacity: 0.9;
 }
 
