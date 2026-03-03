@@ -38,9 +38,7 @@
   width: 100%;
   position: relative;
   gap: 1rem;
-  user-select: none;
   -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
 }
 
 .wayfinding-link-priority-1 {
@@ -158,7 +156,6 @@
   border-color: var(--accent-color);
   pointer-events: none;
   touch-action: none;
-  user-select: none;
 }
 
 .wayfinding-link-active .wayfinding-icon {

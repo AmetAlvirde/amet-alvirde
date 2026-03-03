@@ -1,0 +1,68 @@
+---
+import "../../styles/global.css";
+import "../../styles/site.css";
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navigation from '../../components/Navigation.astro';
+import MonogramDisplay from '../../components/MonogramDisplay.astro';
+import SocialLinks from '../../components/SocialLinks.astro';
+import meditationIcon from '../../assets/meditation-icon.svg?raw';
+---
+
+<BaseLayout>
+	<Navigation />
+
+	<main class="w-full max-w-7xl mx-auto px-4 lg:px-8 pt-24 pb-4">
+		<div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
+			<div class="md:col-span-4 flex items-start justify-center md:justify-start">
+				<MonogramDisplay />
+			</div>
+			<div class="md:col-span-8 section">
+				<h1 class="text-4xl md:text-5xl font-bold mb-6 uppercase tracking-tight">Amet Alvirde</h1>
+				<article class="max-w-[70ch] border-l-6 border-l-accent pl-6 pt-2 mb-8">
+					<span class="data-label block mb-8">Mantra #2</span>
+					<div class="flex flex-col gap-6">
+						<p class="text-2xl md:text-3xl font-extrabold text-foreground uppercase">
+							Elijo vivir en paz. Por eso doy lo mejor de mí, y asumo que las demás personas también.
+						</p>
+						<p class="text-foreground text-base md:text-lg leading-relaxed">
+							Dejo ir el pasado, porque es inalterable. Dejo ir el futuro, porque es impredecible. Vivo en el presente, que es una valiosa oportunidad para alinear mis acciones con quien soy. 
+						</p>
+						<p class="text-foreground text-base md:text-lg leading-relaxed">
+							Estoy en constante renacimiento. Vivo este instante como una experiencia y no como un examen
+						</p>
+						<p class="text-foreground text-base md:text-lg leading-relaxed">
+							Soy un río. Fluyo, no dudo. Confío en la corriente que lleva a mi destino. 
+						</p>
+						<p class="text-foreground text-base md:text-lg leading-relaxed">
+							Convierto los obstáculos que encuentro en parte de mi camino, y agradezco profundamente cada parte de él.
+						</p>
+						<p class="text-foreground text-base md:text-lg leading-relaxed">
+							En mi existencia, no hay día más importante que otro, porque lo que realmente importa, es la suma de las acciones que realizo en el conjunto de todos ellos.
+						</p>
+						<p class="text-foreground text-base md:text-lg leading-relaxed">
+							Éste, es el único día en el que tengo control sobre mis acciones, por eso hoy, doy lo mejor de mí, y así, es como elijo vivir en paz.
+						</p>
+					</div>
+				</article>
+				
+				<div class="mb-4">
+					<a href="https://publish.obsidian.md/amet-alvirde/Mapa+público+de+mi+consciencia" 
+						target="_blank" 
+						rel="noopener noreferrer"
+						class="cta-button cta-button-accent inline-flex items-center gap-3">
+						<div class="w-5 h-5 flex-shrink-0" set:html={meditationIcon.replace('fill="#000000"', 'fill="currentColor"')}></div>
+						<span>EXPLORA EL MAPA PÚBLICO DE MI CONSCIENCIA</span>
+					</a>
+				</div>
+				
+				<div class="divider my-8"></div>
+				
+				<div>
+					<div class="data-label mb-3">CONVERSEMOS:</div>
+					<SocialLinks />
+				</div>
+			</div>
+		</div>
+	</main>
+</BaseLayout>
+

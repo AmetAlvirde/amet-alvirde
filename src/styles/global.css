@@ -111,8 +111,8 @@
   --accent-color: var(--accent);
   --accent-foreground: var(--margarita-neutral-cross);
   --border-color: var(--border);
-  --selection-bg: var(--margarita-gold);
-  --selection-text: var(--margarita-off-black);
+  --selection-bg: var(--accent);
+  --selection-text: var(--accent-foreground);
   --bg-secondary: var(--bg-surface);
   --text-secondary: var(--text-muted);
 }
@@ -155,8 +155,8 @@
   --accent-color: var(--accent);
   --accent-foreground: var(--margarita-neutral-cross);
   --border-color: var(--border);
-  --selection-bg: var(--margarita-gold);
-  --selection-text: var(--margarita-off-black);
+  --selection-bg: var(--accent);
+  --selection-text: var(--accent-foreground);
   --bg-secondary: var(--bg-surface);
   --text-secondary: var(--text-muted);
 }
