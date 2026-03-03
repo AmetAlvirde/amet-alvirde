@@ -30,7 +30,6 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-size: 0.875rem;
   transition: all 0.15s ease;
   cursor: pointer;
   text-decoration: none;
@@ -94,6 +93,32 @@
   outline-offset: 2px;
 }
 
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background: var(--accent-color);
+  color: var(--accent-foreground);
+  border-color: var(--accent-color);
+}
+
+.back-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
 .social-button {
   display: inline-flex;
   align-items: center;
@@ -139,17 +164,13 @@ select,
 textarea,
 .cta-button,
 .theme-button,
-.social-button {
+.social-button,
+.back-button {
   border-radius: 0 !important;
 }
 
 .section {
-  border-top: 2px solid var(--border-color);
   padding: 2rem 0;
-}
-
-.section:first-child {
-  border-top: none;
 }
 
 @media (max-width: 768px) {
