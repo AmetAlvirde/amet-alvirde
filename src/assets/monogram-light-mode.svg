@@ -1,17 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 28.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 1500 1500" style="enable-background:new 0 0 1500 1500;" xml:space="preserve" role="img" aria-label="Amet Alvirde monogram">
-<title>Amet Alvirde monogram - stylized geometric design</title>
-<style type="text/css">
-	.st0{fill:#dceded;}
-	.st1{stroke:#00000D;stroke-width:2;stroke-miterlimit:10;}
-</style>
-<rect class="st0" width="1500" height="1500"/>
-<g>
-	<rect x="460.9" y="834.4" class="st1" width="578.1" height="45.5"/>
-	<rect x="460.9" y="1181.3" class="st1" width="578.1" height="45.5"/>
-	<rect x="460.9" y="273.2" class="st1" width="578.1" height="45.5"/>
-	<polygon class="st1" points="1039.1,754.8 750,471.7 460.9,754.8 460.9,691.1 750,408 1039.1,691.1 	"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 791.36 1111.57">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .ml-st0 {
+        fill: #00000d;
+        stroke: #00000d;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+
+    </style>
+  </defs>
+  <g>
+    <rect class="ml-st0" x="106.63" y="640.35" width="578.1" height="45.5"/>
+    <rect class="ml-st0" x="106.63" y="987.25" width="578.1" height="45.5"/>
+    <rect class="ml-st0" x="106.63" y="79.15" width="578.1" height="45.5"/>
+    <polygon class="ml-st0" points="684.83 560.75 395.73 277.65 106.63 560.75 106.63 497.05 395.73 213.95 684.83 497.05 684.83 560.75"/>
+  </g>
 </svg>

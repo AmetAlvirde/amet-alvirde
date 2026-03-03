@@ -1,271 +1,203 @@
+/**
+ * Margarita color system — shared token/semantic layer with astro-seed.
+ * When Margarita colors change, sync this file with astro-seed/src/styles/global.css.
+ * Site-specific styles live in site.css.
+ */
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
 @theme {
-  --color-bg-primary: var(--bg-primary);
-  --color-bg-secondary: var(--bg-secondary);
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-  --color-border: var(--border-color);
-  --color-selection-bg: var(--selection-bg);
-  --color-selection-text: var(--selection-text);
-  --color-accent: var(--accent-color);
-
   /* Custom breakpoints */
   --breakpoint-xs: 320px;
+  /* Solarized bases */
+  --color-solarized-base03: var(--solarized-base03);
+  --color-solarized-base02: var(--solarized-base02);
+  --color-solarized-base01: var(--solarized-base01);
+  --color-solarized-base00: var(--solarized-base00);
+  --color-solarized-base0: var(--solarized-base0);
+  --color-solarized-base1: var(--solarized-base1);
+  --color-solarized-base2: var(--solarized-base2);
+  --color-solarized-base3: var(--solarized-base3);
+  /* Solarized accents — L 42% in light, L 63.1% in dark */
+  --color-solarized-yellow: var(--solarized-yellow);
+  --color-solarized-orange: var(--solarized-orange);
+  --color-solarized-red: var(--solarized-red);
+  --color-solarized-magenta: var(--solarized-magenta);
+  --color-solarized-violet: var(--solarized-violet);
+  --color-solarized-blue: var(--solarized-blue);
+  --color-solarized-cyan: var(--solarized-cyan);
+  --color-solarized-green: var(--solarized-green);
+  /* Margarita */
+  --color-margarita-gold: var(--margarita-gold);
+  --color-margarita-off-black: var(--margarita-off-black);
+  --color-margarita-neutral-cross: var(--margarita-neutral-cross);
+  --color-margarita-turmeric: var(--margarita-turmeric);
+}
+@theme inline {
+  --color-canvas: var(--bg-primary);
+  --color-surface: var(--bg-surface);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
 }
 
-/* Theme variables */
 :root {
-  /* Add fallbacks for older browsers */
-  --bg-primary: #00000d; /* fallback */
-  --bg-primary: oklch(0.0719 0.0498 264.05);
+  /* --- Solarized: Bases -------------------------------------------------- */
+  --solarized-base03: #002d38;
+  --solarized-base03: oklch(27.4% 0.05 219.6);
+  --solarized-base02: #093946;
+  --solarized-base02: oklch(32.1% 0.053 219.6);
+  --solarized-base01: #5b7279;
+  --solarized-base01: oklch(53.5% 0.029 219.6);
+  --solarized-base00: #657377;
+  --solarized-base00: oklch(54.4% 0.017 219.6);
+  --solarized-base0: #98a8a8;
+  --solarized-base0: oklch(71.8% 0.017 198);
+  --solarized-base1: #8faaab;
+  --solarized-base1: oklch(71.8% 0.03 198);
+  --solarized-base2: #f1e9d2;
+  --solarized-base2: oklch(93.4% 0.031 90);
+  --solarized-base3: #fbf7ef;
+  --solarized-base3: oklch(97.7% 0.012 90);
 
-  --text-primary: #dceded; /* fallback */
-  --text-primary: oklch(0.9335 0.018 196.85);
+  /* --- Solarized: Accents — light mode (L 42% on neutral cross bg) ------ */
+  --solarized-yellow: #684600;
+  --solarized-yellow: oklch(42% 0.115 86.4);
+  --solarized-orange: #8c2200;
+  --solarized-orange: oklch(42% 0.162 50.4);
+  --solarized-red: #a1000c;
+  --solarized-red: oklch(42% 0.21 21.6);
+  --solarized-magenta: #91005d;
+  --solarized-magenta: oklch(42% 0.198 349.2);
+  --solarized-violet: #43428d;
+  --solarized-violet: oklch(42% 0.121 280.8);
+  --solarized-blue: #005093;
+  --solarized-blue: oklch(42% 0.141 244.8);
+  --solarized-cyan: #005e56;
+  --solarized-cyan: oklch(42% 0.1 187.2);
+  --solarized-green: #475500;
+  --solarized-green: oklch(42% 0.13 118.8);
 
-  --accent-color: #e9c232; /* fallback */
-  --accent-color: oklch(0.8252 0.1557 92.68);
+  /* --- Margarita --------------------------------------------------------- */
+  --margarita-gold: #e9c232;
+  --margarita-gold: oklch(82.5% 0.1557 92.68);
+  --margarita-off-black: #00000d;
+  --margarita-off-black: oklch(7.2% 0.0498 264.05);
+  --margarita-neutral-cross: #c8d4cc;
+  --margarita-neutral-cross: oklch(87% 0.018 140);
+  --margarita-turmeric: #e49000;
+  --margarita-turmeric: oklch(72% 0.18 75);
 
-  --bg-secondary: oklch(0.1 0.04 264.05); /* slightly lighter navy */
-  --text-secondary: oklch(
-    0.85 0.015 196.85
-  ); /* slightly darker light blue-gray */
-  --text-muted: oklch(0.7 0.012 196.85); /* muted light blue-gray */
-  --border-color: oklch(0.2 0.035 264.05); /* dark navy border */
-  --selection-bg: oklch(0.8252 0.1557 92.68); /* #e9c232 - golden yellow */
-  --selection-text: oklch(0.0719 0.0498 264.05); /* dark navy text on yellow */
+  /* --- Semantic (light mode) ---------------------------------------------- */
+  --bg-primary: var(--margarita-neutral-cross);
+  --bg-surface: #bac8c0;
+  --bg-surface: oklch(79% 0.018 140);
+  --text-primary: var(--margarita-off-black);
+  --text-muted: #4e5e56;
+  --text-muted: oklch(38% 0.018 140);
+  --text-faint: #7a8e84;
+  --text-faint: oklch(58% 0.018 140);
+  --accent: var(--solarized-green);
+
+  /* --- Base layer for body/background ------------------------------------ */
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
+  --border: color-mix(in oklch, var(--bg-surface) 85%, var(--text-faint) 15%);
+  --ring: var(--accent);
+
+  /* --- Compatibility aliases (amet-alvirde legacy) ----------------------- */
+  --accent-color: var(--accent);
+  --accent-foreground: var(--margarita-neutral-cross);
+  --border-color: var(--border);
+  --selection-bg: var(--accent);
+  --selection-text: var(--accent-foreground);
+  --bg-secondary: var(--bg-surface);
+  --text-secondary: var(--text-muted);
 }
 
-[data-theme="light"] {
-  /* Add fallbacks for older browsers */
-  --bg-primary: #dceded; /* fallback */
-  --bg-primary: oklch(0.9335 0.018 196.85);
+.dark {
+  /* --- Solarized: Accents — dark mode (L 63.1% on off-black) -------------- */
+  --solarized-yellow: #ac8300;
+  --solarized-yellow: oklch(63.1% 0.129 86.4);
+  --solarized-orange: #d56500;
+  --solarized-orange: oklch(63.1% 0.166 50.4);
+  --solarized-red: #f23749;
+  --solarized-red: oklch(63.1% 0.221 21.6);
+  --solarized-magenta: #dd459d;
+  --solarized-magenta: oklch(63.1% 0.205 349.2);
+  --solarized-violet: #7d80d1;
+  --solarized-violet: oklch(63.1% 0.121 280.8);
+  --solarized-blue: #2b90d8;
+  --solarized-blue: oklch(63.1% 0.141 244.8);
+  --solarized-cyan: #259d94;
+  --solarized-cyan: oklch(63.1% 0.102 187.2);
+  --solarized-green: #819500;
+  --solarized-green: oklch(63.1% 0.148 118.8);
 
-  --text-primary: #00000d; /* fallback */
-  --text-primary: oklch(0.0719 0.0498 264.05);
+  /* --- Semantic (dark mode) ----------------------------------------------- */
+  --bg-primary: var(--margarita-off-black);
+  --bg-surface: #0c0c18;
+  --bg-surface: oklch(12% 0.0498 264.05);
+  --text-primary: var(--margarita-neutral-cross);
+  --text-muted: var(--solarized-base1);
+  --text-faint: var(--solarized-base01);
+  --accent: var(--solarized-green);
 
-  --bg-secondary: oklch(0.95 0.012 196.85); /* slightly lighter blue-gray */
-  --text-secondary: oklch(0.15 0.04 264.05); /* slightly lighter navy */
-  --text-muted: oklch(0.3 0.035 264.05); /* muted navy */
-  --border-color: oklch(0.8 0.015 196.85); /* light border */
-  --selection-bg: oklch(0.8252 0.1557 92.68); /* #e9c232 - golden yellow */
-  --selection-text: oklch(0.0719 0.0498 264.05); /* dark navy text on yellow */
+  /* --- Base layer -------------------------------------------------------- */
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
+  --border: color-mix(in oklch, var(--bg-surface) 80%, var(--text-faint) 20%);
+  --ring: var(--accent);
+
+  /* --- Compatibility aliases --------------------------------------------- */
+  --accent-color: var(--accent);
+  --accent-foreground: var(--margarita-neutral-cross);
+  --border-color: var(--border);
+  --selection-bg: var(--accent);
+  --selection-text: var(--accent-foreground);
+  --bg-secondary: var(--bg-surface);
+  --text-secondary: var(--text-muted);
 }
 
-/* Base styles - Apply theme colors to page elements */
-html {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  min-width: 320px;
-  overflow-x: auto;
-}
-
-body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  min-width: 320px;
-  overflow: auto;
-}
-
-/* Selection styles */
-::selection {
-  background-color: var(--selection-bg);
-  color: var(--selection-text);
-}
-
-::-moz-selection {
-  background-color: var(--selection-bg);
-  color: var(--selection-text);
-}
-
-* {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  letter-spacing: 0.01em;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-p {
-  max-width: 80ch;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 1rem;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.divider {
-  border-top: 2px solid var(--border-color);
-  width: 100%;
-}
-
-.divider-vertical {
-  border-left: 1px solid var(--border-color);
-  height: 100%;
-}
-
-.cta-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.5rem;
-  border: 2px solid var(--border-color);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.875rem;
-  transition: all 0.15s ease;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.cta-button:hover {
-  background: var(--accent-color);
-  color: var(--selection-text);
-  border-color: var(--accent-color);
-}
-
-.cta-button:active {
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  border-color: var(--text-primary);
-}
-
-.cta-button:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
-
-.cta-button-accent {
-  background: var(--accent-color);
-  color: var(--selection-text);
-  border-color: var(--accent-color);
-}
-
-.cta-button-accent:hover {
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  border-color: var(--text-primary);
-}
-
-/* Theme button states */
-.theme-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  border: 2px solid var(--border-color);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  transition: all 0.15s ease;
-  cursor: pointer;
-}
-
-.theme-button:not(.active):hover {
-  background: var(--accent-color);
-  color: var(--selection-text);
-  border-color: var(--accent-color);
-}
-
-.theme-button.active {
-  background: var(--accent-color);
-  color: var(--selection-text);
-  border-color: var(--accent-color);
-}
-
-.theme-button:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
-
-.social-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  border: 2px solid var(--border-color);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  transition: all 0.15s ease;
-  cursor: pointer;
-}
-
-.social-button:hover {
-  background: var(--accent-color);
-  color: var(--selection-text);
-  border-color: var(--accent-color);
-}
-
-.social-button:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
-
-.data-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.data-value {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-button,
-a,
-input,
-select,
-textarea,
-.cta-button,
-.theme-button,
-.social-button {
-  border-radius: 0 !important;
-}
-
-button,
-a,
-input,
-select,
-textarea {
-  box-shadow: none !important;
-}
-
-.section {
-  border-top: 2px solid var(--border-color);
-  padding: 2rem 0;
-}
-
-.section:first-child {
-  border-top: none;
-}
-
-@media (max-width: 768px) {
-  .cta-button {
-    padding: 0.625rem 1.25rem;
-    font-size: 0.8125rem;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    min-width: 320px;
+    overflow-x: auto;
+  }
+  body {
+    min-width: 320px;
+    overflow: auto;
+  }
+  ::selection {
+    background-color: var(--selection-bg);
+    color: var(--selection-text);
+  }
+  ::-moz-selection {
+    background-color: var(--selection-bg);
+    color: var(--selection-text);
+  }
+  * {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+      "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    letter-spacing: 0.01em;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  p {
+    max-width: 80ch;
+  }
+  button, a, input, select, textarea {
+    box-shadow: none !important;
   }
 }
