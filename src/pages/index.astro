@@ -4,26 +4,21 @@ import "../styles/site.css";
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import MonogramDisplay from '../components/MonogramDisplay.astro';
-import meditationIcon from '../assets/meditation-icon.svg?raw';
 ---
 
 <BaseLayout>
 	<Navigation />
 
 	<main class="w-full max-w-md mx-auto px-4 pt-20 pb-16">
-		<div class="flex justify-center items-center mb-4 md:mb-14">
-			<MonogramDisplay />
-		</div>
-
 		<div class="flex flex-col w-full">
 			<nav class="flex flex-col" aria-label="Navegación principal">
 				<div class="relative mb-4">
 					<div class="flex items-center justify-between border-2 border-accent bg-accent text-accent-foreground no-underline transition-all duration-150 w-full relative gap-4 py-8 px-6 border-t-2 cursor-default mb-2 pointer-events-none touch-none md:py-10 md:px-8">
 						<div class="flex flex-col gap-1.5 flex-1">
-							<span class="text-sm font-medium tracking-widest uppercase leading-tight">Amet Alvirde</span>
-							<span class="text-xs tracking-wide text-accent-foreground opacity-80">Soy como tú</span>
+							<span class="text-3xl font-bold tracking-wider uppercase leading-tight">Amet Alvirde</span>
+							<span class="text-base tracking-wider text-accent-foreground font-bold opacity-80">Soy como tú</span>
 						</div>
-						<div class="flex items-center justify-center shrink-0 text-accent-foreground w-6 h-7 [&>*]:w-full [&>*]:h-full md:w-7 md:h-8" aria-hidden="true" set:html={meditationIcon.replace('fill="#000000"', 'fill="currentColor"')}></div>
+						<MonogramDisplay inline={true} forceDark={true} inlineSize="md" />
 					</div>
 				</div>
 

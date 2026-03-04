@@ -1,13 +1,39 @@
 ---
 import MonogramDark from '../assets/monogram-dark-mode.svg?raw';
 import MonogramLight from '../assets/monogram-light-mode.svg?raw';
+
+interface Props {
+	inline?: boolean;
+	/** When true, always show the dark-mode monogram (light stroke, for accent/dark backgrounds) */
+	forceDark?: boolean;
+	/** Inline size: "sm" (default) or "md" (larger) */
+	inlineSize?: "sm" | "md";
+	/** Override fill/stroke color (e.g. "var(--accent-color)", "currentColor", "#7EE817") */
+	fill?: string;
+}
+const { inline = false, forceDark = false, inlineSize = "sm", fill } = Astro.props;
 ---
 
-<div id="monogram" class="w-full max-w-[120px] md:max-w-[280px] h-auto">
-	<div class="monogram-light">
+<div id={inline ? undefined : "monogram"} class:list={[
+	inline ? (inlineSize === "md" ? "w-12 h-12 md:w-16 md:h-16 flex-shrink-0" : "w-9 h-9 md:w-12 md:h-12 flex-shrink-0") : "w-full max-w-[120px] md:max-w-[280px] h-auto",
+	forceDark && "always-dark",
+	!!fill && "monogram-custom-fill"
+]} style={fill ? `--monogram-fill: ${fill}` : undefined}>
+	<div class:list={["monogram-light", inline && "size-full [&_svg]:w-full [&_svg]:h-full [&_svg]:block"]}>
 		<Fragment set:html={MonogramLight} />
 	</div>
-	<div class="monogram-dark">
+	<div class:list={["monogram-dark", inline && "size-full [&_svg]:w-full [&_svg]:h-full [&_svg]:block"]}>
 		<Fragment set:html={MonogramDark} />
 	</div>
-</div> 
+</div>
+
+<style>
+	.always-dark :global(.monogram-light) { display: none !important; }
+	.always-dark :global(.monogram-dark) { display: block !important; }
+
+	.monogram-custom-fill :global(.monogram-dark-stroke),
+	.monogram-custom-fill :global(.monogram-light-stroke) {
+		fill: var(--monogram-fill) !important;
+		stroke: var(--monogram-fill) !important;
+	}
+</style>

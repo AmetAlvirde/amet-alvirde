@@ -2,12 +2,12 @@
 export type ThemePreference = "light" | "dark" | "system";
 export type ActualTheme = "light" | "dark";
 
-// Verified theme elements type (all non-null after validation)
+// Verified theme elements type (monogram optional — not present on all pages)
 type ThemeElements = {
   lightThemeButton: HTMLButtonElement;
   systemThemeButton: HTMLButtonElement;
   darkThemeButton: HTMLButtonElement;
-  monogram: HTMLImageElement;
+  monogram: HTMLElement | null;
 };
 
 // DOM element selectors
@@ -56,7 +56,7 @@ const getCurrentTheme = (): ActualTheme | null =>
 
 // DOM utility functions
 const getRequiredElements = (): ThemeElements => {
-  const elements = {
+  const elements: ThemeElements = {
     lightThemeButton: document.querySelector(
       SELECTORS.lightThemeButton
     ) as HTMLButtonElement | null,
@@ -66,20 +66,18 @@ const getRequiredElements = (): ThemeElements => {
     darkThemeButton: document.querySelector(
       SELECTORS.darkThemeButton
     ) as HTMLButtonElement | null,
-    monogram: document.querySelector(
-      SELECTORS.monogram
-    ) as HTMLImageElement | null,
+    monogram: document.querySelector(SELECTORS.monogram),
   };
 
-  const missingElements = Object.entries(elements)
-    .filter(([_, element]) => !element)
-    .map(([key]) => key);
+  const missingElements = ["lightThemeButton", "systemThemeButton", "darkThemeButton"]
+    .filter((key) => !elements[key as keyof Omit<ThemeElements, "monogram">])
+    .map((key) => key);
 
   if (missingElements.length > 0) {
     throw new Error(`Theme elements not found: ${missingElements.join(", ")}`);
   }
 
-  return elements as ThemeElements;
+  return elements;
 };
 
 // UI update functions
@@ -94,15 +92,18 @@ const updateFavicon = (theme: ActualTheme): void => {
 };
 
 const updateThemeIcons = (
-  actualTheme: ActualTheme,
+  _actualTheme: ActualTheme,
   elements: ThemeElements
 ): void => {
+  // Monogram uses inline SVGs with .monogram-light/.monogram-dark; visibility
+  // is driven by the .dark class on html. No src swap needed. Kept for any
+  // future img-based monogram.
   const { monogram } = elements;
-
-  if (actualTheme === "light") {
-    monogram.setAttribute("src", "monogram-light-mode.svg");
-  } else {
-    monogram.setAttribute("src", "monogram-dark-mode.svg");
+  if (monogram && monogram.tagName === "IMG") {
+    monogram.setAttribute(
+      "src",
+      _actualTheme === "light" ? "/monogram-light-mode.svg" : "/monogram-dark-mode.svg"
+    );
   }
 };
 
