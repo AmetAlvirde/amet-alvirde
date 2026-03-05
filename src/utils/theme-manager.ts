@@ -114,9 +114,9 @@ const updateButtonStates = (
   const { lightThemeButton, systemThemeButton, darkThemeButton } = elements;
 
   // Remove active state from all buttons
-  lightThemeButton.classList.remove("active");
-  systemThemeButton.classList.remove("active");
-  darkThemeButton.classList.remove("active");
+  lightThemeButton.classList.remove("icon-button--active");
+  systemThemeButton.classList.remove("icon-button--active");
+  darkThemeButton.classList.remove("icon-button--active");
 
   // Add active state to current preference
   const activeButton =
@@ -125,7 +125,7 @@ const updateButtonStates = (
       : preference === "dark"
       ? darkThemeButton
       : systemThemeButton;
-  activeButton.classList.add("active");
+  activeButton.classList.add("icon-button--active");
 };
 
 const updateDocumentAttributes = (

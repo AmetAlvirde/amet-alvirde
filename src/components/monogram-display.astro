@@ -6,7 +6,7 @@ interface Props {
 	inline?: boolean;
 	/** When true, always show the dark-mode monogram (light stroke, for accent/dark backgrounds) */
 	forceDark?: boolean;
-	/** Override fill/stroke color (e.g. "var(--accent-color)", "currentColor", "#7EE817") */
+	/** Override fill/stroke color (e.g. "var(--accent)", "currentColor", "#7EE817") */
 	fill?: string;
 }
 const { inline = false, forceDark = false, fill } = Astro.props;

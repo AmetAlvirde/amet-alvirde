@@ -108,15 +108,6 @@
   --foreground: var(--text-primary);
   --border: color-mix(in oklch, var(--bg-surface) 85%, var(--text-faint) 15%);
   --ring: var(--accent);
-
-  /* --- Compatibility aliases (amet-alvirde legacy) ----------------------- */
-  --accent-color: var(--accent);
-  --accent-foreground: var(--margarita-neutral-cross);
-  --border-color: var(--border);
-  --selection-bg: var(--accent);
-  --selection-text: var(--accent-foreground);
-  --bg-secondary: var(--bg-surface);
-  --text-secondary: var(--text-muted);
 }
 
 .dark {
@@ -154,15 +145,6 @@
   --foreground: var(--text-primary);
   --border: color-mix(in oklch, var(--bg-surface) 80%, var(--text-faint) 20%);
   --ring: var(--accent);
-
-  /* --- Compatibility aliases --------------------------------------------- */
-  --accent-color: var(--accent);
-  --accent-foreground: var(--margarita-neutral-cross);
-  --border-color: var(--border);
-  --selection-bg: var(--accent);
-  --selection-text: var(--accent-foreground);
-  --bg-secondary: var(--bg-surface);
-  --text-secondary: var(--text-muted);
 }
 
 @layer base {
@@ -181,12 +163,12 @@
     overflow: auto;
   }
   ::selection {
-    background-color: var(--selection-bg);
-    color: var(--selection-text);
+    background-color: var(--accent);
+    color: var(--accent-foreground);
   }
   ::-moz-selection {
-    background-color: var(--selection-bg);
-    color: var(--selection-text);
+    background-color: var(--accent);
+    color: var(--accent-foreground);
   }
   * {
     font-family:
@@ -214,6 +196,7 @@
   select,
   textarea {
     box-shadow: none !important;
+    border-radius: 0 !important;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -224,5 +207,11 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+}
+
+@layer components {
+  .icon-button--active {
+    @apply bg-accent text-accent-foreground border-accent;
   }
 }

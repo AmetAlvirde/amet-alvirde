@@ -1,0 +1,55 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  description: string;
+  disabled?: boolean;
+  disabledLabel?: string;
+}
+
+const {
+  href,
+  title,
+  description,
+  disabled = false,
+  disabledLabel = "PRONTO",
+} = Astro.props as Props;
+---
+
+{disabled ? (
+  <a
+    href={href}
+    class="flex items-center justify-between border-2 border-t-0 !border-border bg-canvas text-foreground no-underline transition-all duration-150 w-full relative gap-4 py-6 px-5 md:py-7 md:px-6 cursor-not-allowed pointer-events-none [-webkit-tap-highlight-color:transparent]"
+    aria-disabled="true"
+  >
+    <div class="flex flex-col gap-1.5 flex-1">
+      <span class="text-sm font-medium tracking-widest uppercase leading-tight text-muted">
+        {title}
+      </span>
+      <span class="text-xs tracking-wide text-muted">
+        {description}
+      </span>
+    </div>
+    <span class="text-xs uppercase tracking-[0.2em] font-semibold text-muted">
+      {disabledLabel}
+    </span>
+  </a>
+) : (
+  <a
+    href={href}
+    class="flex items-center justify-between border-2 border-border border-t-2 bg-surface text-foreground no-underline transition-all duration-150 w-full relative gap-4 py-7 px-5 md:py-8 md:px-6 [@media(hover:hover)]:hover:border-accent active:border-accent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 [-webkit-tap-highlight-color:transparent]"
+  >
+    <div class="flex flex-col gap-1.5 flex-1">
+      <span class="text-sm font-medium tracking-widest uppercase leading-tight text-foreground">
+        {title}
+      </span>
+      <span class="text-xs tracking-wide text-muted">
+        {description}
+      </span>
+    </div>
+    <span class="flex items-center shrink-0 text-base">
+      <span class="text-lg font-normal leading-none md:text-xl">→</span>
+    </span>
+  </a>
+)}
+
