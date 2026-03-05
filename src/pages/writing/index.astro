@@ -10,16 +10,16 @@ import SocialLinks from '../../components/SocialLinks.astro';
 <BaseLayout>
 	<Navigation />
 
-	<main class="w-full max-w-7xl mx-auto px-6 lg:px-12 pt-20">
+	<main class="min-w-[300px] w-full max-w-7xl mx-auto px-6 lg:px-12 pt-20">
 		<div class="max-w-4xl mx-auto">
 			<div class="mb-8 max-w-[70ch] mx-auto">
-				<div class="flex items-center justify-between  bg-background text-accent no-underline transition-all duration-150 w-full relative gap-4 py-8 px-6 cursor-default pointer-events-none touch-none md:py-10 md:px-8">
-					<div class="flex flex-col gap-1.5 flex-1">
-						<span class="text-3xl font-bold tracking-wider uppercase leading-tight">Amet Alvirde</span>
-						<span class="text-base tracking-wider text-accent font-bold opacity-80 font-mono uppercase">mantra #2</span>
+					<div class="flex items-center justify-between bg-background text-accent no-underline transition-all duration-150 w-full relative gap-4 py-4 cursor-default mb-2 pointer-events-none touch-none pr-2 md:py-10 md:pr-2">
+						<div class="flex flex-col gap-1.5 flex-1">
+							<span class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold tracking-wider uppercase leading-tight">Amet Alvirde</span>
+							<span class="text-base md:text-lg tracking-wider text-accent font-bold opacity-80 font-mono uppercase">mantra #2</span>
+						</div>
+						<MonogramDisplay inline forceDark fill="var(--accent-color)" />
 					</div>
-					<MonogramDisplay inline={true} forceDark={true} inlineSize="md" fill="var(--accent-color)" />
-				</div>
 			</div>
 			<article class="max-w-[70ch] mx-auto border-l-6 border-l-accent pl-8 pr-4 pt-0 mb-8">
 				<div class="flex flex-col gap-8">
@@ -47,18 +47,18 @@ import SocialLinks from '../../components/SocialLinks.astro';
 				</div>
 			</article>
 			
-			<div class="mb-4 max-w-[70ch] mx-auto flex justify-center lg:justify-end">
+			<div class="mb-4 max-w-[70ch] mx-auto flex justify-center sm:justify-end sm:pr-4">
 				<a href="https://publish.obsidian.md/amet-alvirde/Mapa+público+de+mi+consciencia" 
 					target="_blank" 
 					rel="noopener noreferrer"
-					class="inline-flex items-center justify-center py-3 px-6 border-2 border-accent bg-accent text-accent-foreground text-sm font-medium uppercase tracking-widest transition-all duration-150 cursor-pointer no-underline [@media(hover:hover)]:hover:bg-foreground [@media(hover:hover)]:hover:text-canvas [@media(hover:hover)]:hover:border-foreground active:bg-foreground active:text-canvas active:border-foreground focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2">
+					class="inline-flex items-center justify-center py-3 px-4 border-2 border-accent bg-accent text-accent-foreground text-sm font-medium uppercase tracking-widest transition-all duration-150 cursor-pointer no-underline [@media(hover:hover)]:hover:bg-foreground [@media(hover:hover)]:hover:text-canvas [@media(hover:hover)]:hover:border-foreground active:bg-foreground active:text-canvas active:border-foreground focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2">
 					MAPA DE MI CONSCIENCIA ↗
 				</a>
 			</div>
 			
-			<div class="border-t-2 border-border w-full my-8"></div>
+			<div class="border-t-2 border-border w-full max-w-[70ch] mx-auto my-8"></div>
 			
-			<div>
+			<div class="max-w-[70ch] mx-auto">
 				<SocialLinks />
 			</div>
 		</div>

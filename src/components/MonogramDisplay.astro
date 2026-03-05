@@ -6,16 +6,14 @@ interface Props {
 	inline?: boolean;
 	/** When true, always show the dark-mode monogram (light stroke, for accent/dark backgrounds) */
 	forceDark?: boolean;
-	/** Inline size: "sm" (default) or "md" (larger) */
-	inlineSize?: "sm" | "md";
 	/** Override fill/stroke color (e.g. "var(--accent-color)", "currentColor", "#7EE817") */
 	fill?: string;
 }
-const { inline = false, forceDark = false, inlineSize = "sm", fill } = Astro.props;
+const { inline = false, forceDark = false, fill } = Astro.props;
 ---
 
 <div id={inline ? undefined : "monogram"} class:list={[
-	inline ? (inlineSize === "md" ? "w-12 h-12 md:w-16 md:h-16 flex-shrink-0" : "w-9 h-9 md:w-12 md:h-12 flex-shrink-0") : "w-full max-w-[120px] md:max-w-[280px] h-auto",
+	inline ? "w-10 h-10 xs:w-11 xs:h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 flex-shrink-0" : "w-full max-w-[120px] md:max-w-[280px] h-auto",
 	forceDark && "always-dark",
 	!!fill && "monogram-custom-fill"
 ]} style={fill ? `--monogram-fill: ${fill}` : undefined}>
