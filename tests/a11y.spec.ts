@@ -6,8 +6,10 @@ const themes = ["light", "dark", "system"] as const;
 
 for (const pagePath of pages) {
   for (const theme of themes) {
-    test(`@a11y ${pagePath} [${theme}] has no axe-core violations`, async ({ page }) => {
-      await page.addInitScript(preference => {
+    test(`@a11y ${pagePath} [${theme}] has no axe-core violations`, async ({
+      page,
+    }) => {
+      await page.addInitScript((preference) => {
         try {
           window.localStorage.setItem("theme", preference);
         } catch {
@@ -22,16 +24,15 @@ for (const pagePath of pages) {
         // Helpful output in case of failure
         console.log(
           `Accessibility violations for ${pagePath} [${theme}]:`,
-          results.violations.map(v => ({
+          results.violations.map((v) => ({
             id: v.id,
             impact: v.impact,
             description: v.description,
-            nodes: v.nodes.length
-          }))
+            nodes: v.nodes.length,
+          })),
         );
       }
       expect(results.violations).toEqual([]);
     });
   }
 }
-

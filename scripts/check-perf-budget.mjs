@@ -29,7 +29,9 @@ function walk(dir) {
 }
 
 if (!fs.existsSync(distDir)) {
-  console.error(`dist directory not found at ${distDir}. Run "pnpm build" first.`);
+  console.error(
+    `dist directory not found at ${distDir}. Run "pnpm build" first.`,
+  );
   process.exit(1);
 }
 
@@ -54,8 +56,12 @@ function toKB(bytes) {
 }
 
 console.log("Performance budget report:");
-console.log(`  HTML total: ${toKB(totalHtmlBytes)} KB (limit ${MAX_PAGE_WEIGHT / KB} KB)`);
-console.log(`  CSS total:  ${toKB(totalCssBytes)} KB (limit ${MAX_CSS / KB} KB)`);
+console.log(
+  `  HTML total: ${toKB(totalHtmlBytes)} KB (limit ${MAX_PAGE_WEIGHT / KB} KB)`,
+);
+console.log(
+  `  CSS total:  ${toKB(totalCssBytes)} KB (limit ${MAX_CSS / KB} KB)`,
+);
 console.log(`  JS total:   ${toKB(totalJsBytes)} KB (limit ${MAX_JS / KB} KB)`);
 
 let ok = true;
@@ -80,4 +86,3 @@ if (!ok) {
 } else {
   console.log("✅ All performance budgets are within limits.");
 }
-

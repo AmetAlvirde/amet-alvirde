@@ -24,7 +24,7 @@ for (const pagePath of pages) {
         });
 
         // Ensure theme preference is set before the app script runs
-        await page.addInitScript(preference => {
+        await page.addInitScript((preference) => {
           try {
             window.localStorage.setItem("theme", preference);
           } catch {

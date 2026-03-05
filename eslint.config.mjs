@@ -3,21 +3,20 @@ import tsPlugin from "@typescript-eslint/eslint-plugin";
 
 export default [
   {
-    ignores: ["dist/**", "node_modules/**", ".astro/**"]
+    ignores: ["dist/**", "node_modules/**", ".astro/**"],
   },
   {
     files: ["**/*.{ts,tsx,js,jsx}"],
     languageOptions: {
       parser: tsParser,
       ecmaVersion: "latest",
-      sourceType: "module"
+      sourceType: "module",
     },
     plugins: {
-      "@typescript-eslint": tsPlugin
+      "@typescript-eslint": tsPlugin,
     },
     rules: {
-      ...tsPlugin.configs.recommended.rules
-    }
-  }
+      ...tsPlugin.configs.recommended.rules,
+    },
+  },
 ];
-

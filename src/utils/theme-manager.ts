@@ -38,7 +38,9 @@ const safeLocalStorageSet = (key: string, value: string): void => {
 
 // Core theme functions (coordinated with inline script)
 const getSystemTheme = (): ActualTheme =>
-  window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  window.matchMedia?.("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
 
 const getActualTheme = (preference: ThemePreference): ActualTheme =>
   preference === "system" ? getSystemTheme() : (preference as ActualTheme);
@@ -46,7 +48,7 @@ const getActualTheme = (preference: ThemePreference): ActualTheme =>
 // Read current state (set by inline script or previous interactions)
 const getCurrentPreference = (): ThemePreference =>
   (document.documentElement.getAttribute(
-    "data-theme-preference"
+    "data-theme-preference",
   ) as ThemePreference) ||
   (safeLocalStorageGet("theme") as ThemePreference) ||
   "system";
@@ -58,18 +60,22 @@ const getCurrentTheme = (): ActualTheme | null =>
 const getRequiredElements = (): ThemeElements => {
   const elements: ThemeElements = {
     lightThemeButton: document.querySelector(
-      SELECTORS.lightThemeButton
+      SELECTORS.lightThemeButton,
     ) as HTMLButtonElement | null,
     systemThemeButton: document.querySelector(
-      SELECTORS.systemThemeButton
+      SELECTORS.systemThemeButton,
     ) as HTMLButtonElement | null,
     darkThemeButton: document.querySelector(
-      SELECTORS.darkThemeButton
+      SELECTORS.darkThemeButton,
     ) as HTMLButtonElement | null,
     monogram: document.querySelector(SELECTORS.monogram),
   };
 
-  const missingElements = ["lightThemeButton", "systemThemeButton", "darkThemeButton"]
+  const missingElements = [
+    "lightThemeButton",
+    "systemThemeButton",
+    "darkThemeButton",
+  ]
     .filter((key) => !elements[key as keyof Omit<ThemeElements, "monogram">])
     .map((key) => key);
 
@@ -83,7 +89,7 @@ const getRequiredElements = (): ThemeElements => {
 // UI update functions
 const updateFavicon = (theme: ActualTheme): void => {
   const favicon = document.querySelector(
-    SELECTORS.favicon
+    SELECTORS.favicon,
   ) as HTMLLinkElement | null;
   if (favicon) {
     favicon.href =
@@ -93,7 +99,7 @@ const updateFavicon = (theme: ActualTheme): void => {
 
 const updateThemeIcons = (
   _actualTheme: ActualTheme,
-  elements: ThemeElements
+  elements: ThemeElements,
 ): void => {
   // Monogram uses inline SVGs with .monogram-light/.monogram-dark; visibility
   // is driven by the .dark class on html. No src swap needed. Kept for any
@@ -102,14 +108,16 @@ const updateThemeIcons = (
   if (monogram && monogram.tagName === "IMG") {
     monogram.setAttribute(
       "src",
-      _actualTheme === "light" ? "/monogram-light-mode.svg" : "/monogram-dark-mode.svg"
+      _actualTheme === "light"
+        ? "/monogram-light-mode.svg"
+        : "/monogram-dark-mode.svg",
     );
   }
 };
 
 const updateButtonStates = (
   preference: ThemePreference,
-  elements: ThemeElements
+  elements: ThemeElements,
 ): void => {
   const { lightThemeButton, systemThemeButton, darkThemeButton } = elements;
 
@@ -123,14 +131,14 @@ const updateButtonStates = (
     preference === "light"
       ? lightThemeButton
       : preference === "dark"
-      ? darkThemeButton
-      : systemThemeButton;
+        ? darkThemeButton
+        : systemThemeButton;
   activeButton.classList.add("icon-button--active");
 };
 
 const updateDocumentAttributes = (
   preference: ThemePreference,
-  actualTheme: ActualTheme
+  actualTheme: ActualTheme,
 ): void => {
   document.documentElement.setAttribute("data-theme", actualTheme);
   document.documentElement.setAttribute("data-theme-preference", preference);
@@ -144,7 +152,7 @@ const updateDocumentAttributes = (
 // Complete UI update (coordinates all visual changes)
 const updateThemeUI = (
   preference: ThemePreference,
-  elements: ThemeElements
+  elements: ThemeElements,
 ): void => {
   const actualTheme = getActualTheme(preference);
 
@@ -212,7 +220,7 @@ const setupEventListeners = (elements: ThemeElements): void => {
   };
 
   // Attach keyboard handlers to all buttons
-  [lightThemeButton, systemThemeButton, darkThemeButton].forEach(button => {
+  [lightThemeButton, systemThemeButton, darkThemeButton].forEach((button) => {
     button.addEventListener("keydown", handleKeyPress);
   });
 

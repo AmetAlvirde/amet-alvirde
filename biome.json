@@ -8,12 +8,18 @@
   "linter": {
     "enabled": false
   },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "files": {
-    "ignore": [
-      "dist",
-      "node_modules",
-      ".astro"
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/node_modules",
+      "!**/.astro",
+      "!**/*.lighthouseci"
     ]
   }
 }
-
