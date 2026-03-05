@@ -37,10 +37,12 @@
   --color-canvas: var(--bg-primary);
   --color-surface: var(--bg-surface);
   --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--text-muted);
 }
 
 :root {

@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 791.36 1111.57">
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 578.2 953.6">
   <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
   <defs>
     <style>
-      .md-st0 {
+      .monogram-dark-stroke {
         fill: #c8d4cc;
         stroke: #c8d4cc;
         stroke-miterlimit: 10;
         stroke-width: 2px;
       }
-
     </style>
   </defs>
-  <g>
-    <rect class="md-st0" x="106.63" y="640.35" width="578.1" height="45.5"/>
-    <rect class="md-st0" x="106.63" y="987.25" width="578.1" height="45.5"/>
-    <rect class="md-st0" x="106.63" y="79.15" width="578.1" height="45.5"/>
-    <polygon class="md-st0" points="684.83 560.75 395.73 277.65 106.63 560.75 106.63 497.05 395.73 213.95 684.83 497.05 684.83 560.75"/>
-  </g>
+  <rect class="monogram-dark-stroke" y="561.2" width="578.1" height="45.5"/>
+  <rect class="monogram-dark-stroke" y="908.1" width="578.1" height="45.5"/>
+  <rect class="monogram-dark-stroke" width="578.1" height="45.5"/>
+  <polygon class="monogram-dark-stroke" points="578.2 481.6 289.1 198.5 0 481.6 0 417.9 289.1 134.8 578.2 417.9 578.2 481.6"/>
 </svg>

@@ -5,64 +5,61 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Navigation from '../../components/Navigation.astro';
 import MonogramDisplay from '../../components/MonogramDisplay.astro';
 import SocialLinks from '../../components/SocialLinks.astro';
-import meditationIcon from '../../assets/meditation-icon.svg?raw';
 ---
 
 <BaseLayout>
 	<Navigation />
 
-	<main class="w-full max-w-7xl mx-auto px-4 lg:px-8 pt-24 pb-4">
-		<div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
-			<div class="md:col-span-5 flex items-start justify-center mt-3.5">
-				<MonogramDisplay />
-			</div>
-			<div class="md:col-span-7 section">
-				<div class="mb-6">
-					<h1 class="text-4xl md:text-5xl font-bold uppercase tracking-tight">Amet Alvirde</h1>
-				</div>
-				<article class="max-w-[70ch] mx-auto border-l-6 border-l-accent pl-6 pt-2 mb-8">
-					<span class="data-label block mb-8">Mantra #2</span>
-					<div class="flex flex-col gap-6">
-						<p class="text-2xl md:text-3xl font-extrabold text-foreground uppercase">
-							Elijo vivir en paz. Por eso doy lo mejor de mí, y asumo que las demás personas también.
-						</p>
-						<p class="text-foreground text-base md:text-lg leading-relaxed">
-							Dejo ir el pasado, porque es inalterable. Dejo ir el futuro, porque es impredecible. Vivo en el presente, que es una valiosa oportunidad para alinear mis acciones con quien soy. 
-						</p>
-						<p class="text-foreground text-base md:text-lg leading-relaxed">
-							Estoy en constante renacimiento. Vivo este instante como una experiencia y no como un examen
-						</p>
-						<p class="text-foreground text-base md:text-lg leading-relaxed">
-							Soy un río. Fluyo, no dudo. Confío en la corriente que lleva a mi destino. 
-						</p>
-						<p class="text-foreground text-base md:text-lg leading-relaxed">
-							Convierto los obstáculos que encuentro en parte de mi camino, y agradezco profundamente cada parte de él.
-						</p>
-						<p class="text-foreground text-base md:text-lg leading-relaxed">
-							En mi existencia, no hay día más importante que otro, porque lo que realmente importa, es la suma de las acciones que realizo en el conjunto de todos ellos.
-						</p>
-						<p class="text-foreground text-base md:text-lg leading-relaxed">
-							Éste, es el único día en el que tengo control sobre mis acciones, por eso hoy, doy lo mejor de mí, y así, es como elijo vivir en paz.
-						</p>
+	<main class="min-w-[300px] w-full max-w-7xl mx-auto px-6 lg:px-12 pt-20">
+		<div class="max-w-4xl mx-auto">
+			<div class="mb-8 max-w-[70ch] mx-auto">
+					<div class="flex items-center justify-between bg-background text-accent no-underline transition-all duration-150 w-full relative gap-4 py-4 cursor-default mb-2 pointer-events-none touch-none pr-2 md:py-10 md:pr-2">
+						<div class="flex flex-col gap-1.5 flex-1">
+							<span class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold tracking-wider uppercase leading-tight">Amet Alvirde</span>
+							<span class="text-base md:text-lg tracking-wider text-accent font-bold opacity-80 font-mono uppercase">mantra #2</span>
+						</div>
+						<MonogramDisplay inline forceDark fill="var(--accent-color)" />
 					</div>
-				</article>
-				
-				<div class="mb-4">
-					<a href="https://publish.obsidian.md/amet-alvirde/Mapa+público+de+mi+consciencia" 
-						target="_blank" 
-						rel="noopener noreferrer"
-						class="cta-button cta-button-accent inline-flex items-center gap-3">
-						<div class="w-5 h-5 flex-shrink-0" set:html={meditationIcon.replace('fill="#000000"', 'fill="currentColor"')}></div>
-						<span class="uppercase">Explora el mapa público de mi consciencia</span>
-					</a>
+			</div>
+			<article class="max-w-[70ch] mx-auto border-l-6 border-l-accent pl-8 pr-4 pt-0 mb-8">
+				<div class="flex flex-col gap-8">
+					<p class="text-lg font-bold text-foreground leading-relaxed">
+						Elijo vivir en paz. Por eso doy lo mejor de mí, y asumo que las demás personas también.
+					</p>
+					<p class="text-foreground text-lg leading-relaxed">
+						Dejo ir el pasado, porque es inalterable. Dejo ir el futuro, porque es impredecible. Vivo en el presente, que es una valiosa oportunidad para alinear mis acciones con quien soy. 
+					</p>
+					<p class="text-foreground text-lg leading-relaxed">
+						Estoy en constante renacimiento. Vivo este instante como una experiencia y no como un examen
+					</p>
+					<p class="text-foreground text-lg leading-relaxed">
+						Soy un río. Fluyo, no dudo. Confío en la corriente que lleva a mi destino. 
+					</p>
+					<p class="text-foreground text-lg leading-relaxed">
+						Convierto los obstáculos que encuentro en parte de mi camino, y agradezco profundamente cada parte de él.
+					</p>
+					<p class="text-foreground text-lg leading-relaxed">
+						En mi existencia, no hay día más importante que otro, porque lo que realmente importa, es la suma de las acciones que realizo en el conjunto de todos ellos.
+					</p>
+					<p class="text-foreground text-lg leading-relaxed">
+						Éste, es el único día en el que tengo control sobre mis acciones, por eso hoy, doy lo mejor de mí, y así, es como elijo vivir en paz.
+					</p>
 				</div>
-				
-				<div class="divider my-8"></div>
-				
-				<div>
-					<div class="data-label mb-3">CONVERSEMOS:</div>
-					<SocialLinks />
-				</div>
+			</article>
+			
+			<div class="mb-4 max-w-[70ch] mx-auto flex justify-center sm:justify-end sm:pr-4">
+				<a href="https://publish.obsidian.md/amet-alvirde/Mapa+público+de+mi+consciencia" 
+					target="_blank" 
+					rel="noopener noreferrer"
+					class="inline-flex items-center justify-center py-3 px-4 border-2 border-accent bg-accent text-accent-foreground text-sm font-medium uppercase tracking-widest transition-all duration-150 cursor-pointer no-underline [@media(hover:hover)]:hover:bg-foreground [@media(hover:hover)]:hover:text-canvas [@media(hover:hover)]:hover:border-foreground active:bg-foreground active:text-canvas active:border-foreground focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2">
+					MAPA DE MI CONSCIENCIA ↗
+				</a>
+			</div>
+			
+			<div class="border-t-2 border-border w-full max-w-[70ch] mx-auto my-8"></div>
+			
+			<div class="max-w-[70ch] mx-auto">
+				<SocialLinks />
 			</div>
 		</div>
 	</main>
