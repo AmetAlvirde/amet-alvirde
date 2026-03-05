@@ -108,6 +108,7 @@
   --foreground: var(--text-primary);
   --border: color-mix(in oklch, var(--bg-surface) 85%, var(--text-faint) 15%);
   --ring: var(--accent);
+  --accent-foreground: var(--margarita-neutral-cross);
 }
 
 .dark {
@@ -145,6 +146,7 @@
   --foreground: var(--text-primary);
   --border: color-mix(in oklch, var(--bg-surface) 80%, var(--text-faint) 20%);
   --ring: var(--accent);
+  --accent-foreground: var(--margarita-neutral-cross);
 }
 
 @layer base {
@@ -213,5 +215,14 @@
 @layer components {
   .icon-button--active {
     @apply bg-accent text-accent-foreground border-accent;
+  }
+
+  /* Selected theme: must override base icon-button bg-canvas */
+  [data-theme-preference="system"] #system-theme-button,
+  [data-theme-preference="light"] #light-theme-button,
+  [data-theme-preference="dark"] #dark-theme-button {
+    background-color: var(--accent) !important;
+    color: var(--accent-foreground) !important;
+    border-color: var(--accent) !important;
   }
 }
