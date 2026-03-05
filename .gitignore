@@ -1,24 +1,24 @@
-# build output
+node_modules/
+.pnpm-store/
+
+# Astro build output
 dist/
-# generated types
 .astro/
 
-# dependencies
-node_modules/
+test-results/
+playwright-report/
 
-# logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+.lighthouseci/
 
-
-# environment variables
-.env
-.env.production
-
-# macOS-specific files
 .DS_Store
 
-# jetbrains setting folder
-.idea/
+# Env/config secrets
+.env
+.env.local
+.env.*.local
+
+coverage/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*

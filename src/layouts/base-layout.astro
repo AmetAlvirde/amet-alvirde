@@ -47,7 +47,7 @@ const {
 					const favicon = document.querySelector('link[rel="icon"]:not([media])');
 					if (favicon) {
 						const isDark = document.documentElement.classList.contains('dark');
-						(favicon as HTMLLinkElement).href = isDark ? '/favicon-dark-mode.svg' : '/favicon-light-mode.svg';
+						favicon.href = isDark ? '/favicon-dark-mode.svg' : '/favicon-light-mode.svg';
 					}
 				};
 				document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', setFavicon) : setFavicon();
@@ -103,6 +103,13 @@ const {
 	</head>
 	<body class="min-h-[100dvh] flex flex-col items-center">
 		
+		<a
+			href="#main-content"
+			class="sr-only focus:not-sr-only focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background px-4 py-2 bg-accent text-accent-foreground"
+		>
+			Ir al contenido principal
+		</a>
+
 		<slot />
 
 		<section id="bottom-divider" class="fixed bottom-0 left-0 right-0 z-10 border-t-2" style="border-color: var(--border-color); background: var(--bg-primary);">
@@ -118,3 +125,4 @@ const {
 		</script>
 	</body>
 </html> 
+
