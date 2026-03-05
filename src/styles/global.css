@@ -85,8 +85,8 @@
   /* --- Margarita --------------------------------------------------------- */
   --margarita-gold: #e9c232;
   --margarita-gold: oklch(82.5% 0.1557 92.68);
-  --margarita-off-black: #00000d;
-  --margarita-off-black: oklch(7.2% 0.0498 264.05);
+  --margarita-off-black: #000408;
+  --margarita-off-black: oklch(10% 0.025 220);
   --margarita-neutral-cross: #c8d4cc;
   --margarita-neutral-cross: oklch(87% 0.018 140);
   --margarita-turmeric: #e49000;
@@ -140,8 +140,10 @@
 
   /* --- Semantic (dark mode) ----------------------------------------------- */
   --bg-primary: var(--margarita-off-black);
-  --bg-surface: #0c0c18;
-  --bg-surface: oklch(12% 0.0498 264.05);
+  --bg-surface: #00070c;
+  --bg-surface: oklch(15% 0.025 220);
+  /* derived: same hue (220) and chroma (0.025) as off-black, L stepped 10%→12% */
+
   --text-primary: var(--margarita-neutral-cross);
   --text-muted: var(--solarized-base1);
   --text-faint: var(--solarized-base01);
@@ -187,11 +189,18 @@
     color: var(--selection-text);
   }
   * {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-      "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+      "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+      sans-serif;
     letter-spacing: 0.01em;
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.2;
@@ -199,7 +208,11 @@
   p {
     max-width: 80ch;
   }
-  button, a, input, select, textarea {
+  button,
+  a,
+  input,
+  select,
+  textarea {
     box-shadow: none !important;
   }
 }
