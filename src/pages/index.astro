@@ -1,60 +1,49 @@
 ---
-import "../styles/global.css";
-import "../styles/site.css";
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Navigation from '../components/Navigation.astro';
-import MonogramDisplay from '../components/MonogramDisplay.astro';
+import BaseLayout from "../layouts/base-layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Cartouche from "../components/cartouche.astro";
+import NavTile from "../components/nav-tile.astro";
 ---
 
 <BaseLayout>
 	<Navigation />
 
-	<main class="min-w-[300px] w-full max-w-md mx-auto px-4 pt-32 pb-16">
+	<main id="main-content" class="min-w-[300px] w-full max-w-md mx-auto px-4 pt-32 pb-16">
 		<div class="flex flex-col w-full">
 			<nav class="flex flex-col" aria-label="Navegación principal">
 				<div class="relative mb-4">
-					<div class="flex items-center justify-between border-2 border-accent bg-accent text-accent-foreground no-underline transition-all duration-150 w-full relative gap-4 py-8 px-4 border-t-2 cursor-default mb-2 pointer-events-none touch-none md:py-10">
-						<div class="flex flex-col gap-1.5 flex-1">
-							<span class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold tracking-wider uppercase leading-tight">Amet Alvirde</span>
-							<span class="text-base md:text-lg tracking-wider text-accent-foreground font-bold opacity-80">Soy como tú</span>
-						</div>
-						<MonogramDisplay inline forceDark />
-					</div>
+					<Cartouche subtitle="Soy como tú" variant="hero" />
 				</div>
 
-				<a href="/writing" class="flex items-center justify-between border-2 border-border border-t-2 bg-surface text-foreground no-underline transition-all duration-150 w-full relative gap-4 py-7 px-5 md:py-8 md:px-6 [@media(hover:hover)]:hover:border-accent active:border-accent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 [-webkit-tap-highlight-color:transparent]">
-					<div class="flex flex-col gap-1.5 flex-1">
-						<span class="text-sm font-medium tracking-widest uppercase leading-tight text-foreground">TEXTOS</span>
-						<span class="text-xs tracking-wide text-muted">Escribo para explorar mi consciencia</span>
-					</div>
-					<span class="flex items-center shrink-0 text-base">
-						<span class="text-lg font-normal leading-none md:text-xl">→</span>
-					</span>
-				</a>
+				<NavTile
+					href="/writing"
+					title="TEXTOS"
+					description="Escribo para explorar mi consciencia"
+				/>
 
-				<a href="#" class="flex items-center justify-between border-2 border-t-0 !border-border bg-canvas text-foreground no-underline transition-all duration-150 w-full relative gap-4 py-6 px-5 md:py-7 md:px-6 cursor-not-allowed pointer-events-none [-webkit-tap-highlight-color:transparent]" aria-disabled="true">
-					<div class="flex flex-col gap-1.5 flex-1">
-						<span class="text-sm font-medium tracking-widest uppercase leading-tight text-muted">SOFTWARE</span>
-						<span class="text-xs tracking-wide text-muted">Creo apps y herramientas</span>
-					</div>
-					<span class="text-xs uppercase tracking-[0.2em] font-semibold text-muted">PRONTO</span>
-				</a>
+				<NavTile
+					href="#"
+					title="SOFTWARE"
+					description="Creo apps y herramientas"
+					disabled={true}
+					disabledLabel="PRONTO"
+				/>
 
-				<a href="#" class="flex items-center justify-between border-2 border-t-0 !border-border bg-canvas text-foreground no-underline transition-all duration-150 w-full relative gap-4 py-6 px-5 md:py-7 md:px-6 cursor-not-allowed pointer-events-none [-webkit-tap-highlight-color:transparent]" aria-disabled="true">
-					<div class="flex flex-col gap-1.5 flex-1">
-						<span class="text-sm font-medium tracking-widest uppercase leading-tight text-muted">Fotos</span>
-						<span class="text-xs tracking-wide text-muted">Documento el mundo que me rodea</span>
-					</div>
-					<span class="text-xs uppercase tracking-[0.2em] font-semibold text-muted">PRONTO</span>
-				</a>
+				<NavTile
+					href="#"
+					title="Fotos"
+					description="Documento el mundo que me rodea"
+					disabled={true}
+					disabledLabel="PRONTO"
+				/>
 
-				<a href="#" class="flex items-center justify-between border-2 border-t-0 !border-border bg-canvas text-foreground no-underline transition-all duration-150 w-full relative gap-4 py-6 px-5 md:py-7 md:px-6 cursor-not-allowed pointer-events-none [-webkit-tap-highlight-color:transparent]" aria-disabled="true">
-					<div class="flex flex-col gap-1.5 flex-1">
-						<span class="text-sm font-medium tracking-widest uppercase leading-tight text-muted">VIDEOS</span>
-						<span class="text-xs tracking-wide text-muted">Documento mi experiencia humana</span>
-					</div>
-					<span class="text-xs uppercase tracking-[0.2em] font-semibold text-muted">PRONTO</span>
-				</a>
+				<NavTile
+					href="#"
+					title="VIDEOS"
+					description="Documento mi experiencia humana"
+					disabled={true}
+					disabledLabel="PRONTO"
+				/>
 			</nav>
 		</div>
 	</main>

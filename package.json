@@ -1,16 +1,36 @@
 {
   "name": "amet-alvirde",
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "playwright test",
+    "test:visual": "playwright test --grep @visual",
+    "test:update-snapshots": "playwright test --grep @visual --update-snapshots",
+    "test:a11y": "playwright test --grep @a11y",
+    "test:lighthouse": "lhci autorun 2>&1 | grep -v 'GitHub token not set' || true",
+    "test:build": "astro build && node scripts/check-perf-budget.mjs",
+    "test:pre-merge": "pnpm format:check && pnpm lint && pnpm test && pnpm test:lighthouse && pnpm test:build",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.8",
     "astro": "^5.9.0",
     "tailwindcss": "^4.1.8"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
+    "@biomejs/biome": "^2.4.6",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.58.2",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "eslint": "^10.0.2"
   }
 }

@@ -37,7 +37,8 @@
   --color-canvas: var(--bg-primary);
   --color-surface: var(--bg-surface);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-as-surface: var(--accent-as-surface);
+  --color-accent-as-surface-foreground: var(--accent-as-surface-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
   --color-background: var(--background);
@@ -102,21 +103,15 @@
   --text-faint: #7a8e84;
   --text-faint: oklch(58% 0.018 140);
   --accent: var(--solarized-green);
+  --accent-as-surface: var(--accent);
+  --accent-as-surface-foreground: var(--accent-foreground);
 
   /* --- Base layer for body/background ------------------------------------ */
   --background: var(--bg-primary);
   --foreground: var(--text-primary);
   --border: color-mix(in oklch, var(--bg-surface) 85%, var(--text-faint) 15%);
   --ring: var(--accent);
-
-  /* --- Compatibility aliases (amet-alvirde legacy) ----------------------- */
-  --accent-color: var(--accent);
   --accent-foreground: var(--margarita-neutral-cross);
-  --border-color: var(--border);
-  --selection-bg: var(--accent);
-  --selection-text: var(--accent-foreground);
-  --bg-secondary: var(--bg-surface);
-  --text-secondary: var(--text-muted);
 }
 
 .dark {
@@ -148,21 +143,17 @@
   --text-muted: var(--solarized-base1);
   --text-faint: var(--solarized-base01);
   --accent: var(--solarized-green);
+  /* Accent as surface: use L 42% (light-mode) colors for sufficient contrast when
+     light text sits on accent background over dark page. */
+  --accent-as-surface: oklch(42% 0.13 118.8);
+  --accent-as-surface-foreground: var(--margarita-neutral-cross);
 
   /* --- Base layer -------------------------------------------------------- */
   --background: var(--bg-primary);
   --foreground: var(--text-primary);
   --border: color-mix(in oklch, var(--bg-surface) 80%, var(--text-faint) 20%);
   --ring: var(--accent);
-
-  /* --- Compatibility aliases --------------------------------------------- */
-  --accent-color: var(--accent);
   --accent-foreground: var(--margarita-neutral-cross);
-  --border-color: var(--border);
-  --selection-bg: var(--accent);
-  --selection-text: var(--accent-foreground);
-  --bg-secondary: var(--bg-surface);
-  --text-secondary: var(--text-muted);
 }
 
 @layer base {
@@ -181,12 +172,12 @@
     overflow: auto;
   }
   ::selection {
-    background-color: var(--selection-bg);
-    color: var(--selection-text);
+    background-color: var(--accent-as-surface);
+    color: var(--accent-as-surface-foreground);
   }
   ::-moz-selection {
-    background-color: var(--selection-bg);
-    color: var(--selection-text);
+    background-color: var(--accent-as-surface);
+    color: var(--accent-as-surface-foreground);
   }
   * {
     font-family:
@@ -214,5 +205,31 @@
   select,
   textarea {
     box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .icon-button--active {
+    @apply bg-accent-as-surface text-accent-as-surface-foreground border-accent-as-surface;
+  }
+
+  /* Selected theme: must override base icon-button bg-canvas */
+  [data-theme-preference="system"] #system-theme-button,
+  [data-theme-preference="light"] #light-theme-button,
+  [data-theme-preference="dark"] #dark-theme-button {
+    background-color: var(--accent-as-surface) !important;
+    color: var(--accent-as-surface-foreground) !important;
+    border-color: var(--accent-as-surface) !important;
   }
 }
