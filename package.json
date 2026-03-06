@@ -13,7 +13,8 @@
     "test:a11y": "playwright test --grep @a11y",
     "test:lighthouse": "lhci autorun 2>&1 | grep -v 'GitHub token not set' || true",
     "test:build": "astro build && node scripts/check-perf-budget.mjs",
-    "test:pre-merge": "pnpm format:check && pnpm lint && pnpm test && pnpm test:lighthouse && pnpm test:build",
+    "test:unit": "vitest run",
+    "test:pre-merge": "pnpm format:check && pnpm lint && pnpm test:unit && pnpm test && pnpm test:lighthouse && pnpm test:build",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint": "eslint .",
@@ -31,6 +32,8 @@
     "@playwright/test": "^1.58.2",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
     "@typescript-eslint/parser": "^8.56.1",
-    "eslint": "^10.0.2"
+    "eslint": "^10.0.2",
+    "happy-dom": "^20.8.3",
+    "vitest": "^4.0.18"
   }
 }

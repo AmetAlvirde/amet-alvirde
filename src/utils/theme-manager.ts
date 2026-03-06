@@ -10,6 +10,8 @@ type ThemeElements = {
   monogram: HTMLElement | null;
 };
 
+let themeElements: ThemeElements | null = null;
+
 // DOM element selectors
 const SELECTORS = {
   lightThemeButton: "#light-theme-button",
@@ -36,6 +38,14 @@ const safeLocalStorageSet = (key: string, value: string): void => {
   }
 };
 
+const getStoredPreferenceFromLocalStorage = (): ThemePreference => {
+  const stored = safeLocalStorageGet("theme");
+  if (stored === "light" || stored === "dark" || stored === "system") {
+    return stored;
+  }
+  return "system";
+};
+
 // Core theme functions (coordinated with inline script)
 const getSystemTheme = (): ActualTheme =>
   window.matchMedia?.("(prefers-color-scheme: dark)").matches
@@ -46,12 +56,21 @@ const getActualTheme = (preference: ThemePreference): ActualTheme =>
   preference === "system" ? getSystemTheme() : (preference as ActualTheme);
 
 // Read current state (set by inline script or previous interactions)
-const getCurrentPreference = (): ThemePreference =>
-  (document.documentElement.getAttribute(
+const getCurrentPreference = (): ThemePreference => {
+  const attributePreference = document.documentElement.getAttribute(
     "data-theme-preference",
-  ) as ThemePreference) ||
-  (safeLocalStorageGet("theme") as ThemePreference) ||
-  "system";
+  );
+
+  if (
+    attributePreference === "light" ||
+    attributePreference === "dark" ||
+    attributePreference === "system"
+  ) {
+    return attributePreference;
+  }
+
+  return getStoredPreferenceFromLocalStorage();
+};
 
 const getCurrentTheme = (): ActualTheme | null =>
   document.documentElement.getAttribute("data-theme") as ActualTheme | null;
@@ -61,14 +80,14 @@ const getRequiredElements = (): ThemeElements => {
   const elements: ThemeElements = {
     lightThemeButton: document.querySelector(
       SELECTORS.lightThemeButton,
-    ) as HTMLButtonElement | null,
+    ) as HTMLButtonElement,
     systemThemeButton: document.querySelector(
       SELECTORS.systemThemeButton,
-    ) as HTMLButtonElement | null,
+    ) as HTMLButtonElement,
     darkThemeButton: document.querySelector(
       SELECTORS.darkThemeButton,
-    ) as HTMLButtonElement | null,
-    monogram: document.querySelector(SELECTORS.monogram),
+    ) as HTMLButtonElement,
+    monogram: document.querySelector(SELECTORS.monogram) as HTMLElement | null,
   };
 
   const missingElements = [
@@ -155,11 +174,23 @@ const updateThemeUI = (
   elements: ThemeElements,
 ): void => {
   const actualTheme = getActualTheme(preference);
-
   updateDocumentAttributes(preference, actualTheme);
   updateThemeIcons(actualTheme, elements);
   updateFavicon(actualTheme);
   updateButtonStates(preference, elements);
+};
+
+const syncThemeFromStorage = (): void => {
+  const preference = getStoredPreferenceFromLocalStorage();
+  const actualTheme = getActualTheme(preference);
+
+  updateDocumentAttributes(preference, actualTheme);
+  updateFavicon(actualTheme);
+
+  if (themeElements) {
+    updateThemeIcons(actualTheme, themeElements);
+    updateButtonStates(preference, themeElements);
+  }
 };
 
 // User action handlers
@@ -234,6 +265,7 @@ const setupEventListeners = (elements: ThemeElements): void => {
 export const initializeThemeManager = (): void => {
   try {
     const elements = getRequiredElements();
+    themeElements = elements;
     const currentPreference = getCurrentPreference();
 
     // Sync UI with current state (inline script already set the theme)
@@ -245,6 +277,12 @@ export const initializeThemeManager = (): void => {
     console.error("Failed to initialize theme manager:", error);
   }
 };
+
+if (typeof window !== "undefined") {
+  window.addEventListener("pageshow", () => {
+    syncThemeFromStorage();
+  });
+}
 
 // Export functions for external use
 export {

@@ -6,6 +6,7 @@ Use it as a guide during refactors: if a test starts failing, this explains what
 
 We group tests into:
 
+- Unit tests (Vitest, colocated with source files)
 - Visual regression tests (Playwright)
 - Accessibility tests (Playwright + axe-core)
 - Lighthouse audits (performance, a11y, best practices, SEO)
@@ -248,6 +249,7 @@ How to Use This Baseline During Refactors
 
 - **After refactors**
   - Re‑run:
+    - `pnpm test:unit` to quickly validate colocated unit tests (e.g. `src/utils/theme-manager.test.ts`).
     - `pnpm test:visual` to confirm no unwanted visual regressions.
     - `pnpm test:a11y` to keep axe‑based accessibility clean.
     - `pnpm test:lighthouse` to compare category scores against the 100/100 baseline.
@@ -259,3 +261,26 @@ How to Use This Baseline During Refactors
     - Decide whether to:
       - Fix a regression to restore the current baseline, or
       - Intentionally accept a new behavior and update snapshots/budgets/config accordingly.
+
+---
+
+Unit Tests (Vitest)
+-------------------
+
+- **What we test**
+  - Colocated unit tests that live next to the code they exercise. For example:
+    - `src/utils/theme-manager.ts`
+    - `src/utils/theme-manager.test.ts`
+  - These tests focus on:
+    - Module-level logic (e.g. how theme preferences map to actual themes).
+    - DOM updates performed by a specific utility or component in isolation.
+- **How we run it**
+  - `pnpm test:unit`
+- **Where tests live**
+  - Unit tests are **usually placed alongside the file they test** under `src/`.
+  - The top-level `tests/` folder is reserved for **broader app-level tests**, such as:
+    - Visual regression tests in `tests/visual.spec.ts`.
+    - Accessibility tests in `tests/a11y.spec.ts`.
+- **Why this test exists**
+  - Provides fast feedback on small, focused pieces of logic without needing to run a full browser or build the site.
+  - Makes it easier to refactor internals (like theme management) while keeping a tight safety net around core behavior.
