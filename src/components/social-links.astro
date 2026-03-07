@@ -1,9 +1,17 @@
 ---
 import IconButton from "./icon-button.astro";
+
+interface Props {
+  /** When "inherit", blends with parent (uses parent bg/foreground) */
+  variant?: "default" | "inherit";
+}
+
+const { variant = "default" } = Astro.props;
 ---
 
-<div id="social-links" class="flex gap-2 mt-6">
+<div id="social-links" class={`flex gap-2 ${variant === "inherit" ? "mt-0" : "mt-6"}`}>
 	<IconButton
+		variant={variant}
 		as="a"
 		href="https://twitter.com/ametalvirde"
 		target="_blank"
@@ -16,6 +24,7 @@ import IconButton from "./icon-button.astro";
 	</IconButton>
 	
 	<IconButton
+		variant={variant}
 		as="a"
 		href="https://www.instagram.com/ametalvirde/"
 		target="_blank"
@@ -28,6 +37,7 @@ import IconButton from "./icon-button.astro";
 	</IconButton>
 	
 	<IconButton
+		variant={variant}
 		as="a"
 		href="https://www.tiktok.com/@ametalvirde"
 		target="_blank"

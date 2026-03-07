@@ -1,0 +1,13 @@
+---
+import SocialLinks from "./social-links.astro";
+---
+
+<footer
+	class="w-full px-4 py-3 flex justify-between items-center mt-auto text-foreground bg-background"
+	role="contentinfo"
+>
+	<small class="text-foreground text-xs">&copy; {new Date().getFullYear()} Amet Alvirde</small>
+	<div>
+		<SocialLinks variant="inherit" />
+	</div>
+</footer>

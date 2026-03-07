@@ -230,6 +230,6 @@
   [data-theme-preference="dark"] #dark-theme-button {
     background-color: var(--accent-as-surface) !important;
     color: var(--accent-as-surface-foreground) !important;
-    border-color: var(--accent-as-surface) !important;
+    border-width: 0;
   }
 }
