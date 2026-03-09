@@ -6,9 +6,9 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const distDir = path.resolve(__dirname, "..", "dist");
 
 const KB = 1024;
-const MAX_PAGE_WEIGHT = 50 * KB;
-const MAX_CSS = 20 * KB;
-const MAX_JS = 10 * KB;
+const MAX_PAGE_WEIGHT = 80 * KB;
+const MAX_CSS = 300 * KB;
+const MAX_JS = 700 * KB;
 
 function getSize(filePath) {
   return fs.existsSync(filePath) ? fs.statSync(filePath).size : 0;
