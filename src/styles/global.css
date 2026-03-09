@@ -4,6 +4,7 @@
  * Site-specific styles live in site.css.
  */
 @import "tailwindcss";
+@import "@phosphor-icons/web/regular";
 
 @custom-variant dark (&:is(.dark *));
 @theme {

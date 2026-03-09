@@ -1,6 +1,5 @@
 ---
 import IconButton from "./icon-button.astro";
-import { Monitor, Sun, Moon } from "@lucide/astro";
 ---
 
 <div id="theme-controls" class="flex gap-2">
@@ -10,7 +9,7 @@ import { Monitor, Sun, Moon } from "@lucide/astro";
 		title="Tema del sistema"
 		variant="borderless"
 	>
-		<Monitor size={16} class="shrink-0" />
+		<i class="ph ph-monitor shrink-0 text-xl" aria-hidden="true"></i>
 	</IconButton>
 
 	<IconButton
@@ -19,7 +18,7 @@ import { Monitor, Sun, Moon } from "@lucide/astro";
 		title="Tema claro"
 		variant="borderless"
 	>
-		<Sun size={16} class="shrink-0" />
+		<i class="ph ph-sun shrink-0 text-xl" aria-hidden="true"></i>
 	</IconButton>
 
 	<IconButton
@@ -28,7 +27,7 @@ import { Monitor, Sun, Moon } from "@lucide/astro";
 		title="Tema oscuro"
 		variant="borderless"
 	>
-		<Moon size={16} class="shrink-0" />
+		<i class="ph ph-moon shrink-0 text-xl" aria-hidden="true"></i>
 	</IconButton>
 </div>
 
