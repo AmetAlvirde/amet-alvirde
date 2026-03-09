@@ -19,7 +19,9 @@
       "!**/dist",
       "!**/node_modules",
       "!**/.astro",
-      "!**/*.lighthouseci"
+      "!**/*.lighthouseci",
+      "!**/.pnpm-store",
+      "!**/test-results"
     ]
   }
 }
