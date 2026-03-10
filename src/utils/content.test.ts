@@ -104,7 +104,7 @@ describe("content", () => {
     });
 
     it("returns first read when none is favorite", () => {
-      const readsNoFavorite: Read[] = mockReads.map((r) => ({
+      const readsNoFavorite: Read[] = mockReads.map(r => ({
         ...r,
         isFavorite: false,
       }));

@@ -79,7 +79,7 @@ export default function ReadingControls({
           }`}
           tabIndex={prevSlug ? 0 : -1}
         >
-          <i class="ph ph-caret-left text-xl" aria-hidden="true" />
+          <i className="ph ph-caret-left text-xl" aria-hidden="true" />
         </a>
         <a
           href={nextSlug ? `${basePath}/${nextSlug}` : undefined}
@@ -92,14 +92,14 @@ export default function ReadingControls({
           }`}
           tabIndex={nextSlug ? 0 : -1}
         >
-          <i class="ph ph-caret-right text-xl" aria-hidden="true" />
+          <i className="ph ph-caret-right text-xl" aria-hidden="true" />
         </a>
         {currentRead.isFavorite && (
           <span
             className="inline-flex p-2 text-accent"
             aria-label="Favorito del autor"
           >
-            <i class="ph-fill ph-star text-xl" aria-hidden="true" />
+            <i className="ph-fill ph-star text-xl" aria-hidden="true" />
           </span>
         )}
         <button
@@ -108,7 +108,7 @@ export default function ReadingControls({
           aria-label="Compartir enlace"
           className="inline-flex p-2 border-2 border-accent text-accent hover:bg-accent/10 transition-colors focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
         >
-          <i class="ph ph-share-network text-xl" aria-hidden="true" />
+          <i className="ph ph-share-network text-xl" aria-hidden="true" />
         </button>
         {shareConfirmation && (
           <span
