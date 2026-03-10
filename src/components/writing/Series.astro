@@ -1,0 +1,51 @@
+---
+import type { Series as SeriesType } from "../../utils/content";
+
+interface Props {
+  series: SeriesType;
+  active: boolean;
+  currentSeriesSlug?: string;
+}
+
+const { series, active } = Astro.props;
+const isActive = active && series.active;
+---
+
+{isActive ? (
+	<a
+		href={`/writing/${series.slug}`}
+		class="flex flex-col shrink-0 w-24 snap-start scroll-ml-6 overflow-hidden rounded border-2 border-accent bg-surface transition-colors [@media(hover:hover)]:hover:border-accent/80"
+		data-series={series.slug}
+		data-testid="series-item"
+	>
+		<img
+			src={series.image}
+			alt=""
+			class="aspect-square w-full object-cover"
+			width="96"
+			height="96"
+		/>
+		<span class="p-2 text-xs font-medium text-foreground truncate">
+			{series.title}
+		</span>
+	</a>
+) : (
+	<div
+		class="flex flex-col shrink-0 w-24 snap-start overflow-hidden rounded opacity-30 grayscale cursor-default pointer-events-none select-none"
+		data-series={series.slug}
+		data-testid="series-item"
+		title="Próximamente"
+	>
+		<img
+			src={series.image}
+			alt=""
+			class="aspect-square w-full object-cover"
+			width="96"
+			height="96"
+			aria-hidden="true"
+		/>
+		<span class="p-2 text-xs font-medium text-muted truncate">
+			{series.title}
+		</span>
+	</div>
+)}

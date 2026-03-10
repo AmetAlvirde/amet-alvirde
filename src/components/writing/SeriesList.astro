@@ -1,0 +1,27 @@
+---
+import Series from "./Series.astro";
+import type { Series as SeriesType } from "../../utils/content";
+
+interface Props {
+  seriesList: SeriesType[];
+  activeSeriesSlug?: string;
+}
+
+const { seriesList, activeSeriesSlug } = Astro.props;
+---
+
+<nav
+	class="overflow-x-auto overscroll-x-contain snap-x snap-mandatory -mx-6 px-6 lg:-mx-12 lg:px-12"
+	data-testid="series-list"
+	aria-label="Series de lectura"
+>
+	<div class="flex gap-4 py-4 w-max min-w-full">
+		{seriesList.map((series) => (
+			<Series
+				series={series}
+				active={series.slug === activeSeriesSlug}
+				currentSeriesSlug={activeSeriesSlug}
+			/>
+		))}
+	</div>
+</nav>

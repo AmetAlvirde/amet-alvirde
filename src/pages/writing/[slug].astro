@@ -1,0 +1,141 @@
+---
+import BaseLayout from "../../layouts/base-layout.astro";
+import Navigation from "../../components/Navigation.astro";
+import Cartouche from "../../components/cartouche.astro";
+import ReadContent from "../../components/writing/ReadContent.astro";
+import ReadFooter from "../../components/writing/ReadFooter.astro";
+import SeriesList from "../../components/writing/SeriesList.astro";
+import ReadingControls from "../../components/writing/ReadingControls.tsx";
+import SeriesIndex from "../../components/writing/SeriesIndex.astro";
+import { getEntry, render } from "astro:content";
+import {
+  getSeries,
+  getReads,
+  getReadsBySeries,
+  getSeriesBySlug,
+} from "../../utils/content";
+
+export async function getStaticPaths() {
+  const seriesList = await getSeries();
+  const reads = await getReads();
+
+  const seriesPaths = seriesList.map((series) => ({
+    params: { slug: series.slug },
+    props: { type: "series" as const, series },
+  }));
+
+  const readPaths = reads.map((read) => ({
+    params: { slug: read.slug },
+    props: { type: "read" as const, read },
+  }));
+
+  return [...seriesPaths, ...readPaths];
+}
+
+const { type, series, read } = Astro.props;
+
+let displayRead = read;
+let activeSeriesSlug =
+  type === "read" && read
+    ? read.seriesSlug
+    : type === "series" && series
+      ? series.slug
+      : undefined;
+const [seriesList, allReads] = await Promise.all([getSeries(), getReads()]);
+
+let readsInSeries: Awaited<ReturnType<typeof getReads>> = [];
+let displaySeries =
+  series ??
+  (activeSeriesSlug ? getSeriesBySlug(seriesList, activeSeriesSlug) : null);
+
+if (type === "series" && series) {
+  readsInSeries = getReadsBySeries(allReads, series.reads);
+  displayRead = readsInSeries[0];
+} else if (displayRead && displaySeries) {
+  readsInSeries = getReadsBySeries(allReads, displaySeries.reads);
+}
+
+const currentIndex = displayRead
+  ? readsInSeries.findIndex((r) => r.slug === displayRead.slug)
+  : -1;
+
+if (!displayRead) {
+  if (type === "series") {
+    return Astro.redirect("/writing");
+  }
+  return Astro.redirect("/404");
+}
+
+const entry = await getEntry("reads", displayRead.slug);
+if (!entry) {
+  return Astro.redirect("/404");
+}
+const { Content } = await render(entry);
+
+const SITE_URL = "https://www.ametalvirde.com";
+const pageTitle =
+  type === "series" && displaySeries
+    ? `${displaySeries.title} — Amet Alvirde`
+    : `${displayRead.title} — Amet Alvirde`;
+const pageDescription =
+  type === "series" && displaySeries
+    ? `Serie: ${displaySeries.title}. Lecturas de Amet Alvirde.`
+    : `${displayRead.title}. ${displayRead.date}. Lectura de Amet Alvirde.`;
+const pageUrl = `${SITE_URL}/writing/${type === "series" ? Astro.params.slug : displayRead.slug}`;
+const pageImage = displaySeries
+  ? displaySeries.image.startsWith("http")
+    ? displaySeries.image
+    : `${SITE_URL}${displaySeries.image.startsWith("/") ? "" : "/"}${displaySeries.image}`
+  : "https://www.ametalvirde.com/monogram-dark-mode.svg";
+---
+
+<BaseLayout
+	title={pageTitle}
+	description={pageDescription}
+	ogUrl={pageUrl}
+	ogImage={pageImage}
+	canonical={pageUrl}
+>
+	<Navigation />
+
+	<main id="main-content" class="min-w-[300px] w-full max-w-7xl mx-auto px-6 lg:px-12 pt-20">
+		<div class="max-w-4xl mx-auto">
+			<SeriesList
+				seriesList={seriesList}
+				activeSeriesSlug={activeSeriesSlug}
+			/>
+			<div class="mb-8 max-w-[70ch] mx-auto">
+				<Cartouche
+					variant="section"
+					subtitle={displayRead.title.toLowerCase()}
+					monogramFill="var(--accent)"
+				/>
+			</div>
+
+			{displaySeries && currentIndex >= 0 && (
+				<ReadingControls
+					client:load
+					series={displaySeries}
+					reads={readsInSeries}
+					currentIndex={currentIndex}
+				/>
+			)}
+
+			{type === "series" && readsInSeries.length > 0 && (
+				<SeriesIndex
+					reads={readsInSeries}
+					currentReadSlug={displayRead.slug}
+				/>
+			)}
+
+			<ReadContent>
+				<Content />
+			</ReadContent>
+
+			<ReadFooter
+				sourceUrl={displayRead.sourceUrl}
+				recommendations={displayRead.recommendations}
+			/>
+		</div>
+	</main>
+</BaseLayout>

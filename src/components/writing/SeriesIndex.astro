@@ -1,0 +1,43 @@
+---
+import type { Read } from "../../utils/content";
+
+interface Props {
+  reads: Read[];
+  currentReadSlug: string;
+}
+
+const { reads, currentReadSlug } = Astro.props;
+---
+
+<nav
+	class="mb-8"
+	data-testid="series-index"
+	aria-label="Índice de lecturas"
+>
+	<ol class="flex flex-col gap-2 list-none p-0 m-0">
+		{reads.map((read, i) => {
+			const isCurrent = read.slug === currentReadSlug;
+			const num = String(i + 1).padStart(2, "0");
+			return (
+				<li key={read.slug}>
+					<a
+						href={`/writing/${read.slug}`}
+						class={`block py-2 text-sm transition-colors [@media(hover:hover)]:hover:text-accent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 ${
+							isCurrent ? "text-accent font-medium" : "text-foreground"
+						}`}
+						data-current-read={isCurrent ? "true" : undefined}
+					>
+						<span class="font-mono text-muted mr-2">{num}</span>
+						{read.title}
+						<span class="text-muted ml-2">— {read.date}</span>
+						{read.isFavorite && (
+							<span class="ml-2 text-accent" aria-label="Favorito del autor">
+								<i class="ph-fill ph-star text-sm" aria-hidden="true" />
+							</span>
+						)}
+					</a>
+				</li>
+			);
+		})}
+	</ol>
+</nav>

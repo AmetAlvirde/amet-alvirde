@@ -4,7 +4,12 @@ module.exports = {
   ci: {
     collect: {
       startServerCommand: "pnpm build && pnpm preview --port 4173",
-      url: ["http://localhost:4173/", "http://localhost:4173/writing/"],
+      url: [
+        "http://localhost:4173/",
+        "http://localhost:4173/writing/",
+        "http://localhost:4173/writing/mantra-2",
+        "http://localhost:4173/writing/mantras",
+      ],
       numberOfRuns: 1,
     },
     assert: {

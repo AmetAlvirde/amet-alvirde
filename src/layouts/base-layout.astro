@@ -1,15 +1,22 @@
 ---
 import "../styles/global.css";
+import { ViewTransitions } from "astro:transitions";
 import Footer from "../components/Footer.astro";
 
 interface Props {
   title?: string;
   description?: string;
+  ogUrl?: string;
+  ogImage?: string;
+  canonical?: string;
 }
 
 const {
   title = "Amet Alvirde",
   description = "Experiencia humana polímata viviendo un sistema de múltiples consciencias a través del ininterrumpido, inevitable e irreversible viaje hacia mi destino.",
+  ogUrl = "https://www.ametalvirde.com/",
+  ogImage = "https://www.ametalvirde.com/monogram-dark-mode.svg",
+  canonical = "https://www.ametalvirde.com/",
 } = Astro.props;
 ---
 
@@ -58,18 +65,18 @@ const {
 		</script>
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://www.ametalvirde.com/" />
+		<meta property="og:url" content={ogUrl} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content="https://www.ametalvirde.com/monogram-dark-mode.svg" />
+		<meta property="og:image" content={ogImage} />
 		<meta property="og:locale" content="es_MX" />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content="https://www.ametalvirde.com/" />
+		<meta property="twitter:url" content={ogUrl} />
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={description} />
-		<meta property="twitter:image" content="https://www.ametalvirde.com/monogram-dark-mode.svg" />
+		<meta property="twitter:image" content={ogImage} />
 
 		<!-- Structured Data -->
 		<script type="application/ld+json">
@@ -102,7 +109,7 @@ const {
 		</style>
 
 		<!-- Canonical URL -->
-		<link rel="canonical" href="https://www.ametalvirde.com/" />
+		<link rel="canonical" href={canonical} />
 	</head>
 	<body class="min-h-[100dvh] flex flex-col items-center">
 		<div class="flex-1 flex flex-col w-full">
@@ -117,6 +124,7 @@ const {
 		</div>
 
 		<Footer />
+		<ViewTransitions />
 
 		<script>
 			import { initializeThemeManager } from '../utils/theme-manager.ts';

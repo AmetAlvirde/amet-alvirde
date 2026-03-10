@@ -1,0 +1,40 @@
+---
+import type { RecommendedRead } from "../../utils/content";
+
+interface Props {
+  sourceUrl: string;
+  recommendations: RecommendedRead[];
+}
+
+const { sourceUrl, recommendations } = Astro.props;
+---
+
+<div class="mb-4 max-w-[70ch] mx-auto flex flex-col gap-4">
+	<div class="flex justify-center sm:justify-end sm:pr-4">
+		<a
+			href={sourceUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="text-accent text-sm font-medium hover:underline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+		>
+			Lee el original en el Mapa Público →
+		</a>
+	</div>
+	{recommendations.length > 0 && (
+		<p class="text-muted text-sm max-w-[70ch] mx-auto">
+			Quizá te interese leer
+			{recommendations.map((rec, i) => (
+				<>
+					{i === 0 ? " " : i === recommendations.length - 1 ? " o " : ", "}
+					<a
+						href={`/writing/${rec.slug}`}
+						class="text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+					>
+						{rec.title}
+					</a>
+					{i === recommendations.length - 1 ? "." : ""}
+				</>
+			))}
+		</p>
+	)}
+</div>

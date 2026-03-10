@@ -221,6 +221,12 @@
 }
 
 @layer components {
+  .read-body p {
+    @apply text-base md:text-lg leading-relaxed text-foreground;
+  }
+  .read-body p:first-child {
+    @apply font-bold;
+  }
   .icon-button--active {
     @apply bg-accent-as-surface text-accent-as-surface-foreground border-accent-as-surface;
   }

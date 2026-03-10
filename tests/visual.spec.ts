@@ -1,6 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-const pages = ["/", "/writing"] as const;
+const pages = [
+  "/",
+  "/writing",
+  "/writing/mantra-2",
+  "/writing/mantras",
+] as const;
 
 const viewports = [
   { name: "xs", width: 320, height: 800 },
@@ -34,7 +39,8 @@ for (const pagePath of pages) {
 
         await page.goto(pagePath, { waitUntil: "networkidle" });
 
-        const fileSafePath = pagePath === "/" ? "home" : "writing";
+        const fileSafePath =
+          pagePath.replace(/^\//, "").replace(/\//g, "-") || "home";
         await expect(page).toHaveScreenshot(
           `page-${fileSafePath}-${theme}-${viewport.name}.png`,
           { fullPage: true },

@@ -6,7 +6,7 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const distDir = path.resolve(__dirname, "..", "dist");
 
 const KB = 1024;
-const MAX_PAGE_WEIGHT = 80 * KB;
+const MAX_PAGE_WEIGHT = 120 * KB;
 const MAX_CSS = 300 * KB;
 const MAX_JS = 700 * KB;
 
@@ -35,10 +35,8 @@ if (!fs.existsSync(distDir)) {
   process.exit(1);
 }
 
-const indexHtml = path.join(distDir, "index.html");
-const writingHtml = path.join(distDir, "writing", "index.html");
-
-const totalHtmlBytes = getSize(indexHtml) + getSize(writingHtml);
+const htmlFiles = walk(distDir).filter((f) => f.endsWith(".html"));
+const totalHtmlBytes = htmlFiles.reduce((sum, f) => sum + getSize(f), 0);
 
 let totalCssBytes = 0;
 let totalJsBytes = 0;

@@ -1,0 +1,16 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: extraClass } = Astro.props;
+const wrapperClass = ["flex flex-col gap-8 read-body", extraClass]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<article class="max-w-[70ch] mx-auto border-l-4 border-l-accent pl-8 pr-4 pt-0 mb-8">
+	<div class={wrapperClass}>
+		<slot />
+	</div>
+</article>

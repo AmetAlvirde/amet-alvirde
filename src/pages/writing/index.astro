@@ -2,57 +2,80 @@
 import BaseLayout from "../../layouts/base-layout.astro";
 import Navigation from "../../components/Navigation.astro";
 import Cartouche from "../../components/cartouche.astro";
-import CTA from "../../components/cta.astro";
-import SocialLinks from "../../components/social-links.astro";
+import ReadContent from "../../components/writing/ReadContent.astro";
+import ReadFooter from "../../components/writing/ReadFooter.astro";
+import SeriesList from "../../components/writing/SeriesList.astro";
+import ReadingControls from "../../components/writing/ReadingControls.tsx";
+import { getEntry, render } from "astro:content";
+import {
+  getReads,
+  getFeaturedRead,
+  getSeries,
+  getSeriesBySlug,
+  getReadsBySeries,
+} from "../../utils/content";
+
+const [reads, seriesList] = await Promise.all([getReads(), getSeries()]);
+const featured = getFeaturedRead(reads);
+if (!featured) {
+  throw new Error("No featured read found");
+}
+const entry = await getEntry("reads", featured.slug);
+if (!entry) {
+  throw new Error(`Read not found: ${featured.slug}`);
+}
+const { Content } = await render(entry);
+
+const series = getSeriesBySlug(seriesList, featured.seriesSlug);
+const readsInSeries = series ? getReadsBySeries(reads, series.reads) : [];
+const currentIndex =
+  readsInSeries.findIndex((r) => r.slug === featured.slug) ?? 0;
+
+const SITE_URL = "https://www.ametalvirde.com";
+const pageTitle = `${featured.title} — Amet Alvirde`;
+const pageUrl = `${SITE_URL}/writing/${featured.slug}`;
 ---
 
-<BaseLayout>
+<BaseLayout
+	title={pageTitle}
+	description={`${featured.title}. ${featured.date}. Lectura de Amet Alvirde.`}
+	ogUrl={pageUrl}
+	ogImage={series ? (series.image.startsWith("http") ? series.image : `${SITE_URL}${series.image.startsWith("/") ? "" : "/"}${series.image}`) : "https://www.ametalvirde.com/monogram-dark-mode.svg"}
+	canonical={pageUrl}
+>
 	<Navigation />
 
 	<main id="main-content" class="min-w-[300px] w-full max-w-7xl mx-auto px-6 lg:px-12 pt-20">
 		<div class="max-w-4xl mx-auto">
+			<SeriesList
+				seriesList={seriesList}
+				activeSeriesSlug={featured.seriesSlug}
+			/>
 			<div class="mb-8 max-w-[70ch] mx-auto">
 				<Cartouche
 					variant="section"
-					subtitle="mantra #2"
+					subtitle={featured.title.toLowerCase()}
 					monogramFill="var(--accent)"
 				/>
 			</div>
-			<article class="max-w-[70ch] mx-auto border-l-6 border-l-accent pl-8 pr-4 pt-0 mb-8">
-				<div class="flex flex-col gap-8">
-					<p class="text-base md:text-lg font-bold text-foreground leading-relaxed">
-						Elijo vivir en paz. Por eso doy lo mejor de mí, y asumo que las demás personas también.
-					</p>
-					<p class="text-foreground text-base md:text-lg leading-relaxed">
-						Dejo ir el pasado, porque es inalterable. Dejo ir el futuro, porque es impredecible. Vivo en el presente, que es una valiosa oportunidad para alinear mis acciones con quien soy. 
-					</p>
-					<p class="text-foreground text-base md:text-lg leading-relaxed">
-						Estoy en constante renacimiento. Vivo este instante como una experiencia y no como un examen
-					</p>
-					<p class="text-foreground text-base md:text-lg leading-relaxed">
-						Soy un río. Fluyo, no dudo. Confío en la corriente que lleva a mi destino. 
-					</p>
-					<p class="text-foreground text-base md:text-lg leading-relaxed">
-						Convierto los obstáculos que encuentro en parte de mi camino, y agradezco profundamente cada parte de él.
-					</p>
-					<p class="text-foreground text-base md:text-lg leading-relaxed">
-						En mi existencia, no hay día más importante que otro, porque lo que realmente importa, es la suma de las acciones que realizo en el conjunto de todos ellos.
-					</p>
-					<p class="text-foreground text-base md:text-lg leading-relaxed">
-						Éste, es el único día en el que tengo control sobre mis acciones, por eso hoy, doy lo mejor de mí, y así, es como elijo vivir en paz.
-					</p>
-				</div>
-			</article>
-			
-			<div class="mb-4 max-w-[70ch] mx-auto flex justify-center sm:justify-end sm:pr-4">
-				<CTA
-					href="https://publish.obsidian.md/amet-alvirde/Mapa+público+de+mi+consciencia"
-					external={true}
-					label="MAPA DE MI CONSCIENCIA"
+
+			{series && (
+				<ReadingControls
+					client:load
+					series={series}
+					reads={readsInSeries}
+					currentIndex={currentIndex >= 0 ? currentIndex : 0}
 				/>
-			</div>
-			
+			)}
+
+			<ReadContent>
+				<Content />
+			</ReadContent>
+
+			<ReadFooter
+				sourceUrl={featured.sourceUrl}
+				recommendations={featured.recommendations}
+			/>
 		</div>
 	</main>
 </BaseLayout>
-
