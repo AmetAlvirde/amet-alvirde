@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../../layouts/base-layout.astro";
 import Navigation from "../../components/Navigation.astro";
-import Cartouche from "../../components/cartouche.astro";
 import ReadContent from "../../components/writing/ReadContent.astro";
 import ReadFooter from "../../components/writing/ReadFooter.astro";
 import SeriesList from "../../components/writing/SeriesList.astro";
@@ -104,21 +103,15 @@ const pageImage = displaySeries
 				seriesList={seriesList}
 				activeSeriesSlug={activeSeriesSlug}
 			/>
-			<div class="mb-8 max-w-[70ch] mx-auto">
-				<Cartouche
-					variant="section"
-					subtitle={displayRead.title.toLowerCase()}
-					monogramFill="var(--accent)"
-				/>
-			</div>
-
 			{displaySeries && currentIndex >= 0 && (
-				<ReadingControls
-					client:load
-					series={displaySeries}
-					reads={readsInSeries}
-					currentIndex={currentIndex}
-				/>
+				<div class="max-w-[70ch] mx-auto">
+					<ReadingControls
+						client:load
+						series={displaySeries}
+						reads={readsInSeries}
+						currentIndex={currentIndex}
+					/>
+				</div>
 			)}
 
 			{type === "series" && readsInSeries.length > 0 && (

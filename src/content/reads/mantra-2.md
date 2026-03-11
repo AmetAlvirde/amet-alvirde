@@ -1,13 +1,13 @@
 ---
 slug: mantra-2
 seriesSlug: mantras
-title: Mantra #2
+title: "Mantra #2"
 date: Enero de 2026
 isFavorite: true
 sourceUrl: https://publish.obsidian.md/amet-alvirde/Mapa+público+de+mi+consciencia
 recommendations:
-  - title: Mantra #1
-    slug: mantra-1
+  - title: "Mantra #2"
+    slug: mantra-2
 ---
 
 Elijo vivir en paz. Por eso doy lo mejor de mí, y asumo que las demás personas también.

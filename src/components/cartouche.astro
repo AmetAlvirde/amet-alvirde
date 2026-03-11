@@ -21,7 +21,7 @@ const isHero = variant === "hero";
         {subtitle}
       </p>
     </div>
-    <MonogramDisplay inline forceDark />
+    <MonogramDisplay inline fill="var(--accent)" />
   </div>
 ) : (
   <div class="flex items-center justify-between text-accent no-underline transition-all duration-150 w-full relative gap-4 py-4 cursor-default mb-2 pointer-events-none touch-none pr-2 md:py-10 md:pr-1">
@@ -33,7 +33,7 @@ const isHero = variant === "hero";
         {subtitle}
       </p>
     </div>
-    <MonogramDisplay inline forceDark fill={monogramFill} />
+    <MonogramDisplay inline fill="var(--accent)" />
   </div>
 )}
 

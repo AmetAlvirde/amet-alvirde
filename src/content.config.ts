@@ -14,6 +14,7 @@ const series = defineCollection({
     image: z.string(),
     active: z.boolean(),
     reads: z.array(z.string()),
+    order: z.number().optional(),
   }),
 });
 

@@ -25,12 +25,22 @@ export type Read = {
 
 export async function getSeries(): Promise<Series[]> {
   const entries = await getCollection("series");
-  return entries.map((e) => ({
+  const withOrder = entries.map((e) => ({
     slug: e.data.slug ?? e.id,
     title: e.data.title,
     image: e.data.image,
     active: e.data.active,
     reads: e.data.reads,
+    order: e.data.order ?? Infinity,
+  }));
+  return withOrder
+  .sort((a, b) => a.order - b.order)
+  .map(({ slug, title, image, active, reads }) => ({
+    slug,
+    title,
+    image,
+    active,
+    reads,
   }));
 }
 

@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../../layouts/base-layout.astro";
 import Navigation from "../../components/Navigation.astro";
-import Cartouche from "../../components/cartouche.astro";
 import ReadContent from "../../components/writing/ReadContent.astro";
 import ReadFooter from "../../components/writing/ReadFooter.astro";
 import SeriesList from "../../components/writing/SeriesList.astro";
@@ -51,21 +50,15 @@ const pageUrl = `${SITE_URL}/writing/${featured.slug}`;
 				seriesList={seriesList}
 				activeSeriesSlug={featured.seriesSlug}
 			/>
-			<div class="mb-8 max-w-[70ch] mx-auto">
-				<Cartouche
-					variant="section"
-					subtitle={featured.title.toLowerCase()}
-					monogramFill="var(--accent)"
-				/>
-			</div>
-
 			{series && (
-				<ReadingControls
-					client:load
-					series={series}
-					reads={readsInSeries}
-					currentIndex={currentIndex >= 0 ? currentIndex : 0}
-				/>
+				<div class="max-w-[70ch] mx-auto">
+					<ReadingControls
+						client:load
+						series={series}
+						reads={readsInSeries}
+						currentIndex={currentIndex >= 0 ? currentIndex : 0}
+					/>
+				</div>
 			)}
 
 			<ReadContent>
