@@ -9,6 +9,17 @@ test.describe("SeriesList and Series", () => {
     await expect(seriesItems.first()).toBeVisible();
   });
 
+  test("series appear in order by order property (Mantras, Ensayos, Haikus)", async ({
+    page,
+  }) => {
+    await page.goto("/writing", { waitUntil: "networkidle" });
+    const seriesItems = page.locator('[data-series]');
+    await expect(seriesItems).toHaveCount(3);
+    await expect(seriesItems.nth(0)).toHaveAttribute("data-series", "mantras");
+    await expect(seriesItems.nth(1)).toHaveAttribute("data-series", "ensayos");
+    await expect(seriesItems.nth(2)).toHaveAttribute("data-series", "haikus");
+  });
+
   test("active series has accent indicator", async ({ page }) => {
     await page.goto("/writing", { waitUntil: "networkidle" });
     const mantrasLink = page.locator(

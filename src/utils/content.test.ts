@@ -1,8 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   getFeaturedRead,
   getReadBySlug,
   getReadsBySeries,
+  getSeries,
   getSeriesBySlug,
 } from "./content";
 import type { Read, Series } from "./content";
@@ -45,7 +46,103 @@ const mockReads: Read[] = [
   },
 ];
 
+vi.mock("astro:content", () => ({
+  getCollection: vi.fn().mockImplementation((coll: string) => {
+    if (coll === "series") {
+      return Promise.resolve([
+        {
+          id: "ensayos",
+          data: {
+            slug: "ensayos",
+            title: "Ensayos",
+            image: "/series/ensayos.svg",
+            active: false,
+            reads: [],
+            order: 2,
+          },
+        },
+        {
+          id: "haikus",
+          data: {
+            slug: "haikus",
+            title: "Haikus",
+            image: "/series/haikus.svg",
+            active: false,
+            reads: [],
+            order: 3,
+          },
+        },
+        {
+          id: "mantras",
+          data: {
+            slug: "mantras",
+            title: "Mantras",
+            image: "/series/mantras.svg",
+            active: true,
+            reads: ["mantra-1", "mantra-2"],
+            order: 1,
+          },
+        },
+      ]);
+    }
+    return Promise.resolve([]);
+  }),
+  getEntry: () => Promise.resolve(undefined),
+  getEntries: () => Promise.resolve([]),
+  render: () => Promise.resolve({ Content: () => null }),
+  defineCollection: (c: unknown) => c,
+  reference: (coll: string) => () => coll,
+}));
+
 describe("content", () => {
+  describe("getSeries", () => {
+    it("returns series sorted by order property (ascending)", async () => {
+      const series = await getSeries();
+      expect(series).toHaveLength(3);
+      expect(series[0]!.slug).toBe("mantras");
+      expect(series[1]!.slug).toBe("ensayos");
+      expect(series[2]!.slug).toBe("haikus");
+    });
+
+    it("places series without order at the end (order defaults to Infinity)", async () => {
+      const { getCollection } = await import("astro:content");
+      (getCollection as ReturnType<typeof vi.fn>).mockImplementationOnce(
+        (coll: string) => {
+          if (coll === "series") {
+            return Promise.resolve([
+              {
+                id: "no-order",
+                data: {
+                  slug: "no-order",
+                  title: "No Order",
+                  image: "/x.svg",
+                  active: false,
+                  reads: [],
+                  // order omitted
+                },
+              },
+              {
+                id: "with-order",
+                data: {
+                  slug: "with-order",
+                  title: "With Order",
+                  image: "/y.svg",
+                  active: false,
+                  reads: [],
+                  order: 1,
+                },
+              },
+            ]);
+          }
+          return Promise.resolve([]);
+        },
+      );
+      const series = await getSeries();
+      expect(series[0]!.slug).toBe("with-order");
+      expect(series[1]!.slug).toBe("no-order");
+    });
+  });
+
   describe("getSeriesBySlug", () => {
     it("returns the mantras series for slug mantras", () => {
       const mantras = getSeriesBySlug(mockSeries, "mantras");
