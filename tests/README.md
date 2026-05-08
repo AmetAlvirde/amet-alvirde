@@ -184,12 +184,15 @@ Performance Budget Check (Build Size)
   - Keeps the site intentionally **small and fast** by:
     - Capping HTML, CSS, and JS growth.
     - Making any significant weight increase visible in CI.
+  - The budget is a descriptive reference signal for SDP work, not an automatic product veto:
+    - A budget movement should be recorded and understood.
+    - A refactor should only treat the budget as a hard blocker when the active cycle explicitly says so.
   - During refactors:
     - If this test fails, inspect `dist/` to see which assets grew.
     - Typical follow‑ups:
       - Remove unused CSS or JS.
-      - Split or compress assets.
-      - Re‑evaluate whether the new weight is justified and, if so, consider adjusting the budget intentionally.
+      - Split or compress assets when that serves the current cycle.
+      - Re‑evaluate whether the new weight is justified and record the trade-off when it is.
 
 ---
 
