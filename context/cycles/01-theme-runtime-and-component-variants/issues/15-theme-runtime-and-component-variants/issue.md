@@ -38,7 +38,10 @@
 - Resolve the active theme control representation during implementation: `aria-pressed`, `data-state`, class names, or a combination that best preserves accessibility and styling clarity.
 - Resolve the first-paint verification method during implementation with a real browser path, not only DOM tests.
 
-- [ ] [29-cartouche-primary-render-path -> 30-cta-primary-render-path]
+- [x] [29-cartouche-primary-render-path -> 30-cta-primary-render-path]
+
+  Resolved in #30 pre-activation: CTA implementation will apply and document the
+  leverage/locality/testability rubric before choosing consolidation vs helper extraction.
 
   Do not assume utility extraction by default for `CTA`; apply the same
   leverage/locality/testability rubric used in #29 and document the explicit
