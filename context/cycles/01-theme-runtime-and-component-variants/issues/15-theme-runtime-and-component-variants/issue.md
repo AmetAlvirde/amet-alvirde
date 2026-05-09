@@ -37,3 +37,14 @@
 - Do not remove duplicated theme boot logic merely because it looks redundant; remove or consolidate it only after proving no-**Theme flash** behavior remains intact.
 - Resolve the active theme control representation during implementation: `aria-pressed`, `data-state`, class names, or a combination that best preserves accessibility and styling clarity.
 - Resolve the first-paint verification method during implementation with a real browser path, not only DOM tests.
+
+- [ ] [29-cartouche-primary-render-path -> 30-cta-primary-render-path]
+
+  Do not assume utility extraction by default for `CTA`; apply the same
+  leverage/locality/testability rubric used in #29 and document the explicit
+  reason for either in-component consolidation or helper extraction.
+
+  Files to review:
+  - context/cycles/01-theme-runtime-and-component-variants/issues/15-theme-runtime-and-component-variants/30-cta-primary-render-path/sub-issue.md
+
+  (See source AAR for full context)
