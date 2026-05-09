@@ -1,4 +1,9 @@
 ---
+import {
+  getIconButtonClasses,
+  type IconButtonVariant,
+} from "../utils/icon-button-contract";
+
 interface Props {
   as?: "button" | "a";
   href?: string;
@@ -8,7 +13,7 @@ interface Props {
   type?: "button" | "submit" | "reset";
   /** When "inherit", uses parent bg/foreground and blends (e.g. inside footer) */
   /** When "borderless", no visible border but same hover as default */
-  variant?: "default" | "inherit" | "borderless";
+  variant?: IconButtonVariant;
   // Allow passing through any additional HTML attributes
   [key: string]: unknown;
 }
@@ -24,42 +29,20 @@ const {
   ...attrs
 } = Astro.props as Props;
 
-const defaultClasses =
-  "icon-button inline-flex items-center justify-center p-2 border-2 border-border bg-canvas text-foreground transition-all duration-150 cursor-pointer [@media(hover:hover)]:hover:bg-accent-as-surface [@media(hover:hover)]:hover:text-accent-as-surface-foreground [@media(hover:hover)]:hover:border-accent-as-surface focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2";
-
-const inheritClasses =
-  "icon-button inline-flex items-center justify-center p-2 border-2 border-transparent bg-transparent text-inherit transition-all duration-150 cursor-pointer [@media(hover:hover)]:hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-currentColor";
-
-const borderlessClasses =
-  "icon-button inline-flex items-center justify-center p-2 border-0 bg-canvas text-foreground transition-all duration-150 cursor-pointer [@media(hover:hover)]:hover:bg-accent-as-surface [@media(hover:hover)]:hover:text-accent-as-surface-foreground focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2";
-
-const baseClasses =
-  variant === "inherit"
-    ? inheritClasses
-    : variant === "borderless"
-      ? borderlessClasses
-      : defaultClasses;
-const classes = [baseClasses, extraClass].filter(Boolean).join(" ");
+const classes = getIconButtonClasses(variant, extraClass);
+const resolvedTitle = title ?? ariaLabel;
+const sharedAttrs = {
+  "aria-label": ariaLabel,
+  title: resolvedTitle,
+  class: classes,
+};
 ---
 {as === "a" ? (
-  <a
-    href={href}
-    aria-label={ariaLabel}
-    title={title ?? ariaLabel}
-    class={classes}
-    {...attrs}
-  >
+  <a href={href} {...sharedAttrs} {...attrs}>
     <slot />
   </a>
 ) : (
-  <button
-    type={type}
-    aria-label={ariaLabel}
-    title={title ?? ariaLabel}
-    class={classes}
-    {...attrs}
-  >
+  <button type={type} {...sharedAttrs} {...attrs}>
     <slot />
   </button>
 )}
-
