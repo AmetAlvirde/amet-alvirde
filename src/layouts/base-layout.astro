@@ -1,6 +1,11 @@
 ---
 import "../styles/global.css";
 import Footer from "../components/Footer.astro";
+import {
+  THEME_PREFERENCES,
+  THEME_STORAGE_KEY,
+  FAVICON_TARGETS,
+} from "../utils/theme-runtime-contract";
 
 interface Props {
   title?: string;
@@ -23,11 +28,20 @@ const {
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description}>
 		<title>{title}</title>
-		<script is:inline>
+		<script
+			is:inline
+			define:vars={{
+				themeStorageKey: THEME_STORAGE_KEY,
+				themePreferences: THEME_PREFERENCES,
+				faviconTargets: FAVICON_TARGETS,
+			}}
+		>
 			(function () {
-				const THEME_KEY = 'theme';
+				const THEME_KEY = themeStorageKey;
+				const VALID_PREFERENCES = themePreferences;
+				const FAVICONS = faviconTargets;
 				const stored = (function () { try { return localStorage.getItem(THEME_KEY); } catch { return null; } })();
-				const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
+				const preference = VALID_PREFERENCES.includes(stored) ? stored : 'system';
 				document.documentElement.setAttribute('data-theme-preference', preference);
 
 				function applyTheme(dark) {
@@ -50,7 +64,7 @@ const {
 					const favicon = document.querySelector('link[rel="icon"]:not([media])');
 					if (favicon) {
 						const isDark = document.documentElement.classList.contains('dark');
-						favicon.href = isDark ? '/favicon-dark-mode.svg' : '/favicon-light-mode.svg';
+						favicon.href = isDark ? FAVICONS.dark : FAVICONS.light;
 					}
 				};
 				document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', setFavicon) : setFavicon();
@@ -127,4 +141,3 @@ const {
 		</script>
 	</body>
 </html> 
-

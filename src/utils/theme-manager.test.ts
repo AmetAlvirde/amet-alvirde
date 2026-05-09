@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { THEME_STORAGE_KEY } from "./theme-runtime-contract";
 import {
   getActualTheme,
   getCurrentPreference,
@@ -95,20 +96,20 @@ describe("theme-manager", () => {
   describe("getCurrentPreference", () => {
     it("prefers data-theme-preference attribute when present", () => {
       document.documentElement.setAttribute("data-theme-preference", "dark");
-      window.localStorage.setItem("theme", "light");
+      window.localStorage.setItem(THEME_STORAGE_KEY, "light");
 
       expect(getCurrentPreference()).toBe("dark");
     });
 
     it("falls back to localStorage when attribute is missing", () => {
-      window.localStorage.setItem("theme", "light");
+      window.localStorage.setItem(THEME_STORAGE_KEY, "light");
       expect(getCurrentPreference()).toBe("light");
     });
 
     it("defaults to system when nothing is set or value is invalid", () => {
       expect(getCurrentPreference()).toBe("system");
 
-      window.localStorage.setItem("theme", "invalid");
+      window.localStorage.setItem(THEME_STORAGE_KEY, "invalid");
       expect(getCurrentPreference()).toBe("system");
     });
   });
@@ -133,7 +134,7 @@ describe("theme-manager", () => {
 
       setLightTheme(elements);
 
-      expect(window.localStorage.getItem("theme")).toBe("light");
+      expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("light");
       expect(
         document.documentElement.getAttribute("data-theme-preference"),
       ).toBe("light");
@@ -163,7 +164,7 @@ describe("theme-manager", () => {
 
       setDarkTheme(elements);
 
-      expect(window.localStorage.getItem("theme")).toBe("dark");
+      expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("dark");
       expect(
         document.documentElement.getAttribute("data-theme-preference"),
       ).toBe("dark");
@@ -201,7 +202,7 @@ describe("theme-manager", () => {
 
       setSystemTheme(elements);
 
-      expect(window.localStorage.getItem("theme")).toBe("system");
+      expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("system");
       expect(
         document.documentElement.getAttribute("data-theme-preference"),
       ).toBe("system");
@@ -217,7 +218,7 @@ describe("theme-manager", () => {
 
   describe("initializeThemeManager", () => {
     it("initializes theme and makes buttons interactive", () => {
-      window.localStorage.setItem("theme", "dark");
+      window.localStorage.setItem(THEME_STORAGE_KEY, "dark");
 
       initializeThemeManager();
 

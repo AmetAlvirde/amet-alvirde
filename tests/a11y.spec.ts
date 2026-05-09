@@ -1,21 +1,28 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import {
+  THEME_PREFERENCES,
+  THEME_STORAGE_KEY,
+} from "../src/utils/theme-runtime-contract";
 
 const pages = ["/", "/writing"] as const;
-const themes = ["light", "dark", "system"] as const;
+const themes = THEME_PREFERENCES;
 
 for (const pagePath of pages) {
   for (const theme of themes) {
     test(`@a11y ${pagePath} [${theme}] has no axe-core violations`, async ({
       page,
     }) => {
-      await page.addInitScript((preference) => {
-        try {
-          window.localStorage.setItem("theme", preference);
-        } catch {
-          // ignore
-        }
-      }, theme);
+      await page.addInitScript(
+        ({ preference, storageKey }) => {
+          try {
+            window.localStorage.setItem(storageKey, preference);
+          } catch {
+            // ignore
+          }
+        },
+        { preference: theme, storageKey: THEME_STORAGE_KEY },
+      );
 
       await page.goto(pagePath, { waitUntil: "networkidle" });
 

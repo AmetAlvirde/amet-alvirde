@@ -1,6 +1,13 @@
-// Theme types
-export type ThemePreference = "light" | "dark" | "system";
-export type ActualTheme = "light" | "dark";
+import {
+  FAVICON_SELECTOR,
+  THEME_STORAGE_KEY,
+  getDocumentThemeAttributes,
+  getFaviconTarget,
+  normalizeThemePreference,
+  resolveActualTheme,
+  type ActualTheme,
+  type ThemePreference,
+} from "./theme-runtime-contract";
 
 // Verified theme elements type (monogram optional — not present on all pages)
 type ThemeElements = {
@@ -18,7 +25,7 @@ const SELECTORS = {
   systemThemeButton: "#system-theme-button",
   darkThemeButton: "#dark-theme-button",
   monogram: "#monogram",
-  favicon: 'link[rel="icon"]:not([media])',
+  favicon: FAVICON_SELECTOR,
 } as const;
 
 // Safe localStorage operations
@@ -39,21 +46,21 @@ const safeLocalStorageSet = (key: string, value: string): void => {
 };
 
 const getStoredPreferenceFromLocalStorage = (): ThemePreference => {
-  const stored = safeLocalStorageGet("theme");
-  if (stored === "light" || stored === "dark" || stored === "system") {
-    return stored;
-  }
-  return "system";
+  return normalizeThemePreference(safeLocalStorageGet(THEME_STORAGE_KEY));
 };
 
 // Core theme functions (coordinated with inline script)
 const getSystemTheme = (): ActualTheme =>
-  window.matchMedia?.("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  resolveActualTheme(
+    "system",
+    Boolean(window.matchMedia?.("(prefers-color-scheme: dark)").matches),
+  );
 
 const getActualTheme = (preference: ThemePreference): ActualTheme =>
-  preference === "system" ? getSystemTheme() : (preference as ActualTheme);
+  resolveActualTheme(
+    preference,
+    Boolean(window.matchMedia?.("(prefers-color-scheme: dark)").matches),
+  );
 
 // Read current state (set by inline script or previous interactions)
 const getCurrentPreference = (): ThemePreference => {
@@ -111,8 +118,7 @@ const updateFavicon = (theme: ActualTheme): void => {
     SELECTORS.favicon,
   ) as HTMLLinkElement | null;
   if (favicon) {
-    favicon.href =
-      theme === "light" ? "/favicon-light-mode.svg" : "/favicon-dark-mode.svg";
+    favicon.href = getFaviconTarget(theme);
   }
 };
 
@@ -159,9 +165,14 @@ const updateDocumentAttributes = (
   preference: ThemePreference,
   actualTheme: ActualTheme,
 ): void => {
-  document.documentElement.setAttribute("data-theme", actualTheme);
-  document.documentElement.setAttribute("data-theme-preference", preference);
-  if (actualTheme === "dark") {
+  const attributes = getDocumentThemeAttributes(preference, actualTheme);
+
+  document.documentElement.setAttribute("data-theme", attributes.dataTheme);
+  document.documentElement.setAttribute(
+    "data-theme-preference",
+    attributes.dataThemePreference,
+  );
+  if (attributes.isDarkClass) {
     document.documentElement.classList.add("dark");
   } else {
     document.documentElement.classList.remove("dark");
@@ -195,17 +206,17 @@ const syncThemeFromStorage = (): void => {
 
 // User action handlers
 const setLightTheme = (elements: ThemeElements): void => {
-  safeLocalStorageSet("theme", "light");
+  safeLocalStorageSet(THEME_STORAGE_KEY, "light");
   updateThemeUI("light", elements);
 };
 
 const setSystemTheme = (elements: ThemeElements): void => {
-  safeLocalStorageSet("theme", "system");
+  safeLocalStorageSet(THEME_STORAGE_KEY, "system");
   updateThemeUI("system", elements);
 };
 
 const setDarkTheme = (elements: ThemeElements): void => {
-  safeLocalStorageSet("theme", "dark");
+  safeLocalStorageSet(THEME_STORAGE_KEY, "dark");
   updateThemeUI("dark", elements);
 };
 
