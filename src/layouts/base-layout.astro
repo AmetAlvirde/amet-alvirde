@@ -4,6 +4,7 @@ import Footer from "../components/Footer.astro";
 import {
   THEME_PREFERENCES,
   THEME_STORAGE_KEY,
+  FAVICON_SELECTOR,
   FAVICON_TARGETS,
 } from "../utils/theme-runtime-contract";
 
@@ -33,12 +34,14 @@ const {
 			define:vars={{
 				themeStorageKey: THEME_STORAGE_KEY,
 				themePreferences: THEME_PREFERENCES,
+				faviconSelector: FAVICON_SELECTOR,
 				faviconTargets: FAVICON_TARGETS,
 			}}
 		>
 			(function () {
 				const THEME_KEY = themeStorageKey;
 				const VALID_PREFERENCES = themePreferences;
+				const FAVICON_LINK_SELECTOR = faviconSelector;
 				const FAVICONS = faviconTargets;
 				const stored = (function () { try { return localStorage.getItem(THEME_KEY); } catch { return null; } })();
 				const preference = VALID_PREFERENCES.includes(stored) ? stored : 'system';
@@ -61,13 +64,13 @@ const {
 				}
 
 				const setFavicon = () => {
-					const favicon = document.querySelector('link[rel="icon"]:not([media])');
+					const favicon = document.querySelector(FAVICON_LINK_SELECTOR);
 					if (favicon) {
 						const isDark = document.documentElement.classList.contains('dark');
 						favicon.href = isDark ? FAVICONS.dark : FAVICONS.light;
 					}
 				};
-				document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', setFavicon) : setFavicon();
+				setFavicon();
 			})();
 		</script>
 		<!-- Open Graph / Facebook -->
