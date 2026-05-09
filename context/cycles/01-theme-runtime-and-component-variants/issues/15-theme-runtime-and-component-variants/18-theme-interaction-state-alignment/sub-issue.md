@@ -10,13 +10,13 @@ and enforcing it through tests.
 
 ## Dependency Classification
 
-| Dependency | Category | Testing strategy |
-| --- | --- | --- |
-| Canonical theme runtime contract (`theme-runtime-contract`) | In-process | Consume exported preference/theme/attribute/favicon decisions directly through the interaction adapter surface. |
-| Theme interaction adapter (`theme-manager`) | In-process | Test behavior through exported manager functions and initialization path. |
-| Theme controls DOM (`#light-theme-button`, `#system-theme-button`, `#dark-theme-button`) | Local-substitutable | Use jsdom/happy-dom unit tests with real DOM nodes and events. |
-| System color-scheme change events (`matchMedia`) | Local-substitutable | Stub `matchMedia` and change listeners to simulate system dark/light changes. |
-| Browser runtime behavior after hydration | Irreplaceable | Confirm with existing Playwright route coverage after unit behavior is aligned. |
+| Dependency                                                                               | Category            | Testing strategy                                                                                                |
+| ---------------------------------------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Canonical theme runtime contract (`theme-runtime-contract`)                              | In-process          | Consume exported preference/theme/attribute/favicon decisions directly through the interaction adapter surface. |
+| Theme interaction adapter (`theme-manager`)                                              | In-process          | Test behavior through exported manager functions and initialization path.                                       |
+| Theme controls DOM (`#light-theme-button`, `#system-theme-button`, `#dark-theme-button`) | Local-substitutable | Use jsdom/happy-dom unit tests with real DOM nodes and events.                                                  |
+| System color-scheme change events (`matchMedia`)                                         | Local-substitutable | Stub `matchMedia` and change listeners to simulate system dark/light changes.                                   |
+| Browser runtime behavior after hydration                                                 | Irreplaceable       | Confirm with existing Playwright route coverage after unit behavior is aligned.                                 |
 
 ## Interface Design
 
@@ -87,8 +87,8 @@ Design-it-twice:
 - Extend `src/utils/theme-manager.test.ts` to assert the chosen active control
   representation for each preference transition.
 - Add/adjust tests for single-active invariant across all three controls.
-- Verify system change event behavior when preference is `system` versus explicit
-  `light`/`dark`.
+- Verify system change event behavior when preference is `system` versus
+  explicit `light`/`dark`.
 - Verify favicon target and document attributes after interaction updates.
 - Run `pnpm test:unit`.
 - Run targeted browser checks (`pnpm test --grep @firstpaint` and/or
@@ -101,8 +101,8 @@ Design-it-twice:
 - `src/utils/theme-manager.test.ts`
 - `src/components/theme-controls.astro`, only if chosen semantics require
   explicit initial attributes.
-- `tests/visual.spec.ts` or related browser tests only if expectation updates are
-  needed for intentional interaction-state rendering changes.
+- `tests/visual.spec.ts` or related browser tests only if expectation updates
+  are needed for intentional interaction-state rendering changes.
 
 ## Dependencies
 
@@ -110,9 +110,6 @@ Design-it-twice:
   `context/cycles/01-theme-runtime-and-component-variants/issues/15-theme-runtime-and-component-variants/issue.md`.
 - Previous sub-issue:
   `context/cycles/01-theme-runtime-and-component-variants/issues/15-theme-runtime-and-component-variants/17-theme-boot-first-paint-verification/sub-issue.md`.
-- Canonical contract:
-  `src/utils/theme-runtime-contract.ts`.
-- Interaction adapter:
-  `src/utils/theme-manager.ts`.
-- Theme control surface:
-  `src/components/theme-controls.astro`.
+- Canonical contract: `src/utils/theme-runtime-contract.ts`.
+- Interaction adapter: `src/utils/theme-manager.ts`.
+- Theme control surface: `src/components/theme-controls.astro`.

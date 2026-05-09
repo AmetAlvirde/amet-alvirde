@@ -150,6 +150,9 @@ const updateButtonStates = (
   lightThemeButton.classList.remove("icon-button--active");
   systemThemeButton.classList.remove("icon-button--active");
   darkThemeButton.classList.remove("icon-button--active");
+  lightThemeButton.setAttribute("aria-pressed", "false");
+  systemThemeButton.setAttribute("aria-pressed", "false");
+  darkThemeButton.setAttribute("aria-pressed", "false");
 
   // Add active state to current preference
   const activeButton =
@@ -159,6 +162,7 @@ const updateButtonStates = (
         ? darkThemeButton
         : systemThemeButton;
   activeButton.classList.add("icon-button--active");
+  activeButton.setAttribute("aria-pressed", "true");
 };
 
 const updateDocumentAttributes = (
@@ -235,6 +239,24 @@ const createSystemChangeHandler = (elements: ThemeElements) => (): void => {
   }
 };
 
+const registerSystemThemeChangeListener = (
+  listener: (event: MediaQueryListEvent) => void,
+): void => {
+  const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+  if (typeof mediaQueryList.addEventListener === "function") {
+    mediaQueryList.addEventListener("change", listener);
+    return;
+  }
+
+  const legacyMediaQueryList = mediaQueryList as MediaQueryList & {
+    addListener?: (listener: (event: MediaQueryListEvent) => void) => void;
+  };
+
+  if (typeof legacyMediaQueryList.addListener === "function") {
+    legacyMediaQueryList.addListener(listener);
+  }
+};
+
 // Event listener setup
 const setupEventListeners = (elements: ThemeElements): void => {
   const { lightThemeButton, systemThemeButton, darkThemeButton } = elements;
@@ -267,9 +289,7 @@ const setupEventListeners = (elements: ThemeElements): void => {
   });
 
   // Listen for system theme changes
-  window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", createSystemChangeHandler(elements));
+  registerSystemThemeChangeListener(createSystemChangeHandler(elements));
 };
 
 // Main initialization
