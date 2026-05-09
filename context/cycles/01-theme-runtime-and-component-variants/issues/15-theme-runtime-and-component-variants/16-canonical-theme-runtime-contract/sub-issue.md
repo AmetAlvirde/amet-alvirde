@@ -98,3 +98,26 @@ Design-it-twice:
 - Source PRD: `context/cycles/01-theme-runtime-and-component-variants/prd.md`.
 - Existing no-**Theme flash** behavior must remain protected while this contract
   is introduced.
+
+## Closure
+
+Status: Closed
+
+Acceptance criteria check:
+
+- [x] Valid **Theme preference** values and storage key are centralized in
+  `src/utils/theme-runtime-contract.ts`.
+- [x] Actual theme resolution for light, dark, and system preferences is covered
+  in `src/utils/theme-runtime-contract.test.ts`.
+- [x] Document attribute decisions are covered in
+  `src/utils/theme-runtime-contract.test.ts`.
+- [x] Favicon target selection is covered in
+  `src/utils/theme-runtime-contract.test.ts`.
+- [x] Production code and tests consume the contract (for example
+  `src/utils/theme-manager.ts`, `src/utils/theme-manager.test.ts`,
+  `tests/a11y.spec.ts`, and `tests/visual.spec.ts`).
+- [x] No boot-code deletion is included in this slice.
+
+Verification run:
+
+- [x] `pnpm test:unit` (17 tests passed).
