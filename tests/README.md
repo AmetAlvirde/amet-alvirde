@@ -1,12 +1,14 @@
 Testing Overview
 ================
 
-This document describes the automated checks we run against this site and the current baseline as of **2026‑03‑06**.  
+This document describes the automated checks we run against this site and the current baseline as of **2026-05-09**.  
 Use it as a guide during refactors: if a test starts failing, this explains what changed and why it matters.
 
 We group tests into:
 
 - Unit tests (Vitest, colocated with source files)
+- Theme first-paint verification tests (Playwright)
+- Route-surface contract tests (Playwright)
 - Visual regression tests (Playwright)
 - Accessibility tests (Playwright + axe-core)
 - Lighthouse audits (performance, a11y, best practices, SEO)
@@ -19,6 +21,52 @@ Each section below explains:
 - **How we run it**
 - **What “pass” means today**
 - **Why we keep this test**
+
+---
+
+Theme First-Paint Verification Tests
+------------------------------------
+
+- **What we test**
+  - File: `tests/theme-first-paint.spec.ts`
+  - Pages covered: `/` and `/writing`
+  - Preferences covered:
+    - `light`
+    - `dark`
+    - `system` under both light and dark OS schemes
+  - For each page/preference scenario, Playwright:
+    - Preloads `window.localStorage.theme` before boot.
+    - Navigates with `waitUntil: "commit"` to inspect earliest paint state.
+    - Verifies `data-theme`, `data-theme-preference`, `dark` class state, and favicon target.
+
+- **How we run it**
+  - Included in the full Playwright suite:
+    - `pnpm test`
+
+- **Why this test exists**
+  - Protects against first-paint theme flicker regressions.
+  - Confirms runtime theme attributes and favicon selection are coherent at document commit.
+
+---
+
+Route-Surface Contract Tests
+----------------------------
+
+- **What we test**
+  - Files:
+    - `tests/cartouche.spec.ts`
+    - `tests/cta.spec.ts`
+  - Current checks:
+    - Cartouche variant markers are present and route-specific (`hero` on `/`, `section` on `/writing`).
+    - Writing-page CTA renders the expected anchor semantics and external-link safety attributes.
+
+- **How we run it**
+  - Included in the full Playwright suite:
+    - `pnpm test`
+
+- **Why this test exists**
+  - Locks down stable data-attribute contracts used to assert intended render paths.
+  - Catches regressions in component semantics without relying on snapshot diffs.
 
 ---
 
@@ -184,12 +232,15 @@ Performance Budget Check (Build Size)
   - Keeps the site intentionally **small and fast** by:
     - Capping HTML, CSS, and JS growth.
     - Making any significant weight increase visible in CI.
+  - The budget is a descriptive reference signal for SDP work, not an automatic product veto:
+    - A budget movement should be recorded and understood.
+    - A refactor should only treat the budget as a hard blocker when the active cycle explicitly says so.
   - During refactors:
     - If this test fails, inspect `dist/` to see which assets grew.
     - Typical follow‑ups:
       - Remove unused CSS or JS.
-      - Split or compress assets.
-      - Re‑evaluate whether the new weight is justified and, if so, consider adjusting the budget intentionally.
+      - Split or compress assets when that serves the current cycle.
+      - Re‑evaluate whether the new weight is justified and record the trade-off when it is.
 
 ---
 
@@ -220,9 +271,10 @@ Static Analysis: Formatting and Linting
       - Runs, in order:
         1. `pnpm format:check`
         2. `pnpm lint`
-        3. `pnpm test` \(all Playwright tests\)
-        4. `pnpm test:lighthouse`
-        5. `pnpm test:build`
+        3. `pnpm test:unit`
+        4. `pnpm test` \(all Playwright tests\)
+        5. `pnpm test:lighthouse`
+        6. `pnpm test:build`
 
 - **Current result (baseline)**
   - As of this document, the codebase is expected to:
@@ -271,6 +323,12 @@ Unit Tests (Vitest)
   - Colocated unit tests that live next to the code they exercise. For example:
     - `src/utils/theme-manager.ts`
     - `src/utils/theme-manager.test.ts`
+    - `src/utils/theme-runtime-contract.ts`
+    - `src/utils/theme-runtime-contract.test.ts`
+    - `src/utils/icon-button-contract.ts`
+    - `src/utils/icon-button-contract.test.ts`
+    - `src/utils/nav-tile-contract.ts`
+    - `src/utils/nav-tile-contract.test.ts`
   - These tests focus on:
     - Module-level logic (e.g. how theme preferences map to actual themes).
     - DOM updates performed by a specific utility or component in isolation.
@@ -279,6 +337,8 @@ Unit Tests (Vitest)
 - **Where tests live**
   - Unit tests are **usually placed alongside the file they test** under `src/`.
   - The top-level `tests/` folder is reserved for **broader app-level tests**, such as:
+    - Theme first-paint checks in `tests/theme-first-paint.spec.ts`.
+    - Route-surface contract checks in `tests/cartouche.spec.ts` and `tests/cta.spec.ts`.
     - Visual regression tests in `tests/visual.spec.ts`.
     - Accessibility tests in `tests/a11y.spec.ts`.
 - **Why this test exists**

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { THEME_STORAGE_KEY } from "./theme-runtime-contract";
 import {
   getActualTheme,
   getCurrentPreference,
@@ -95,20 +96,20 @@ describe("theme-manager", () => {
   describe("getCurrentPreference", () => {
     it("prefers data-theme-preference attribute when present", () => {
       document.documentElement.setAttribute("data-theme-preference", "dark");
-      window.localStorage.setItem("theme", "light");
+      window.localStorage.setItem(THEME_STORAGE_KEY, "light");
 
       expect(getCurrentPreference()).toBe("dark");
     });
 
     it("falls back to localStorage when attribute is missing", () => {
-      window.localStorage.setItem("theme", "light");
+      window.localStorage.setItem(THEME_STORAGE_KEY, "light");
       expect(getCurrentPreference()).toBe("light");
     });
 
     it("defaults to system when nothing is set or value is invalid", () => {
       expect(getCurrentPreference()).toBe("system");
 
-      window.localStorage.setItem("theme", "invalid");
+      window.localStorage.setItem(THEME_STORAGE_KEY, "invalid");
       expect(getCurrentPreference()).toBe("system");
     });
   });
@@ -128,12 +129,82 @@ describe("theme-manager", () => {
   });
 
   describe("setLightTheme / setDarkTheme / setSystemTheme", () => {
+    it("keeps exactly one active control for each preference", () => {
+      const elements = createThemeElements();
+
+      setLightTheme(elements);
+      {
+        const { lightThemeButton, systemThemeButton, darkThemeButton } =
+          getButtons();
+        const activeByClass = [
+          lightThemeButton,
+          systemThemeButton,
+          darkThemeButton,
+        ].filter((button) => button.classList.contains("icon-button--active"));
+        const activeByAria = [
+          lightThemeButton,
+          systemThemeButton,
+          darkThemeButton,
+        ].filter((button) => button.getAttribute("aria-pressed") === "true");
+        expect(activeByClass).toHaveLength(1);
+        expect(activeByAria).toHaveLength(1);
+      }
+
+      setDarkTheme(elements);
+      {
+        const { lightThemeButton, systemThemeButton, darkThemeButton } =
+          getButtons();
+        const activeByClass = [
+          lightThemeButton,
+          systemThemeButton,
+          darkThemeButton,
+        ].filter((button) => button.classList.contains("icon-button--active"));
+        const activeByAria = [
+          lightThemeButton,
+          systemThemeButton,
+          darkThemeButton,
+        ].filter((button) => button.getAttribute("aria-pressed") === "true");
+        expect(activeByClass).toHaveLength(1);
+        expect(activeByAria).toHaveLength(1);
+      }
+
+      setSystemTheme(elements);
+      {
+        const { lightThemeButton, systemThemeButton, darkThemeButton } =
+          getButtons();
+        const activeByClass = [
+          lightThemeButton,
+          systemThemeButton,
+          darkThemeButton,
+        ].filter((button) => button.classList.contains("icon-button--active"));
+        const activeByAria = [
+          lightThemeButton,
+          systemThemeButton,
+          darkThemeButton,
+        ].filter((button) => button.getAttribute("aria-pressed") === "true");
+        expect(activeByClass).toHaveLength(1);
+        expect(activeByAria).toHaveLength(1);
+      }
+    });
+
+    it("marks only the selected control as aria-pressed", () => {
+      const elements = createThemeElements();
+
+      setLightTheme(elements);
+
+      const { lightThemeButton, systemThemeButton, darkThemeButton } =
+        getButtons();
+      expect(lightThemeButton.getAttribute("aria-pressed")).toBe("true");
+      expect(systemThemeButton.getAttribute("aria-pressed")).toBe("false");
+      expect(darkThemeButton.getAttribute("aria-pressed")).toBe("false");
+    });
+
     it("sets light theme correctly", () => {
       const elements = createThemeElements();
 
       setLightTheme(elements);
 
-      expect(window.localStorage.getItem("theme")).toBe("light");
+      expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("light");
       expect(
         document.documentElement.getAttribute("data-theme-preference"),
       ).toBe("light");
@@ -163,7 +234,7 @@ describe("theme-manager", () => {
 
       setDarkTheme(elements);
 
-      expect(window.localStorage.getItem("theme")).toBe("dark");
+      expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("dark");
       expect(
         document.documentElement.getAttribute("data-theme-preference"),
       ).toBe("dark");
@@ -201,7 +272,7 @@ describe("theme-manager", () => {
 
       setSystemTheme(elements);
 
-      expect(window.localStorage.getItem("theme")).toBe("system");
+      expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("system");
       expect(
         document.documentElement.getAttribute("data-theme-preference"),
       ).toBe("system");
@@ -216,8 +287,79 @@ describe("theme-manager", () => {
   });
 
   describe("initializeThemeManager", () => {
+    it("supports legacy matchMedia listener APIs without failing", () => {
+      const addListener = vi.fn();
+      vi.stubGlobal("matchMedia", () => ({
+        matches: false,
+        media: "(prefers-color-scheme: dark)",
+        addListener,
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }));
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+      initializeThemeManager();
+
+      expect(addListener).toHaveBeenCalledTimes(1);
+      expect(errorSpy).not.toHaveBeenCalled();
+    });
+
+    it("updates theme on system change only when preference is system", () => {
+      let prefersDark = false;
+      let systemChangeListener: ((event: MediaQueryListEvent) => void) | null =
+        null;
+
+      vi.stubGlobal("matchMedia", () => ({
+        get matches() {
+          return prefersDark;
+        },
+        media: "(prefers-color-scheme: dark)",
+        addEventListener: (
+          eventName: string,
+          listener: (event: MediaQueryListEvent) => void,
+        ) => {
+          if (eventName === "change") {
+            systemChangeListener = listener;
+          }
+        },
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }));
+
+      window.localStorage.setItem(THEME_STORAGE_KEY, "system");
+      initializeThemeManager();
+
+      expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+
+      prefersDark = true;
+      systemChangeListener?.({ matches: true } as MediaQueryListEvent);
+
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+
+      const favicon = document.querySelector(
+        'link[rel="icon"]:not([media])',
+      ) as HTMLLinkElement | null;
+      expect(favicon?.href.endsWith("/favicon-dark-mode.svg")).toBe(true);
+
+      const { systemThemeButton } = getButtons();
+      expect(systemThemeButton.getAttribute("aria-pressed")).toBe("true");
+
+      const { lightThemeButton } = getButtons();
+      lightThemeButton.click();
+      expect(
+        document.documentElement.getAttribute("data-theme-preference"),
+      ).toBe("light");
+
+      prefersDark = false;
+      systemChangeListener?.({ matches: false } as MediaQueryListEvent);
+
+      expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+      expect(lightThemeButton.getAttribute("aria-pressed")).toBe("true");
+    });
+
     it("initializes theme and makes buttons interactive", () => {
-      window.localStorage.setItem("theme", "dark");
+      window.localStorage.setItem(THEME_STORAGE_KEY, "dark");
 
       initializeThemeManager();
 
