@@ -27,12 +27,17 @@ const isLink = as === "a";
 const state = getCtaState(disabled);
 const classes = [state.class, extraClass].filter(Boolean).join(" ");
 
-// A disabled link drops its href so it is neither navigable nor focusable;
-// a disabled button uses the native attribute. Both carry the label as a
-// tooltip for pointer users and an inline badge for everyone else.
+// A disabled link renders as a span with role="link": not navigable, not
+// focusable, and not an <a> without href, which Lighthouse's crawlable-anchors
+// audit rejects. A disabled button uses the native attribute. Both carry the
+// label as a tooltip for pointer users and an inline badge for everyone else.
 const tagSpecificAttrs = disabled
   ? isLink
-    ? { "aria-disabled": state.ariaDisabled, title: disabledLabel }
+    ? {
+        role: "link",
+        "aria-disabled": state.ariaDisabled,
+        title: disabledLabel,
+      }
     : { type: "button", disabled: true, title: disabledLabel }
   : isLink
     ? {
@@ -41,7 +46,7 @@ const tagSpecificAttrs = disabled
         rel: external ? "noopener noreferrer" : undefined,
       }
     : { type: "button" };
-const Element = as;
+const Element = disabled && isLink ? "span" : as;
 ---
 
 <Element

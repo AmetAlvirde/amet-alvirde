@@ -13,6 +13,8 @@ test("CTA exposes route-surface contract markers and its disabled state", async 
   await expect(cta).toHaveAttribute("data-cta-as", "a");
   await expect(cta).toHaveAttribute("data-cta-state", "disabled");
   await expect(cta).toHaveAttribute("aria-disabled", "true");
+  await expect(cta).toHaveAttribute("role", "link");
+  await expect(cta).toHaveJSProperty("tagName", "SPAN");
   await expect(cta).not.toHaveAttribute("href", /.*/);
   await expect(cta).toContainText("PRONTO");
 });
