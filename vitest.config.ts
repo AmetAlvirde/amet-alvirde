@@ -1,6 +1,8 @@
-import { defineConfig } from "vitest/config";
+import { getViteConfig } from "astro/config";
 
-export default defineConfig({
+// getViteConfig compiles .astro files so component tests can render them
+// through the Astro Container API.
+export default getViteConfig({
   test: {
     environment: "happy-dom",
     include: ["src/**/*.test.ts"],

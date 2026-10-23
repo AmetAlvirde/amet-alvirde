@@ -58,7 +58,8 @@ Route-Surface Contract Tests
     - `tests/cta.spec.ts`
   - Current checks:
     - Cartouche variant markers are present and route-specific (`hero` on `/`, `section` on `/writing`).
-    - Writing-page CTA renders as a disabled anchor (`data-cta-state="disabled"`, `aria-disabled`, no `href`, inline `PRONTO` badge) while the public map is offline. The enabled external-link path is covered by `src/utils/cta-contract.test.ts`.
+    - Writing-page CTA renders as a focusable `<span role="link" aria-disabled="true">` (`data-cta-as="span"`, `data-cta-state="disabled"`, no `href`, inline `PRONTO` badge) while the public map is offline. It is a span, not an `<a>` without `href`, so Lighthouse's crawlable-anchors audit passes.
+    - The enabled external-link path (`href`, `target="_blank"`, `rel="noopener noreferrer"`) and the other render paths are covered by the component render tests in `src/components/cta.test.ts` (`pnpm test:unit`).
 
 - **How we run it**
   - Included in the full Playwright suite:
@@ -329,9 +330,14 @@ Unit Tests (Vitest)
     - `src/utils/icon-button-contract.test.ts`
     - `src/utils/nav-tile-contract.ts`
     - `src/utils/nav-tile-contract.test.ts`
+    - `src/utils/cta-contract.ts`
+    - `src/utils/cta-contract.test.ts`
+    - `src/components/cta.astro`
+    - `src/components/cta.test.ts`
   - These tests focus on:
     - Module-level logic (e.g. how theme preferences map to actual themes).
     - DOM updates performed by a specific utility or component in isolation.
+    - Component render paths, rendered through the Astro Container API (`vitest.config.ts` uses `getViteConfig` so Vitest can compile `.astro` files).
 - **How we run it**
   - `pnpm test:unit`
 - **Where tests live**

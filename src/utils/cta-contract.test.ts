@@ -1,22 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { getCtaState } from "./cta-contract";
+import { getCtaClass } from "./cta-contract";
 
 describe("cta-contract", () => {
-  it("returns disabled semantics and a non-interactive surface", () => {
-    const state = getCtaState(true);
+  it("returns a non-interactive surface with a focus ring when disabled", () => {
+    const cls = getCtaClass(true);
 
-    expect(state.ariaDisabled).toBe("true");
-    expect(state.showsDisabledLabel).toBe(true);
-    expect(state.class).toContain("cursor-not-allowed");
-    expect(state.class).not.toContain("hover:bg-foreground");
+    expect(cls).toContain("cursor-not-allowed");
+    expect(cls).toContain("focus-visible:outline-2");
+    expect(cls).not.toContain("hover:bg-foreground");
   });
 
-  it("returns enabled semantics and the accent surface", () => {
-    const state = getCtaState(false);
+  it("returns the accent surface when enabled", () => {
+    const cls = getCtaClass(false);
 
-    expect(state.ariaDisabled).toBeUndefined();
-    expect(state.showsDisabledLabel).toBe(false);
-    expect(state.class).toContain("bg-accent-as-surface");
-    expect(state.class).toContain("hover:bg-foreground");
+    expect(cls).toContain("bg-accent-as-surface");
+    expect(cls).toContain("hover:bg-foreground");
   });
 });

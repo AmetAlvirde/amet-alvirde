@@ -1,5 +1,5 @@
 ---
-import { DISABLED_LABEL_CLASS, getCtaState } from "../utils/cta-contract";
+import { DISABLED_LABEL_CLASS, getCtaClass } from "../utils/cta-contract";
 
 interface Props {
   as?: "a" | "button";
@@ -24,43 +24,44 @@ const {
 } = Astro.props as Props;
 
 const isLink = as === "a";
-const state = getCtaState(disabled);
-const classes = [state.class, extraClass].filter(Boolean).join(" ");
+const classes = [getCtaClass(disabled), extraClass].filter(Boolean).join(" ");
 
-// A disabled link renders as a span with role="link": not navigable, not
-// focusable, and not an <a> without href, which Lighthouse's crawlable-anchors
-// audit rejects. A disabled button uses the native attribute. Both carry the
-// label as a tooltip for pointer users and an inline badge for everyone else.
-const tagSpecificAttrs = disabled
-  ? isLink
-    ? {
-        role: "link",
-        "aria-disabled": state.ariaDisabled,
-        title: disabledLabel,
-      }
-    : { type: "button", disabled: true, title: disabledLabel }
-  : isLink
-    ? {
-        href,
-        target: external ? "_blank" : undefined,
-        rel: external ? "noopener noreferrer" : undefined,
-      }
-    : { type: "button" };
-const Element = disabled && isLink ? "span" : as;
+// A disabled link renders as a focusable span with role="link" and
+// aria-disabled: keyboard and screen reader users can still reach it, but it
+// has no href to follow, and it is not an <a> without href, which
+// Lighthouse's crawlable-anchors audit rejects. A disabled button uses the
+// native attribute. The inline badge carries the disabled label for everyone.
+let Element: "a" | "button" | "span";
+let tagSpecificAttrs: Record<string, unknown>;
+if (disabled && isLink) {
+  Element = "span";
+  tagSpecificAttrs = { role: "link", tabindex: "0", "aria-disabled": "true" };
+} else if (disabled) {
+  Element = "button";
+  tagSpecificAttrs = { type: "button", disabled: true };
+} else if (isLink) {
+  Element = "a";
+  tagSpecificAttrs = {
+    href,
+    target: external ? "_blank" : undefined,
+    rel: external ? "noopener noreferrer" : undefined,
+  };
+} else {
+  Element = "button";
+  tagSpecificAttrs = { type: "button" };
+}
 ---
 
 <Element
+  {...attrs}
   class={classes}
   data-cta="true"
-  data-cta-as={as}
+  data-cta-as={Element}
   data-cta-state={disabled ? "disabled" : "enabled"}
   {...tagSpecificAttrs}
-  {...attrs}
 >
   {label}
-  {state.showsDisabledLabel && (
-    <span class={DISABLED_LABEL_CLASS}>{disabledLabel}</span>
-  )}
+  {disabled && <span class={DISABLED_LABEL_CLASS}>{disabledLabel}</span>}
   {!disabled && isLink && external && (
     <span aria-hidden="true" class="ml-1">
       ↗
