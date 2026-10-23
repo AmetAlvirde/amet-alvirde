@@ -6,6 +6,12 @@ dist/
 .astro/
 .opencode/
 
+# Skill links and rendered commands from ~/Dev/skills (project-setup)
+.claude/skills/
+.claude/commands/codebase-review-retry.md
+.claude/commands/pr-review-retry.md
+.claude/commands/refactor-retry.md
+
 test-results/
 playwright-report/
 
