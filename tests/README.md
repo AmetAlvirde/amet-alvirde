@@ -58,7 +58,7 @@ Route-Surface Contract Tests
     - `tests/cta.spec.ts`
   - Current checks:
     - Cartouche variant markers are present and route-specific (`hero` on `/`, `section` on `/writing`).
-    - Writing-page CTA renders the expected anchor semantics and external-link safety attributes.
+    - Writing-page CTA renders as a disabled anchor (`data-cta-state="disabled"`, `aria-disabled`, no `href`, inline `PRONTO` badge) while the public map is offline. The enabled external-link path is covered by `src/utils/cta-contract.test.ts`.
 
 - **How we run it**
   - Included in the full Playwright suite:

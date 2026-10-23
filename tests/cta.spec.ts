@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("CTA exposes route-surface contract markers and external-link behavior", async ({
+// The map CTA is disabled while the public map is offline (Obsidian Publish
+// was cancelled; the new home is in progress). The enabled external-link
+// path is covered by the cta-contract unit tests until a page uses it again.
+test("CTA exposes route-surface contract markers and its disabled state", async ({
   page,
 }) => {
   await page.goto("/writing", { waitUntil: "networkidle" });
@@ -8,6 +11,8 @@ test("CTA exposes route-surface contract markers and external-link behavior", as
   const cta = page.locator('[data-cta="true"]');
   await expect(cta).toHaveCount(1);
   await expect(cta).toHaveAttribute("data-cta-as", "a");
-  await expect(cta).toHaveAttribute("target", "_blank");
-  await expect(cta).toHaveAttribute("rel", "noopener noreferrer");
+  await expect(cta).toHaveAttribute("data-cta-state", "disabled");
+  await expect(cta).toHaveAttribute("aria-disabled", "true");
+  await expect(cta).not.toHaveAttribute("href", /.*/);
+  await expect(cta).toContainText("PRONTO");
 });

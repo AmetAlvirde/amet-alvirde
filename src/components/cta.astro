@@ -1,9 +1,13 @@
 ---
+import { DISABLED_LABEL_CLASS, getCtaState } from "../utils/cta-contract";
+
 interface Props {
   as?: "a" | "button";
   href?: string;
   external?: boolean;
   label: string;
+  disabled?: boolean;
+  disabledLabel?: string;
   class?: string;
   [key: string]: unknown;
 }
@@ -13,22 +17,30 @@ const {
   href,
   external = false,
   label,
+  disabled = false,
+  disabledLabel = "PRONTO",
   class: extraClass,
   ...attrs
 } = Astro.props as Props;
 
 const isLink = as === "a";
-const baseClasses =
-  "inline-flex items-center justify-center py-3 px-4 border-2 border-accent-as-surface bg-accent-as-surface text-accent-as-surface-foreground text-sm font-medium uppercase tracking-widest transition-all duration-150 cursor-pointer no-underline [@media(hover:hover)]:hover:bg-foreground [@media(hover:hover)]:hover:text-canvas [@media(hover:hover)]:hover:border-foreground active:bg-foreground active:text-canvas active:border-foreground focus-visible:outline-2 focus-visible:outline-accent-as-surface focus-visible:outline-offset-2";
+const state = getCtaState(disabled);
+const classes = [state.class, extraClass].filter(Boolean).join(" ");
 
-const classes = [baseClasses, extraClass].filter(Boolean).join(" ");
-const tagSpecificAttrs = isLink
-  ? {
-      href,
-      target: external ? "_blank" : undefined,
-      rel: external ? "noopener noreferrer" : undefined,
-    }
-  : { type: "button" };
+// A disabled link drops its href so it is neither navigable nor focusable;
+// a disabled button uses the native attribute. Both carry the label as a
+// tooltip for pointer users and an inline badge for everyone else.
+const tagSpecificAttrs = disabled
+  ? isLink
+    ? { "aria-disabled": state.ariaDisabled, title: disabledLabel }
+    : { type: "button", disabled: true, title: disabledLabel }
+  : isLink
+    ? {
+        href,
+        target: external ? "_blank" : undefined,
+        rel: external ? "noopener noreferrer" : undefined,
+      }
+    : { type: "button" };
 const Element = as;
 ---
 
@@ -36,11 +48,15 @@ const Element = as;
   class={classes}
   data-cta="true"
   data-cta-as={as}
+  data-cta-state={disabled ? "disabled" : "enabled"}
   {...tagSpecificAttrs}
   {...attrs}
 >
   {label}
-  {isLink && external && (
+  {state.showsDisabledLabel && (
+    <span class={DISABLED_LABEL_CLASS}>{disabledLabel}</span>
+  )}
+  {!disabled && isLink && external && (
     <span aria-hidden="true" class="ml-1">
       ↗
     </span>
