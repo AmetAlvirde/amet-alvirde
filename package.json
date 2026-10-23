@@ -2,6 +2,7 @@
   "name": "amet-alvirde",
   "type": "module",
   "version": "0.7.0",
+  "packageManager": "pnpm@11.18.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
