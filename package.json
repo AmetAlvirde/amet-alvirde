@@ -26,9 +26,9 @@
   },
   "dependencies": {
     "@phosphor-icons/web": "^2.1.2",
-    "@tailwindcss/vite": "^4.1.8",
+    "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.2",
-    "tailwindcss": "^4.1.8"
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",

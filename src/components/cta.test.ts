@@ -4,10 +4,12 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { describe, expect, it } from "vitest";
 import CTA from "./cta.astro";
 
+const { document } = new Window();
+
 const render = async (props: Record<string, unknown>) => {
   const container = await AstroContainer.create();
   const html = await container.renderToString(CTA, { props });
-  const host = new Window().document.createElement("div");
+  const host = document.createElement("div");
   host.innerHTML = html;
   const el = host.querySelector('[data-cta="true"]');
   if (!el) throw new Error(`CTA marker missing in: ${html}`);
