@@ -3,7 +3,8 @@
 module.exports = {
   ci: {
     collect: {
-      startServerCommand: "pnpm build && pnpm preview --port 4173",
+      startServerCommand:
+        "pnpm build && pnpm preview --port 4173 --ignore-lock",
       url: ["http://localhost:4173/", "http://localhost:4173/writing/"],
       numberOfRuns: 1,
     },
