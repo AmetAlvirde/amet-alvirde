@@ -18,7 +18,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm build && pnpm preview --port 4173",
+    command: "pnpm build && pnpm preview --port 4173 --ignore-lock",
     url: BASE_URL,
     reuseExistingServer: true,
     timeout: 120_000,

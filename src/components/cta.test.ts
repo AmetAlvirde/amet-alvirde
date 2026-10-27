@@ -1,6 +1,10 @@
+// @vitest-environment node
+import { Window } from "happy-dom";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { describe, expect, it } from "vitest";
 import CTA from "./cta.astro";
+
+const { document } = new Window();
 
 const render = async (props: Record<string, unknown>) => {
   const container = await AstroContainer.create();
