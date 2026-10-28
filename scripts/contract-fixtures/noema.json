@@ -1,0 +1,16 @@
+{
+  "notes": [
+    "cafe-noetico",
+    "nota-con-alias",
+    "prueba-robots",
+    "ensayos/sobre-el-metodo",
+    "practicas/primera-practica"
+  ],
+  "folders": ["ensayos", "practicas", "tags"],
+  "tags": ["metodo"],
+  "tagsPath": "tags",
+  "aliases": [
+    { "path": "nota-vieja", "target": "nota-con-alias" },
+    { "path": "old-note", "target": "nota-con-alias" }
+  ]
+}
