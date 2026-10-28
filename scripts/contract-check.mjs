@@ -20,13 +20,21 @@
 //   --fixture <file>        JSON: { notes, folders, tags, aliases } (see below)
 //   --canonical <url>       origin every canonical must point at
 //                           (default https://www.ametalvirde.com)
-//   --max-hops <n>          redirect cap per request (default 5)
-//   --delay-ms <n>          pause between requests (default 500, about 2 req/s)
-//   --max-requests <n>      abort past this many requests (default 300)
+//   --origin-host <host>    the app's own deployment host, e.g.
+//                           noema-olive-one.vercel.app: any Location, refresh
+//                           target, reference or other body text that names it
+//                           fails the row. Other off-site references (a CDN)
+//                           stay skipped. Always pass it for real runs.
+//   --max-hops <n>          redirect cap per request, integer >= 1 (default 5)
+//   --delay-ms <n>          pause between requests, >= 0 (default 500, about
+//                           2 req/s)
+//   --max-requests <n>      abort past this many requests, integer >= 1
+//                           (default 300)
 //   --json <file>           write every response chain, with headers, to a file
 //   --bypass-env <NAME>     env var holding a Vercel protection-bypass secret
 //                           (default VERCEL_AUTOMATION_BYPASS_SECRET); when set,
-//                           every request carries x-vercel-protection-bypass
+//                           every request to the site origin carries
+//                           x-vercel-protection-bypass; off-site requests never do
 //   --origin-direct         --site is the app's own origin, not the site: skip
 //                           the site-owned row (/P -> /P/); every other row and
 //                           cross-row rule runs unchanged
@@ -35,9 +43,11 @@
 //                           X-Robots-Tag: noindex on every response: a noindex
 //                           header no longer fails a row, but every row still
 //                           reports it, and the summary line and the JSON state
-//                           the waiver. Never use it against www. The origin's
-//                           no-noindex obligation is proven by the origin-direct
-//                           run (--origin-direct), which takes no waiver.
+//                           the waiver. The origin's no-noindex obligation is
+//                           proven by the origin-direct run (--origin-direct),
+//                           which takes no waiver: combining the two, or
+//                           pointing --site at the --canonical origin, is a
+//                           usage error.
 //
 // Fixture, paths relative to the prefix:
 //   {
@@ -55,7 +65,7 @@ import fs from "node:fs";
 import { parseArgs } from "node:util";
 
 const USAGE =
-  "usage: scripts/contract-check.mjs --site <url> --prefix <path> --fixture <file.json> [--canonical <url>] [--max-hops n] [--delay-ms n] [--max-requests n] [--json file] [--bypass-env NAME] [--origin-direct] [--allow-platform-noindex]";
+  "usage: scripts/contract-check.mjs --site <url> --prefix <path> --fixture <file.json> [--canonical <url>] [--origin-host host] [--max-hops n] [--delay-ms n] [--max-requests n] [--json file] [--bypass-env NAME] [--origin-direct] [--allow-platform-noindex]";
 
 function die(msg) {
   console.error(msg);
@@ -70,6 +80,7 @@ try {
       prefix: { type: "string" },
       fixture: { type: "string" },
       canonical: { type: "string", default: "https://www.ametalvirde.com" },
+      "origin-host": { type: "string" },
       "max-hops": { type: "string", default: "5" },
       "delay-ms": { type: "string", default: "500" },
       "max-requests": { type: "string", default: "300" },
@@ -95,12 +106,35 @@ if (!args.site || !args.prefix || !args.fixture) die(USAGE);
 const site = new URL(args.site);
 const P = "/" + args.prefix.replace(/^\/+|\/+$/g, "");
 const canonicalOrigin = new URL(args.canonical).origin;
-const maxHops = Number(args["max-hops"]);
-const delayMs = Number(args["delay-ms"]);
-const maxRequests = Number(args["max-requests"]);
+// A non-numeric value would turn its guard off (NaN compares false), so
+// reject it up front.
+function count(name, integer) {
+  const n = Number(args[name]);
+  if (
+    !Number.isFinite(n) ||
+    n < 0 ||
+    (integer && (!Number.isInteger(n) || n < 1))
+  )
+    die(
+      `--${name} must be ${integer ? "an integer >= 1" : "a number >= 0"}, got ${args[name]}\n${USAGE}`,
+    );
+  return n;
+}
+const maxHops = count("max-hops", true);
+const delayMs = count("delay-ms", false);
+const maxRequests = count("max-requests", true);
 const bypass = process.env[args["bypass-env"]];
 const originDirect = args["origin-direct"];
 const allowPlatformNoindex = args["allow-platform-noindex"];
+const originHost = args["origin-host"]?.toLowerCase() || null;
+if (allowPlatformNoindex && originDirect)
+  die(
+    `--allow-platform-noindex cannot be combined with --origin-direct: the origin-direct run proves no-noindex and takes no waiver\n${USAGE}`,
+  );
+if (allowPlatformNoindex && site.origin === canonicalOrigin)
+  die(
+    `--allow-platform-noindex cannot be used against the canonical origin ${canonicalOrigin}\n${USAGE}`,
+  );
 
 let fixture;
 try {
@@ -129,7 +163,9 @@ async function request(url) {
   if (requestCount > 0) await sleep(delayMs);
   requestCount++;
   const headers = { "user-agent": "contract-check/1" };
-  if (bypass) headers["x-vercel-protection-bypass"] = bypass;
+  // The secret is for the site only; never hand it to a host a redirect names.
+  if (bypass && url.origin === site.origin)
+    headers["x-vercel-protection-bypass"] = bypass;
   const res = await fetch(url, { redirect: "manual", headers });
   const body = await res.text();
   const h = Object.fromEntries(res.headers);
@@ -210,8 +246,8 @@ function refreshOf(html) {
   return null;
 }
 
-// Every CSS, script, image, link and refresh target, resolved against the page.
-function references(r) {
+// Every CSS, script, image, link and refresh target, as written in the page.
+function rawReferences(r) {
   const out = [];
   for (const t of tags(r.body, "link")) {
     const rel = (attr(t, "rel") ?? "").toLowerCase();
@@ -243,8 +279,13 @@ function references(r) {
   }
   const refresh = refreshOf(r.body);
   if (refresh) out.push(refresh);
+  return out;
+}
+
+// The same references, resolved against the page, on the site origin only.
+function references(r) {
   const urls = [];
-  for (const ref of out) {
+  for (const ref of rawReferences(r)) {
     try {
       const u = new URL(ref, r.url);
       u.hash = "";
@@ -262,6 +303,26 @@ const results = []; // { row, ok, detail, waived, chain }
 const pagesToScan = new Map(); // href -> response, every 200 HTML seen
 const subresources = new Map(); // href -> referring page path
 
+const namesOriginHost = (s) => s.toLowerCase().includes(originHost);
+
+// The origin's own host must never surface through a response: not in a
+// Location, not in a reference, not anywhere in the body text.
+function originHostChecks(r, problems) {
+  const loc = r.headers.location;
+  if (loc && namesOriginHost(loc))
+    problems.push(`Location names origin host ${originHost}: ${loc}`);
+  if (!r.body || !namesOriginHost(r.body)) return;
+  const refs = isHtml(r) ? rawReferences(r).filter(namesOriginHost) : [];
+  if (refs.length)
+    problems.push(
+      `${r.url.pathname} references origin host ${originHost}: ${refs.join(", ")}`,
+    );
+  else
+    problems.push(
+      `${r.url.pathname} body text names origin host ${originHost}`,
+    );
+}
+
 // waived collects findings that --allow-platform-noindex turns from failures
 // into reported notes.
 function crossChecks(chain, problems, waived) {
@@ -270,6 +331,7 @@ function crossChecks(chain, problems, waived) {
     if (loc && (/^[a-z][a-z0-9+.-]*:/i.test(loc) || loc.startsWith("//"))) {
       problems.push(`Location carries a host: ${loc}`);
     }
+    if (originHost) originHostChecks(r, problems);
   }
   const f = chain.final;
   if (!f || f.status !== 200) return;
@@ -455,7 +517,7 @@ for (const r of results) {
 const waivedRows = results.filter((r) => r.waived).length;
 const failed = results.filter((r) => !r.ok).length;
 console.log(
-  `\n${results.length - failed}/${results.length} rows pass, ${requestCount} requests, site ${site.origin}, prefix ${P}${originDirect ? ", origin-direct (site-owned /P row skipped)" : ""}${bypass ? ", bypass header on" : ""}${allowPlatformNoindex ? `, platform noindex WAIVED (seen on ${waivedRows} row(s))` : ""}`,
+  `\n${results.length - failed}/${results.length} rows pass, ${requestCount} requests, site ${site.origin}, prefix ${P}${originDirect ? ", origin-direct (site-owned /P row skipped)" : ""}${originHost ? `, origin host ${originHost} checked` : ""}${bypass ? ", bypass header on" : ""}${allowPlatformNoindex ? `, platform noindex WAIVED (seen on ${waivedRows} row(s))` : ""}`,
 );
 if (args.json) {
   fs.writeFileSync(
@@ -465,6 +527,7 @@ if (args.json) {
         site: site.origin,
         prefix: P,
         originDirect,
+        originHost,
         allowPlatformNoindex,
         waivedRows,
         at: new Date().toISOString(),
