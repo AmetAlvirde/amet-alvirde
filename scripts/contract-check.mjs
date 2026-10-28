@@ -30,6 +30,14 @@
 //   --origin-direct         --site is the app's own origin, not the site: skip
 //                           the site-owned row (/P -> /P/); every other row and
 //                           cross-row rule runs unchanged
+//   --allow-platform-noindex
+//                           for protected Vercel preview hosts only, which stamp
+//                           X-Robots-Tag: noindex on every response: a noindex
+//                           header no longer fails a row, but every row still
+//                           reports it, and the summary line and the JSON state
+//                           the waiver. Never use it against www. The origin's
+//                           no-noindex obligation is proven by the origin-direct
+//                           run (--origin-direct), which takes no waiver.
 //
 // Fixture, paths relative to the prefix:
 //   {
@@ -47,7 +55,7 @@ import fs from "node:fs";
 import { parseArgs } from "node:util";
 
 const USAGE =
-  "usage: scripts/contract-check.mjs --site <url> --prefix <path> --fixture <file.json> [--canonical <url>] [--max-hops n] [--delay-ms n] [--max-requests n] [--json file] [--bypass-env NAME] [--origin-direct]";
+  "usage: scripts/contract-check.mjs --site <url> --prefix <path> --fixture <file.json> [--canonical <url>] [--max-hops n] [--delay-ms n] [--max-requests n] [--json file] [--bypass-env NAME] [--origin-direct] [--allow-platform-noindex]";
 
 function die(msg) {
   console.error(msg);
@@ -71,6 +79,7 @@ try {
         default: "VERCEL_AUTOMATION_BYPASS_SECRET",
       },
       "origin-direct": { type: "boolean", default: false },
+      "allow-platform-noindex": { type: "boolean", default: false },
       help: { type: "boolean", short: "h" },
     },
   }).values;
@@ -91,6 +100,7 @@ const delayMs = Number(args["delay-ms"]);
 const maxRequests = Number(args["max-requests"]);
 const bypass = process.env[args["bypass-env"]];
 const originDirect = args["origin-direct"];
+const allowPlatformNoindex = args["allow-platform-noindex"];
 
 let fixture;
 try {
@@ -248,11 +258,13 @@ function references(r) {
 
 // ---------------------------------------------------------------- checks
 
-const results = []; // { row, ok, detail, chain }
+const results = []; // { row, ok, detail, waived, chain }
 const pagesToScan = new Map(); // href -> response, every 200 HTML seen
 const subresources = new Map(); // href -> referring page path
 
-function crossChecks(chain, problems) {
+// waived collects findings that --allow-platform-noindex turns from failures
+// into reported notes.
+function crossChecks(chain, problems, waived) {
   for (const r of chain.hops) {
     const loc = r.headers.location;
     if (loc && (/^[a-z][a-z0-9+.-]*:/i.test(loc) || loc.startsWith("//"))) {
@@ -262,7 +274,9 @@ function crossChecks(chain, problems) {
   const f = chain.final;
   if (!f || f.status !== 200) return;
   const robots = f.headers["x-robots-tag"] ?? "";
-  if (/noindex/i.test(robots)) problems.push(`X-Robots-Tag: ${robots}`);
+  if (/noindex/i.test(robots)) {
+    (allowPlatformNoindex ? waived : problems).push(`X-Robots-Tag: ${robots}`);
+  }
   if (isHtml(f)) pagesToScan.set(f.url.href, f);
 }
 
@@ -329,11 +343,13 @@ async function row(name, path, expect) {
       } else checkCanonical(chain.final, finalPath, problems);
     }
   }
-  crossChecks(chain, problems);
+  const waived = [];
+  crossChecks(chain, problems, waived);
   results.push({
     row: `${name}  ${path}`,
     ok: problems.length === 0,
     detail: problems.join("; "),
+    waived: waived.join("; "),
     chain: describe(chain),
   });
 }
@@ -411,11 +427,13 @@ async function main() {
         checkCanonical(chain.final, chain.final.url.pathname, problems);
       }
     }
-    crossChecks(chain, problems);
+    const waived = [];
+    crossChecks(chain, problems, waived);
     results.push({
       row: `subresource  ${path}  (from ${from})`,
       ok: problems.length === 0,
       detail: problems.join("; "),
+      waived: waived.join("; "),
       chain: describe(chain),
     });
   }
@@ -432,10 +450,12 @@ for (const r of results) {
   console.log(`${r.ok ? "PASS" : "FAIL"}  ${r.row}`);
   console.log(`      ${r.chain}`);
   if (!r.ok) console.log(`      ! ${r.detail}`);
+  if (r.waived) console.log(`      ~ waived: ${r.waived}`);
 }
+const waivedRows = results.filter((r) => r.waived).length;
 const failed = results.filter((r) => !r.ok).length;
 console.log(
-  `\n${results.length - failed}/${results.length} rows pass, ${requestCount} requests, site ${site.origin}, prefix ${P}${originDirect ? ", origin-direct (site-owned /P row skipped)" : ""}${bypass ? ", bypass header on" : ""}`,
+  `\n${results.length - failed}/${results.length} rows pass, ${requestCount} requests, site ${site.origin}, prefix ${P}${originDirect ? ", origin-direct (site-owned /P row skipped)" : ""}${bypass ? ", bypass header on" : ""}${allowPlatformNoindex ? `, platform noindex WAIVED (seen on ${waivedRows} row(s))` : ""}`,
 );
 if (args.json) {
   fs.writeFileSync(
@@ -445,6 +465,8 @@ if (args.json) {
         site: site.origin,
         prefix: P,
         originDirect,
+        allowPlatformNoindex,
+        waivedRows,
         at: new Date().toISOString(),
         results,
         responses: log,
