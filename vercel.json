@@ -1,0 +1,25 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/writing/noema",
+      "destination": "/writing/noema/",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/writing/noema/:path(.*)",
+      "destination": "https://noema-olive-one.vercel.app/writing/noema/:path"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/writing/noema/:path(.*)",
+      "headers": [
+        { "key": "CDN-Cache-Control", "value": "max-age=300" },
+        { "key": "x-vercel-enable-rewrite-caching", "value": "1" }
+      ]
+    }
+  ]
+}

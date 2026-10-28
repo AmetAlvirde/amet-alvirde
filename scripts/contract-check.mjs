@@ -1,0 +1,458 @@
+// Sub-app mount contract check (spec #34, section 6).
+//
+// Requests every row of the contract matrix through the SITE host, follows
+// redirects by hand, and fails on any deviation. No dependencies; Node 24+.
+//
+// Usage:
+//   pnpm check:contract --site <url> --prefix <path> --fixture <file.json> [options]
+//   node scripts/contract-check.mjs ...   (same flags)
+//
+// Example, noema through a site preview:
+//   pnpm check:contract --site https://<preview-host> --prefix writing/noema \
+//     --fixture scripts/contract-fixtures/noema.json
+//
+// The site host is always explicit; there is no default. The pacing default
+// (--delay-ms 500) keeps a run under the Vercel firewall threshold.
+//
+// Options:
+//   --site <url>            site base URL, e.g. https://www.ametalvirde.com
+//   --prefix <path>         mount prefix without slashes, e.g. writing/noema
+//   --fixture <file>        JSON: { notes, folders, tags, aliases } (see below)
+//   --canonical <url>       origin every canonical must point at
+//                           (default https://www.ametalvirde.com)
+//   --max-hops <n>          redirect cap per request (default 5)
+//   --delay-ms <n>          pause between requests (default 500, about 2 req/s)
+//   --max-requests <n>      abort past this many requests (default 300)
+//   --json <file>           write every response chain, with headers, to a file
+//   --bypass-env <NAME>     env var holding a Vercel protection-bypass secret
+//                           (default VERCEL_AUTOMATION_BYPASS_SECRET); when set,
+//                           every request carries x-vercel-protection-bypass
+//   --origin-direct         --site is the app's own origin, not the site: skip
+//                           the site-owned row (/P -> /P/); every other row and
+//                           cross-row rule runs unchanged
+//
+// Fixture, paths relative to the prefix:
+//   {
+//     "notes":   ["cafe-noetico", "ensayos/sobre-el-metodo"],
+//     "folders": ["ensayos", "tags"],
+//     "tags":    ["metodo"],
+//     "tagsPath": "tags",                      // optional, default "tags"
+//     "aliases": [{ "path": "nota-vieja", "target": "nota-con-alias" }]
+//   }
+// An alias may be a bare string when its target should not be pinned.
+//
+// Exit codes: 0 all rows pass, 1 any failure, 2 usage error or aborted run.
+
+import fs from "node:fs";
+import { parseArgs } from "node:util";
+
+const USAGE =
+  "usage: scripts/contract-check.mjs --site <url> --prefix <path> --fixture <file.json> [--canonical <url>] [--max-hops n] [--delay-ms n] [--max-requests n] [--json file] [--bypass-env NAME] [--origin-direct]";
+
+function die(msg) {
+  console.error(msg);
+  process.exit(2);
+}
+
+let args;
+try {
+  args = parseArgs({
+    options: {
+      site: { type: "string" },
+      prefix: { type: "string" },
+      fixture: { type: "string" },
+      canonical: { type: "string", default: "https://www.ametalvirde.com" },
+      "max-hops": { type: "string", default: "5" },
+      "delay-ms": { type: "string", default: "500" },
+      "max-requests": { type: "string", default: "300" },
+      json: { type: "string" },
+      "bypass-env": {
+        type: "string",
+        default: "VERCEL_AUTOMATION_BYPASS_SECRET",
+      },
+      "origin-direct": { type: "boolean", default: false },
+      help: { type: "boolean", short: "h" },
+    },
+  }).values;
+} catch (e) {
+  die(`${e.message}\n${USAGE}`);
+}
+if (args.help) {
+  console.log(USAGE);
+  process.exit(0);
+}
+if (!args.site || !args.prefix || !args.fixture) die(USAGE);
+
+const site = new URL(args.site);
+const P = "/" + args.prefix.replace(/^\/+|\/+$/g, "");
+const canonicalOrigin = new URL(args.canonical).origin;
+const maxHops = Number(args["max-hops"]);
+const delayMs = Number(args["delay-ms"]);
+const maxRequests = Number(args["max-requests"]);
+const bypass = process.env[args["bypass-env"]];
+const originDirect = args["origin-direct"];
+
+let fixture;
+try {
+  fixture = JSON.parse(fs.readFileSync(args.fixture, "utf8"));
+} catch (e) {
+  die(`cannot read fixture ${args.fixture}: ${e.message}`);
+}
+const list = (k) => (Array.isArray(fixture[k]) ? fixture[k] : []);
+const tagsPath = (fixture.tagsPath ?? "tags").replace(/^\/+|\/+$/g, "");
+const aliases = list("aliases").map((a) =>
+  typeof a === "string" ? { path: a } : a,
+);
+
+// ---------------------------------------------------------------- requests
+
+let requestCount = 0;
+const log = []; // every response, for --json
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function request(url) {
+  if (requestCount >= maxRequests) {
+    throw new Error(
+      `aborted: more than ${maxRequests} requests (raise --max-requests)`,
+    );
+  }
+  if (requestCount > 0) await sleep(delayMs);
+  requestCount++;
+  const headers = { "user-agent": "contract-check/1" };
+  if (bypass) headers["x-vercel-protection-bypass"] = bypass;
+  const res = await fetch(url, { redirect: "manual", headers });
+  const body = await res.text();
+  const h = Object.fromEntries(res.headers);
+  log.push({ url: url.href, status: res.status, headers: h });
+  return { url, status: res.status, headers: h, body };
+}
+
+// Follow redirects by hand. Returns { hops: [response...], final, error }.
+// Loops are detected by revisiting a URL; the hop cap stops anything else.
+async function follow(path) {
+  let url = new URL(path, site);
+  const seen = new Set();
+  const hops = [];
+  for (;;) {
+    if (seen.has(url.href)) {
+      return {
+        hops,
+        final: null,
+        error: `redirect loop: revisits ${url.pathname}${url.search}`,
+      };
+    }
+    seen.add(url.href);
+    const r = await request(url);
+    hops.push(r);
+    if (r.status < 300 || r.status >= 400)
+      return { hops, final: r, error: null };
+    const loc = r.headers.location;
+    if (!loc) return { hops, final: r, error: `${r.status} without Location` };
+    if (hops.length > maxHops) {
+      return { hops, final: null, error: `more than ${maxHops} redirects` };
+    }
+    url = new URL(loc, url);
+  }
+}
+
+const describe = ({ hops }) =>
+  hops
+    .map((r) =>
+      r.headers.location
+        ? `${r.status} ${r.url.pathname} -> ${r.headers.location}`
+        : `${r.status} ${r.url.pathname}`,
+    )
+    .join(" | ");
+
+// ---------------------------------------------------------------- HTML
+
+const isHtml = (r) => (r.headers["content-type"] ?? "").includes("text/html");
+const decode = (s) =>
+  s
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+const attr = (tag, name) => {
+  const m = tag.match(
+    new RegExp(`\\s${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i"),
+  );
+  return m ? decode(m[1] ?? m[2] ?? m[3]) : null;
+};
+const tags = (html, name) =>
+  html.match(new RegExp(`<${name}\\b[^>]*>`, "gi")) ?? [];
+
+function canonicalOf(html) {
+  for (const t of tags(html, "link")) {
+    if ((attr(t, "rel") ?? "").toLowerCase().split(/\s+/).includes("canonical"))
+      return attr(t, "href");
+  }
+  return null;
+}
+
+function refreshOf(html) {
+  for (const t of tags(html, "meta")) {
+    if ((attr(t, "http-equiv") ?? "").toLowerCase() !== "refresh") continue;
+    const m = (attr(t, "content") ?? "").match(/url\s*=\s*['"]?([^'"]+)/i);
+    if (m) return m[1].trim();
+  }
+  return null;
+}
+
+// Every CSS, script, image, link and refresh target, resolved against the page.
+function references(r) {
+  const out = [];
+  for (const t of tags(r.body, "link")) {
+    const rel = (attr(t, "rel") ?? "").toLowerCase();
+    if (
+      rel.includes("canonical") ||
+      rel.includes("preconnect") ||
+      rel.includes("dns-prefetch")
+    )
+      continue;
+    const href = attr(t, "href");
+    if (href) out.push(href);
+  }
+  for (const t of tags(r.body, "script")) {
+    const src = attr(t, "src");
+    if (src) out.push(src);
+  }
+  for (const t of tags(r.body, "img")) {
+    const src = attr(t, "src");
+    if (src) out.push(src);
+  }
+  for (const t of tags(r.body, "a")) {
+    const href = attr(t, "href");
+    if (
+      href &&
+      !/^(mailto|tel|javascript):/i.test(href) &&
+      !href.startsWith("#")
+    )
+      out.push(href);
+  }
+  const refresh = refreshOf(r.body);
+  if (refresh) out.push(refresh);
+  const urls = [];
+  for (const ref of out) {
+    try {
+      const u = new URL(ref, r.url);
+      u.hash = "";
+      if (u.origin === site.origin) urls.push(u);
+    } catch {
+      // unparseable reference; not ours to judge
+    }
+  }
+  return urls;
+}
+
+// ---------------------------------------------------------------- checks
+
+const results = []; // { row, ok, detail, chain }
+const pagesToScan = new Map(); // href -> response, every 200 HTML seen
+const subresources = new Map(); // href -> referring page path
+
+function crossChecks(chain, problems) {
+  for (const r of chain.hops) {
+    const loc = r.headers.location;
+    if (loc && (/^[a-z][a-z0-9+.-]*:/i.test(loc) || loc.startsWith("//"))) {
+      problems.push(`Location carries a host: ${loc}`);
+    }
+  }
+  const f = chain.final;
+  if (!f || f.status !== 200) return;
+  const robots = f.headers["x-robots-tag"] ?? "";
+  if (/noindex/i.test(robots)) problems.push(`X-Robots-Tag: ${robots}`);
+  if (isHtml(f)) pagesToScan.set(f.url.href, f);
+}
+
+function checkCanonical(f, expectedPath, problems) {
+  const c = canonicalOf(f.body);
+  const want = canonicalOrigin + expectedPath;
+  if (!c) problems.push("no rel=canonical");
+  else if (!/^https:\/\//.test(c))
+    problems.push(`canonical not absolute: ${c}`);
+  else if (c !== want) problems.push(`canonical ${c}, want ${want}`);
+}
+
+// expect: { hops: exact redirect count, locations: [expected Location per hop],
+//           maxHops: upper bound instead of exact, finalPath }
+async function row(name, path, expect) {
+  const chain = await follow(path);
+  const problems = [];
+  if (chain.error) problems.push(chain.error);
+  const redirects = chain.hops.filter((r) => r.status >= 300 && r.status < 400);
+  if (!chain.error) {
+    if (chain.final.status !== 200)
+      problems.push(`ends at ${chain.final.status}`);
+    if (expect.hops !== undefined && redirects.length !== expect.hops) {
+      problems.push(`${redirects.length} redirect(s), want ${expect.hops}`);
+    }
+    if (expect.maxHops !== undefined && redirects.length > expect.maxHops) {
+      problems.push(
+        `${redirects.length} redirect(s), want at most ${expect.maxHops}`,
+      );
+    }
+    expect.locations?.forEach((want, i) => {
+      const r = redirects[i];
+      if (r && r.status !== 308)
+        problems.push(`hop ${i + 1} is ${r.status}, want 308`);
+      if (r && r.headers.location !== want)
+        problems.push(
+          `hop ${i + 1} Location ${r.headers.location}, want ${want}`,
+        );
+    });
+    const finalPath = chain.final.url.pathname;
+    if (expect.finalPath && finalPath !== expect.finalPath)
+      problems.push(`ends at ${finalPath}, want ${expect.finalPath}`);
+    if (chain.final.status === 200 && isHtml(chain.final)) {
+      if (expect.alias) {
+        const refresh = refreshOf(chain.final.body);
+        if (!refresh) problems.push("alias page has no meta refresh");
+        else {
+          const target = new URL(refresh, chain.final.url);
+          if (
+            target.origin !== site.origin ||
+            !target.pathname.startsWith(P + "/")
+          ) {
+            problems.push(`refresh target ${target.href} is not under ${P}/`);
+          } else if (
+            expect.alias.target &&
+            target.pathname !== `${P}/${expect.alias.target}`
+          ) {
+            problems.push(
+              `refresh target ${target.pathname}, want ${P}/${expect.alias.target}`,
+            );
+          }
+          checkCanonical(chain.final, target.pathname, problems);
+        }
+      } else checkCanonical(chain.final, finalPath, problems);
+    }
+  }
+  crossChecks(chain, problems);
+  results.push({
+    row: `${name}  ${path}`,
+    ok: problems.length === 0,
+    detail: problems.join("; "),
+    chain: describe(chain),
+  });
+}
+
+async function main() {
+  const fixedRows = [
+    // The site owns /P -> /P/; an origin never sees the bare prefix through the site.
+    ...(originDirect
+      ? []
+      : [
+          [
+            "prefix bare",
+            P,
+            { hops: 1, locations: [`${P}/`], finalPath: `${P}/` },
+          ],
+        ]),
+    ["prefix root", `${P}/`, { hops: 0 }],
+  ];
+  for (const [name, path, expect] of fixedRows) await row(name, path, expect);
+  for (const n of list("notes")) {
+    await row("note", `${P}/${n}`, { hops: 0 });
+    await row("note slash", `${P}/${n}/`, {
+      hops: 1,
+      locations: [`${P}/${n}`],
+    });
+  }
+  for (const f of list("folders")) {
+    await row("folder", `${P}/${f}/`, { hops: 0 });
+    await row("folder bare", `${P}/${f}`, {
+      hops: 1,
+      locations: [`${P}/${f}/`],
+    });
+  }
+  for (const t of list("tags")) {
+    await row("tag", `${P}/${tagsPath}/${t}`, { hops: 0 });
+    await row("tag slash", `${P}/${tagsPath}/${t}/`, {
+      hops: 1,
+      locations: [`${P}/${tagsPath}/${t}`],
+    });
+  }
+  for (const a of aliases)
+    await row("alias", `${P}/${a.path}`, { hops: 0, alias: a });
+  await row("index", `${P}/index`, { maxHops: 2, finalPath: `${P}/` });
+  await row("index.html", `${P}/index.html`, {
+    maxHops: 2,
+    finalPath: `${P}/`,
+  });
+
+  // Sub-resources of every 200 HTML page reached by a row: 200, as linked.
+  for (const page of [...pagesToScan.values()]) {
+    for (const u of references(page)) {
+      if (!subresources.has(u.href))
+        subresources.set(u.href, page.url.pathname);
+    }
+  }
+  const rowPages = new Set(pagesToScan.keys());
+  for (const [href, from] of subresources) {
+    if (rowPages.has(href)) continue; // a row already saw 200 at this exact URL
+    const u = new URL(href);
+    const path = u.pathname + u.search;
+    const chain = await follow(path);
+    const problems = [];
+    if (chain.error) problems.push(chain.error);
+    else {
+      const redirects = chain.hops.length - 1;
+      if (chain.final.status !== 200)
+        problems.push(`ends at ${chain.final.status}`);
+      if (redirects > 0)
+        problems.push(`linked form redirects (${redirects} hop(s))`);
+      if (
+        !rowPages.has(chain.final.url.href) &&
+        chain.final.status === 200 &&
+        isHtml(chain.final)
+      ) {
+        checkCanonical(chain.final, chain.final.url.pathname, problems);
+      }
+    }
+    crossChecks(chain, problems);
+    results.push({
+      row: `subresource  ${path}  (from ${from})`,
+      ok: problems.length === 0,
+      detail: problems.join("; "),
+      chain: describe(chain),
+    });
+  }
+}
+
+let aborted = null;
+try {
+  await main();
+} catch (e) {
+  aborted = e;
+}
+
+for (const r of results) {
+  console.log(`${r.ok ? "PASS" : "FAIL"}  ${r.row}`);
+  console.log(`      ${r.chain}`);
+  if (!r.ok) console.log(`      ! ${r.detail}`);
+}
+const failed = results.filter((r) => !r.ok).length;
+console.log(
+  `\n${results.length - failed}/${results.length} rows pass, ${requestCount} requests, site ${site.origin}, prefix ${P}${originDirect ? ", origin-direct (site-owned /P row skipped)" : ""}${bypass ? ", bypass header on" : ""}`,
+);
+if (args.json) {
+  fs.writeFileSync(
+    args.json,
+    JSON.stringify(
+      {
+        site: site.origin,
+        prefix: P,
+        originDirect,
+        at: new Date().toISOString(),
+        results,
+        responses: log,
+      },
+      null,
+      2,
+    ),
+  );
+}
+if (aborted) die(`check aborted: ${aborted.message}`);
+process.exit(failed ? 1 : 0);
